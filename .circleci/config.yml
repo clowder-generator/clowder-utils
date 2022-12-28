@@ -1,0 +1,125 @@
+version: 2.1
+
+#==============================================================================
+# Executors
+#==============================================================================
+executors:
+  node_18:
+    docker:
+      - image: node:18.12.1
+        auth:
+          username: $MY_CIRCLECI_DOCKERHUB_USERNAME
+          password: $MY_CIRCLECI_DOCKERHUB_PASSWORD
+  node_16:
+    docker:
+      - image: node:16.19.0
+        auth:
+          username: $MY_CIRCLECI_DOCKERHUB_USERNAME
+          password: $MY_CIRCLECI_DOCKERHUB_PASSWORD
+  git:
+    docker:
+      - image: leddzip/github-gh-cli:20.04
+        auth:
+          username: $MY_CIRCLECI_DOCKERHUB_USERNAME
+          password: $MY_CIRCLECI_DOCKERHUB_PASSWORD
+
+#==============================================================================
+# Contexts
+#==============================================================================
+docker_context: &docker_context
+  context:
+    - Leddzip Dockerhub
+
+docker_and_npm_context: &docker_and_npm_context
+  context:
+    - Leddzip Dockerhub
+    - Leddzip npm.js
+
+#==============================================================================
+# Filters
+#==============================================================================
+no_tag_filter: &no_tag_filter
+  filters:
+    branches:
+      ignore: master
+    tags:
+      ignore: /.*/
+
+release_tag_filter: &release_tag_filter
+  filters:
+    branches:
+      ignore: /.*/
+    tags:
+      only: /release-v.*/
+
+#==============================================================================
+# Commands
+#==============================================================================
+commands:
+  test:
+    steps:
+      - run: |
+          npm install
+          npm test
+
+#==============================================================================
+# Jobs
+#==============================================================================
+jobs:
+  test-16:
+    executor: node_16
+    steps:
+      - checkout
+      - test
+  test-18:
+    executor: node_18
+    steps:
+      - checkout
+      - test
+  deploy:
+    executor: node_18
+    steps:
+      - checkout
+      - run: |
+          echo "$MY_CIRCLECI_NPM_TOKEN_CLOWDER_UTILS" > ~/.npmrc
+      - run: |
+          npm install
+          npm build
+          npm publish
+
+#==============================================================================
+# Workflows
+#==============================================================================
+workflows:
+  #
+  # General purpose pipeline to execute tests, no matter the source branches
+  # It voluntary exclude tags to not have a double work with the automatic
+  # release process (that also include testing))
+  #
+  "Test only pipeline":
+    jobs:
+      - test-16:
+          <<: *docker_context
+          <<: *no_tag_filter
+      - test-18:
+          <<: *docker_context
+          <<: *no_tag_filter
+
+  #
+  # When a release tag is pushed, this pipeline will retest everything
+  # before deploying the new release in the correct npmjs repo.
+  #
+  "Build and deploy pipeline":
+    jobs:
+      - test-16:
+          <<: *docker_context
+          <<: *release_tag_filter
+      - test-18:
+          <<: *docker_context
+          <<: *release_tag_filter
+      - deploy:
+          <<: *docker_and_npm_context
+          <<: *release_tag_filter
+          requires:
+            - test-16
+            - test-18
