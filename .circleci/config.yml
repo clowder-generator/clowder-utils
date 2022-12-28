@@ -81,13 +81,9 @@ jobs:
     steps:
       - checkout
       - run: |
-          echo "//registry.npms.org/:_authToken=${MY_CIRCLECI_NPM_TOKEN_CLOWDER_UTILS}" > ~/.npmrc
-          echo "@clowder-generator:registry=https://registry.npmjs.org/" >> ~/.npmrc
-          echo "always-auth=true" >> ~/.npmrc
-      - run: |
+          export NODE_AUTH_TOKEN="${MY_CIRCLECI_NPM_TOKEN_CLOWDER_UTILS}"
           npm install
           npm run build
-          npm adduser
           npm publish
 
 #==============================================================================
