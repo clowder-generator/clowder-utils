@@ -8,7 +8,10 @@
     "/dist"
   ],
   "scripts": {
-    "test": "jest --passWithNoTests --config jestconfig.json"
+    "test": "jest --passWithNoTests --config jestconfig.json",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "build": "tsc"
   },
   "keywords": [
     "clowder",
