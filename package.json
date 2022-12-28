@@ -1,0 +1,27 @@
+{
+  "name": "clowder-utils",
+  "version": "0.1.0",
+  "description": "A utils collection to help building clowder related generator",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "/dist"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "clowder",
+    "lib",
+    "utils"
+  ],
+  "author": "leddzip",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/clowder-generator/clowder-utils"
+  },
+  "dependencies": {
+    "typescript": "^4.9.4"
+  }
+}
