@@ -81,7 +81,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          echo "//registry.npmjs.org/:_authToken=MY_CIRCLECI_NPM_TOKEN_CLOWDER_UTILS" > ~/.npmrc
+          npm config set _authToken=$MY_CIRCLECI_NPM_TOKEN_CLOWDER_UTILS
           npm install
           npm run build
           npm publish
