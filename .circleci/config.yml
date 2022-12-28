@@ -84,7 +84,7 @@ jobs:
           echo "$MY_CIRCLECI_NPM_TOKEN_CLOWDER_UTILS" > ~/.npmrc
       - run: |
           npm install
-          npm build
+          npm run build
           npm publish
 
 #==============================================================================
