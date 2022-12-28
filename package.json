@@ -1,5 +1,5 @@
 {
-  "name": "clowder-utils",
+  "name": "@clowder-generator/utils",
   "version": "0.1.0",
   "description": "A utils collection to help building clowder related generator",
   "main": "dist/index.js",
@@ -8,7 +8,7 @@
     "/dist"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --passWithNoTests --config jestconfig.json"
   },
   "keywords": [
     "clowder",
@@ -23,5 +23,10 @@
   },
   "dependencies": {
     "typescript": "^4.9.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.2.4",
+    "jest": "^29.3.1",
+    "ts-jest": "^29.0.3"
   }
 }
