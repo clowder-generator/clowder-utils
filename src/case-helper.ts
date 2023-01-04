@@ -18,7 +18,7 @@ export class CaseConversionError extends Error {
 
 export class Case {
 
-    private readonly _words: string[] = [];
+    private readonly _words: string[];
     get words() {
         return this._words;
     }
@@ -158,7 +158,7 @@ const assertNotEmptyString = (str: string) => {
 
 
 const assertNoBlankInWord = (str: string) => {
-    if (/^.*\s+$.*/.test(str)) {
+    if (/^.*\s+.*$/.test(str)) {
         throw new CaseConversionError("invalid string with blank char");
     }
 }

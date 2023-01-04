@@ -9,10 +9,6 @@ import {
 } from "./case-helper";
 import {SEP} from "memfs/lib/node";
 
-const TODO = (str?: string) => {
-    throw new Error(`Pending implementation. ${str}`);
-}
-
 describe("Case", () => {
     describe("constructor", () => {
         describe("When I call new Case with an empty array", () => {
