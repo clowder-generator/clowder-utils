@@ -9,4 +9,14 @@ export {
     StringAssertionError,
     isBlank,
     assertNotBlank
-} from "./string-helper"
+} from "./string-helper";
+export {
+    CaseConversionError,
+    fromCamelCase,
+    fromKebabCase,
+    fromPascalCase,
+    fromScreamingKebabCase,
+    fromScreamingSnakeCase,
+    fromSnakeCase,
+    Case
+} from "./case-helper";
