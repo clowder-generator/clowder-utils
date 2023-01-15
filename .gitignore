@@ -6,3 +6,4 @@ dist/
 .stryker-tmp
 reports/
 coverage/
+.nyc_output/
