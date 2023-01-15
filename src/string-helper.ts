@@ -13,9 +13,9 @@ export class StringAssertionError extends Error {
  *
  * @param str: the string you want to check
  */
-export const isBlank = (str: string | undefined | null): boolean =>  {
+export const isBlank = (str: string | undefined | null): boolean => {
     return (!str || /^\s*$/.test(str));
-}
+};
 
 /**
  * Assert that the given parameter is not a blank or undefined/null string
@@ -23,9 +23,8 @@ export const isBlank = (str: string | undefined | null): boolean =>  {
  *
  * @param str: the string you want to assert that it is not blank or undefined/null
  */
-export const assertNotBlank = (str: string | undefined | null) => {
+export const assertNotBlank = (str: string | undefined | null): void => {
     if (isBlank(str)) {
-        throw new StringAssertionError("The given string is blank or undefined");
+        throw new StringAssertionError('The given string is blank or undefined');
     }
-}
-
+};
