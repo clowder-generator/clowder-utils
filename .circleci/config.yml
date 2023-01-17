@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  jira: circleci/jira@1.3.1
+
 #==============================================================================
 # Executors
 #==============================================================================
@@ -16,24 +19,13 @@ executors:
         auth:
           username: $MY_CIRCLECI_DOCKERHUB_USERNAME
           password: $MY_CIRCLECI_DOCKERHUB_PASSWORD
-  git:
-    docker:
-      - image: leddzip/github-gh-cli:20.04
-        auth:
-          username: $MY_CIRCLECI_DOCKERHUB_USERNAME
-          password: $MY_CIRCLECI_DOCKERHUB_PASSWORD
 
 #==============================================================================
 # Contexts
 #==============================================================================
-docker_context: &docker_context
+project_context: &project_context
   context:
-    - Leddzip Dockerhub
-
-docker_and_npm_context: &docker_and_npm_context
-  context:
-    - Leddzip Dockerhub
-    - Leddzip npm.js
+    - generator-utils
 
 #==============================================================================
 # Filters
@@ -81,7 +73,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          npm config set _authToken=$MY_CIRCLECI_NPM_TOKEN_CLOWDER_UTILS
+          npm config set _authToken=$MY_CIRCLECI_NPM_TOKEN
           npm install
           npm run build
           npm publish --access public
@@ -98,11 +90,17 @@ workflows:
   "Test only pipeline":
     jobs:
       - test-16:
-          <<: *docker_context
+          <<: *project_context
           <<: *no_tag_filter
+          post-steps:
+            - jira/notify:
+                job_type: build
       - test-18:
-          <<: *docker_context
+          <<: *project_context
           <<: *no_tag_filter
+          post-steps:
+            - jira/notify:
+                job_type: build
 
   #
   # When a release tag is pushed, this pipeline will retest everything
@@ -111,13 +109,13 @@ workflows:
   "Build and deploy pipeline":
     jobs:
       - test-16:
-          <<: *docker_context
+          <<: *project_context
           <<: *release_tag_filter
       - test-18:
-          <<: *docker_context
+          <<: *project_context
           <<: *release_tag_filter
       - deploy:
-          <<: *docker_and_npm_context
+          <<: *project_context
           <<: *release_tag_filter
           requires:
             - test-16
