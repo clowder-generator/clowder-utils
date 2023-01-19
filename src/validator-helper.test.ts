@@ -15,42 +15,30 @@ describe('pascalCaseValidation', () => { xtest('Then ', () => {}); });
 describe('integerValidation', () => { xtest('Then ', () => {}); });
 describe('naturalNumberValidation', () => { xtest('Then ', () => {}); });
 describe('numberValidation', () => {
-    let input: string = '';
-    describe('Given an inputted number', () => {
-        beforeEach(() => {
-            // TODO: adapt to put several valid value (decimal like decimal and minus)
-            input = '1234';
-        });
-        describe('When I call "assertNumber" on this input', () => {
-            let result: Promise<boolean | string> | undefined;
-            beforeEach(() => {
-                result = numberValidation(input);
-            });
-            test('Then a boolean Promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise<boolean>);
-            });
-            test('Then a "true" should be returned', async () => {
-                expect(await result).toStrictEqual(true);
-            });
-        });
-    });
     describe.each([
-        ['12 3', '"12 3" is not a number. Only unformatted numbers are expected.'],
-        ['1e2', '"1e2" is not a number. Only unformatted numbers are expected.'],
-        ['one', '"one" is not a number. Only unformatted numbers are expected.'],
-        ['1,000,000.00', '"1,000,000.00" is not a number. Only unformatted numbers are expected.']
-    ])('Given an input "%s" which is not a number', (input: string, expectedMessage: string) => {
-        describe('When I call "assertNumber" on this input', () => {
-            let result: Promise<boolean | string> | undefined;
-            beforeEach(() => {
-                result = numberValidation(input);
-            });
-            test('Then a string Promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise<string>);
-            });
-            test('Then a string that explain that a number is expected is returned', async () => {
-                expect(await result).toBe(expectedMessage);
-            });
+        ['0', true],
+        ['1', true],
+        ['1234', true],
+        ['1.0', true],
+        ['-123', true],
+        ['-1', true],
+        ['-0.01', true],
+        ['12 3', '"12 3" is not a valid number. Only unformatted numbers are expected.'],
+        ['1e2', '"1e2" is not a valid number. Only unformatted numbers are expected.'],
+        ['one', '"one" is not a valid number. Only unformatted numbers are expected.'],
+        ['.01', '".01" is not a valid number. Only unformatted numbers are expected.'],
+        ['.0.1', '".0.1" is not a valid number. Only unformatted numbers are expected.'],
+        ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted numbers are expected.']
+    ])('When I call "assertNumber" on the input "%s"', (input: string, expectedResult: boolean | string) => {
+        let result: Promise<boolean | string> | undefined;
+        beforeEach(() => {
+            result = numberValidation(input);
+        });
+        test('Then a Promise is returned', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expectedResult);
         });
     });
 });
