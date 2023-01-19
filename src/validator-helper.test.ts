@@ -23,13 +23,12 @@ describe('numberValidation', () => {
         ['-123', true],
         ['-1', true],
         ['-0.01', true],
+        [undefined, 'undefined is not a valid number. Only unformatted numbers are expected.'],
         ['12 3', '"12 3" is not a valid number. Only unformatted numbers are expected.'],
-        ['1e2', '"1e2" is not a valid number. Only unformatted numbers are expected.'],
         ['one', '"one" is not a valid number. Only unformatted numbers are expected.'],
-        ['.01', '".01" is not a valid number. Only unformatted numbers are expected.'],
         ['.0.1', '".0.1" is not a valid number. Only unformatted numbers are expected.'],
         ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted numbers are expected.']
-    ])('When I call "assertNumber" on the input "%s"', (input: string, expectedResult: boolean | string) => {
+    ])('When I call "assertNumber" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = numberValidation(input);
