@@ -7,7 +7,7 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
     return async (_: string | undefined): Promise<boolean> => false;
 };
 
-export const naturalNumberValidation = async (input: string | undefined): Promise<boolean | string> => {
+export const naturalNumberValidation = async (input: string | undefined): Promise<true | string> => {
     const notANaturalNumberMessage = 'is not a natural number.';
     const notANumberMessage = 'is not a valid number.';
     const commonErrorMessage = 'Only unformatted finite natural numbers are expected.';
@@ -18,7 +18,7 @@ export const naturalNumberValidation = async (input: string | undefined): Promis
 
     const parsedNumber = +input;
 
-    if (!isFinite(parsedNumber)) {
+    if (numberValidationSync(input) !== true) {
         return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
     }
 
@@ -38,7 +38,10 @@ export const naturalNumberValidation = async (input: string | undefined): Promis
  * @returns: true: if the input is a valid number
  *           string: if the input is not a valid number
  */
-export const numberValidation = async (input: string | undefined): Promise<boolean | string> => {
+export const numberValidation = async (input: string | undefined): Promise<true | string> => {
+    return numberValidationSync(input);
+};
+const numberValidationSync = (input: string | undefined): true | string => {
     const baseErrorMessage = 'is not a valid number. Only unformatted finite numbers are expected.';
 
     if (input === undefined) {

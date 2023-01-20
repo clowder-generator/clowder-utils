@@ -57,7 +57,6 @@ describe('naturalNumberValidation', () => {
             expect(await result).toStrictEqual(expectedResult);
         });
     });
-    xtest('Then ', () => {});
 });
 
 describe('numberValidation', () => {
