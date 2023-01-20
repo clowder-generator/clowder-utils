@@ -8,8 +8,25 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
 };
 
 export const naturalNumberValidation = async (input: string | undefined): Promise<boolean | string> => {
-    // TODO fill in with correct implementation
-    return false;
+    const notANaturalNumberMessage = 'is not a natural number.';
+    const notANumberMessage = 'is not a valid number.';
+    const commonErrorMessage = 'Only unformatted finite natural numbers are expected.';
+
+    if (input === undefined) {
+        return `undefined ${notANumberMessage} ${commonErrorMessage}`;
+    }
+
+    const parsedNumber = +input;
+
+    if (!isFinite(parsedNumber)) {
+        return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
+    }
+
+    if (!Number.isInteger(parsedNumber) || parsedNumber <= 0) {
+        return `"${input}" ${notANaturalNumberMessage} ${commonErrorMessage}`;
+    }
+
+    return true;
 };
 
 /**
