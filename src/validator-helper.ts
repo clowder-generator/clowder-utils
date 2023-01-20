@@ -7,6 +7,11 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
     return async (_: string | undefined): Promise<boolean> => false;
 };
 
+export const naturalNumberValidation = async (input: string | undefined): Promise<boolean | string> => {
+    // TODO fill in with correct implementation
+    return false;
+};
+
 /**
  * Validate if the given input is a valid number. Validation is done with 'isFinite' and
  * string to number conversion using the unary operator '+'. Hence, every number that
@@ -17,7 +22,7 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
  *           string: if the input is not a valid number
  */
 export const numberValidation = async (input: string | undefined): Promise<boolean | string> => {
-    const baseErrorMessage = 'is not a valid number. Only unformatted numbers are expected.';
+    const baseErrorMessage = 'is not a valid number. Only unformatted finite numbers are expected.';
 
     if (input === undefined) {
         return `undefined ${baseErrorMessage}`;
