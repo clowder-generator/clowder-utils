@@ -1,4 +1,5 @@
 import {
+    integerValidation,
     naturalNumberValidation,
     numberValidation
 } from './validator-helper';
@@ -15,7 +16,47 @@ describe('snakeCaseValidation', () => { xtest('Then ', () => {}); });
 describe('screamingSnakeCaseValidation', () => { xtest('Then ', () => {}); });
 describe('camelCaseValidation', () => { xtest('Then ', () => {}); });
 describe('pascalCaseValidation', () => { xtest('Then ', () => {}); });
-describe('integerValidation', () => { xtest('Then ', () => {}); });
+describe('integerValidation', () => {
+    describe.each([
+        ['1', true],
+        ['1234', true],
+        ['1.0', true],
+        ['+123', true],
+        ['10e3', true],
+        ['0123', true],
+        ['0xBABE', true],
+        ['0o10', true],
+        ['0b10', true],
+        ['', true],
+        ['-123', true],
+        ['0', true],
+        ['-1', true],
+        ['10e-3', '"10e-3" is not an integer. Only unformatted finite integers are expected.'],
+        ['-0.01', '"-0.01" is not an integer. Only unformatted finite integers are expected.'],
+        [undefined, 'undefined is not a valid number. Only unformatted finite integers are expected.'],
+        ['12 3', '"12 3" is not a valid number. Only unformatted finite integers are expected.'],
+        ['12e999', '"12e999" is not a valid number. Only unformatted finite integers are expected.'],
+        ['one', '"one" is not a valid number. Only unformatted finite integers are expected.'],
+        ['.0.1', '".0.1" is not a valid number. Only unformatted finite integers are expected.'],
+        ['0o88', '"0o88" is not a valid number. Only unformatted finite integers are expected.'],
+        ['0b12', '"0b12" is not a valid number. Only unformatted finite integers are expected.'],
+        ['0xGG', '"0xGG" is not a valid number. Only unformatted finite integers are expected.'],
+        ['12e', '"12e" is not a valid number. Only unformatted finite integers are expected.'],
+        ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted finite integers are expected.'],
+        ['Infinity', '"Infinity" is not a valid number. Only unformatted finite integers are expected.']
+    ])('When I call "integerValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+        let result: Promise<boolean | string> | undefined;
+        beforeEach(() => {
+            result = integerValidation(input);
+        });
+        test('Then a promise is return', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expectedResult);
+        });
+    });
+});
 describe('naturalNumberValidation', () => {
     describe.each([
         ['1', true],
@@ -30,7 +71,6 @@ describe('naturalNumberValidation', () => {
         ['', '"" is not a natural number. Only unformatted finite natural numbers are expected.'],
         ['10e-3', '"10e-3" is not a natural number. Only unformatted finite natural numbers are expected.'],
         ['-0.01', '"-0.01" is not a natural number. Only unformatted finite natural numbers are expected.'],
-        ['-1', '"-1" is not a natural number. Only unformatted finite natural numbers are expected.'],
         ['-123', '"-123" is not a natural number. Only unformatted finite natural numbers are expected.'],
         ['0', '"0" is not a natural number. Only unformatted finite natural numbers are expected.'],
         ['-1', '"-1" is not a natural number. Only unformatted finite natural numbers are expected.'],

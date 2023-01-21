@@ -1,10 +1,30 @@
-type validationFunction = (input: string | undefined) => Promise<boolean | string>;
+ type validationFunction = (input: string | undefined) => Promise<boolean | string>;
 interface ValidationOption {
     trimmed: boolean;
 }
 
 export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func: validationFunction[]): validationFunction => {
     return async (_: string | undefined): Promise<boolean> => false;
+};
+
+export const integerValidation = async (input: string | undefined): Promise<true | string> => {
+    const notAnIntegerMessage = 'is not an integer.';
+    const notANumberMessage = 'is not a valid number.';
+    const commonErrorMessage = 'Only unformatted finite integers are expected.';
+
+    if (input === undefined) {
+        return `undefined ${notANumberMessage} ${commonErrorMessage}`;
+    }
+
+    if (numberValidationSync(input) !== true) {
+        return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
+    }
+
+    if (!Number.isInteger(+input)) {
+        return `"${input}" ${notAnIntegerMessage} ${commonErrorMessage}`;
+    }
+
+    return true;
 };
 
 export const naturalNumberValidation = async (input: string | undefined): Promise<true | string> => {
@@ -16,12 +36,11 @@ export const naturalNumberValidation = async (input: string | undefined): Promis
         return `undefined ${notANumberMessage} ${commonErrorMessage}`;
     }
 
-    const parsedNumber = +input;
-
     if (numberValidationSync(input) !== true) {
         return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
     }
 
+    const parsedNumber = +input;
     if (!Number.isInteger(parsedNumber) || parsedNumber <= 0) {
         return `"${input}" ${notANaturalNumberMessage} ${commonErrorMessage}`;
     }
