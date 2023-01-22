@@ -1,6 +1,6 @@
 import {
     camelCaseValidation,
-    integerValidation,
+    integerValidation, kebabCaseValidation,
     naturalNumberValidation,
     numberValidation,
     pascalCaseValidation,
@@ -22,7 +22,54 @@ describe('noInnerWhiteSpaceValidation', () => { xtest('Then', () => {}); });
 describe('regexMatchValidation', () => { xtest('Then ', () => {}); });
 describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
 describe('noMiddleBlankValidation', () => { xtest('Then ', () => {}); });
-describe('kebabCaseValidation', () => { xtest('Then ', () => {}); });
+describe('kebabCaseValidation', () => {
+    // Notes: kebabCaseValidation reuse the regex from case-helper. This regex is fully tested
+    //        in the case-helper.test context, so there is no need to go through all the regex
+    //        test cases for 'kebabCaseValidation'.
+    let result: Promise<boolean | string> | undefined;
+    describe('Given a valid kebab-case input', () => {
+        const input = 'kebab-case';
+        describe('When I call "kebabCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = kebabCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the value "true" is contained inside this promise', async () => {
+                expect(await result).toStrictEqual(true);
+            });
+        });
+    });
+    describe('Given a non valid kebab-case input', () => {
+        const input = 'notKebabCase';
+        describe('When I call "kebabCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = kebabCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the promise contains the appropriate message', async () => {
+                expect(await result).toStrictEqual('"notKebabCase" is not a valid kebab-case. Only kebab-case inputs are expected.');
+            });
+        });
+    });
+    describe('Given an undefined input', () => {
+        const input = undefined;
+        describe('When I call "kebabCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = kebabCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the promise contains the appropriate message', async () => {
+                expect(await result).toStrictEqual('undefined is not a valid input. Only kebab-case inputs are expected.');
+            });
+        });
+    });
+});
 describe('screamingKebabCaseValidation', () => {
     // Notes: screamingKebabCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
