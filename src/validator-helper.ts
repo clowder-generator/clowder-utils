@@ -1,6 +1,6 @@
 import {
     camelCaseRegex,
-    pascalCaseRegex, screamingSnakeCaseRegex
+    pascalCaseRegex, screamingSnakeCaseRegex, snakeCaseRegex
 } from './case-helper';
 
 type validationFunction = (input: string | undefined) => Promise<boolean | string>;
@@ -13,6 +13,18 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
 };
 
 export const snakeCaseValidation = async (input: string | undefined): Promise<true | string> => {
+    const notSnakeCaseMessage = 'is not a valid snake_case.';
+    const notAValidInputMessage = 'is not a valid input.';
+    const commonErrorMessage = 'Only snake_case inputs are expected.';
+
+    if (input === undefined) {
+        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
+    }
+
+    if (!snakeCaseRegex.test(input)) {
+        return `"${input}" ${notSnakeCaseMessage} ${commonErrorMessage}`;
+    }
+
     return true;
 };
 
