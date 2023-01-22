@@ -1,10 +1,28 @@
- type validationFunction = (input: string | undefined) => Promise<boolean | string>;
+import { pascalCaseRegex } from './case-helper';
+
+type validationFunction = (input: string | undefined) => Promise<boolean | string>;
 interface ValidationOption {
     trimmed: boolean;
 }
 
 export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func: validationFunction[]): validationFunction => {
     return async (_: string | undefined): Promise<boolean> => false;
+};
+
+export const pascalCaseValidation = async (input: string | undefined): Promise<true | string> => {
+    const notPascalCaseMessage = 'is not a valid PascalCase.';
+    const notAValidInputMessage = 'is not a valid input.';
+    const commonErrorMessage = 'Only PascalCase inputs are expected.';
+
+    if (input === undefined) {
+        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
+    }
+
+    if (!pascalCaseRegex.test(input)) {
+        return `"${input}" ${notPascalCaseMessage} ${commonErrorMessage}`;
+    }
+
+    return true;
 };
 
 export const integerValidation = async (input: string | undefined): Promise<true | string> => {

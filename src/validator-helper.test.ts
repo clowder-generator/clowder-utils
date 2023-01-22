@@ -1,16 +1,16 @@
 import {
     integerValidation,
     naturalNumberValidation,
-    numberValidation
+    numberValidation, pascalCaseValidation
 } from './validator-helper';
 
 describe('validateWith', () => { xtest('Then ', () => {}); });
 describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
 describe('noUndefined', () => { xtest('Then ', () => {}); });
 describe('doNotStartWithNumberValidation', () => { xtest('Then', () => {}); });
-describe('noTrailingWhitSpaceValidation', () => { xtest('Then', () => {}); });
-describe('noLeadingWhitSpaceValidation', () => { xtest('Then', () => {}); });
-describe('noInnerWhitSpaceValidation', () => { xtest('Then', () => {}); });
+describe('noTrailingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
+describe('noLeadingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
+describe('noInnerWhiteSpaceValidation', () => { xtest('Then', () => {}); });
 
 // assertRegexMatch  and regexShouldNotMatchValidation will be another higher order function that will return a validationFunction based on the provided regex
 // both of them should have a regex in input and an optional error message as well (if not, default to say that 'input' does or not match the regex
@@ -22,7 +22,52 @@ describe('screamingKebabCaseValidation', () => { xtest('Then ', () => {}); });
 describe('snakeCaseValidation', () => { xtest('Then ', () => {}); });
 describe('screamingSnakeCaseValidation', () => { xtest('Then ', () => {}); });
 describe('camelCaseValidation', () => { xtest('Then ', () => {}); });
-describe('pascalCaseValidation', () => { xtest('Then ', () => {}); });
+describe('pascalCaseValidation', () => {
+    let result: Promise<boolean | string> | undefined;
+    describe('Given a valid pascalCase input', () => {
+        const input = 'PascalCase';
+        describe('When I call "pascalCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = pascalCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the value "true" is contained inside this promise', async () => {
+                expect(await result).toStrictEqual(true);
+            });
+        });
+    });
+    describe('Given a non valid pascalCase input', () => {
+        const input = 'not-pascal-case';
+        describe('When I call "pascalCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = pascalCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the promise contains the appropriate message', async () => {
+                expect(await result).toStrictEqual('"not-pascal-case" is not a valid PascalCase. Only PascalCase inputs are expected.');
+            });
+        });
+    });
+    describe('Given an undefined input', () => {
+        const input = undefined;
+        describe('When I call "pascalCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = pascalCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the promise contains the appropriate message', async () => {
+                expect(await result).toStrictEqual('undefined is not a valid input. Only PascalCase inputs are expected.');
+            });
+        });
+    });
+});
+
 describe('integerValidation', () => {
     describe.each([
         ['1', true],
