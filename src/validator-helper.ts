@@ -1,6 +1,6 @@
 import {
     camelCaseRegex,
-    pascalCaseRegex, screamingSnakeCaseRegex, snakeCaseRegex
+    pascalCaseRegex, screamingKebabCaseRegex, screamingSnakeCaseRegex, snakeCaseRegex
 } from './case-helper';
 
 type validationFunction = (input: string | undefined) => Promise<boolean | string>;
@@ -10,6 +10,22 @@ interface ValidationOption {
 
 export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func: validationFunction[]): validationFunction => {
     return async (_: string | undefined): Promise<boolean> => false;
+};
+
+export const screamingKebabCaseValidation = async (input: string | undefined): Promise<true | string> => {
+    const notScreamingKebabCaseMessage = 'is not a valid SCREAMING-KEBAB-CASE.';
+    const notAValidInputMessage = 'is not a valid input.';
+    const commonErrorMessage = 'Only SCREAMING-KEBAB-CASE inputs are expected.';
+
+    if (input === undefined) {
+        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
+    }
+
+    if (!screamingKebabCaseRegex.test(input)) {
+        return `"${input}" ${notScreamingKebabCaseMessage} ${commonErrorMessage}`;
+    }
+
+    return true;
 };
 
 export const snakeCaseValidation = async (input: string | undefined): Promise<true | string> => {
