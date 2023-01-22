@@ -6,9 +6,16 @@ import {
 
 describe('validateWith', () => { xtest('Then ', () => {}); });
 describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
+describe('noUndefined', () => { xtest('Then ', () => {}); });
+describe('doNotStartWithNumberValidation', () => { xtest('Then', () => {}); });
+describe('noTrailingWhitSpaceValidation', () => { xtest('Then', () => {}); });
+describe('noLeadingWhitSpaceValidation', () => { xtest('Then', () => {}); });
+describe('noInnerWhitSpaceValidation', () => { xtest('Then', () => {}); });
 
-// assertRegexMatch will be another higher order function that will return a validationFunction based on the provided regex
+// assertRegexMatch  and regexShouldNotMatchValidation will be another higher order function that will return a validationFunction based on the provided regex
+// both of them should have a regex in input and an optional error message as well (if not, default to say that 'input' does or not match the regex
 describe('regexMatchValidation', () => { xtest('Then ', () => {}); });
+describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
 describe('noMiddleBlankValidation', () => { xtest('Then ', () => {}); });
 describe('kebabCaseValidation', () => { xtest('Then ', () => {}); });
 describe('screamingKebabCaseValidation', () => { xtest('Then ', () => {}); });
