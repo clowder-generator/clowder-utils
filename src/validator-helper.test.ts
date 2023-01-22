@@ -1,4 +1,5 @@
 import {
+    camelCaseValidation,
     integerValidation,
     naturalNumberValidation,
     numberValidation, pascalCaseValidation
@@ -21,8 +22,58 @@ describe('kebabCaseValidation', () => { xtest('Then ', () => {}); });
 describe('screamingKebabCaseValidation', () => { xtest('Then ', () => {}); });
 describe('snakeCaseValidation', () => { xtest('Then ', () => {}); });
 describe('screamingSnakeCaseValidation', () => { xtest('Then ', () => {}); });
-describe('camelCaseValidation', () => { xtest('Then ', () => {}); });
+describe('camelCaseValidation', () => {
+    // Notes: camelCaseValidation reuse the regex from case-helper. This regex is fully tested
+    //        in the case-helper.test context, so there is no need to go through all the regex
+    //        test cases for 'camelCaseValidation'.
+    let result: Promise<boolean | string> | undefined;
+    describe('Given a valid camelCase input', () => {
+        const input = 'camelCase';
+        describe('When I call "camelCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = camelCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the value "true" is contained inside this promise', async () => {
+                expect(await result).toStrictEqual(true);
+            });
+        });
+    });
+    describe('Given a non valid camelCase input', () => {
+        const input = 'not-camel-case';
+        describe('When I call "camelCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = camelCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the promise contains the appropriate message', async () => {
+                expect(await result).toStrictEqual('"not-camel-case" is not a valid camelCase. Only camelCase inputs are expected.');
+            });
+        });
+    });
+    describe('Given an undefined input', () => {
+        const input = undefined;
+        describe('When I call "camelCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = camelCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the promise contains the appropriate message', async () => {
+                expect(await result).toStrictEqual('undefined is not a valid input. Only camelCase inputs are expected.');
+            });
+        });
+    });
+});
 describe('pascalCaseValidation', () => {
+    // Notes: pascalCaseValidation reuse the regex from case-helper. This regex is fully tested
+    //        in the case-helper.test context, so there is no need to go through all the regex
+    //        test cases for 'pascalCaseValidation'.
     let result: Promise<boolean | string> | undefined;
     describe('Given a valid pascalCase input', () => {
         const input = 'PascalCase';

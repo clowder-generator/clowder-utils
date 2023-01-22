@@ -1,4 +1,7 @@
-import { pascalCaseRegex } from './case-helper';
+import {
+    camelCaseRegex,
+    pascalCaseRegex
+} from './case-helper';
 
 type validationFunction = (input: string | undefined) => Promise<boolean | string>;
 interface ValidationOption {
@@ -7,6 +10,22 @@ interface ValidationOption {
 
 export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func: validationFunction[]): validationFunction => {
     return async (_: string | undefined): Promise<boolean> => false;
+};
+
+export const camelCaseValidation = async (input: string | undefined): Promise<true | string> => {
+    const notCamelCaseMessage = 'is not a valid camelCase.';
+    const notAValidInputMessage = 'is not a valid input.';
+    const commonErrorMessage = 'Only camelCase inputs are expected.';
+
+    if (input === undefined) {
+        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
+    }
+
+    if (!camelCaseRegex.test(input)) {
+        return `"${input}" ${notCamelCaseMessage} ${commonErrorMessage}`;
+    }
+
+    return true;
 };
 
 export const pascalCaseValidation = async (input: string | undefined): Promise<true | string> => {
