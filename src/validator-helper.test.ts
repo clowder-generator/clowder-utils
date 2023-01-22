@@ -2,7 +2,7 @@ import {
     camelCaseValidation,
     integerValidation,
     naturalNumberValidation,
-    numberValidation, pascalCaseValidation
+    numberValidation, pascalCaseValidation, screamingSnakeCaseValidation
 } from './validator-helper';
 
 describe('validateWith', () => { xtest('Then ', () => {}); });
@@ -21,7 +21,54 @@ describe('noMiddleBlankValidation', () => { xtest('Then ', () => {}); });
 describe('kebabCaseValidation', () => { xtest('Then ', () => {}); });
 describe('screamingKebabCaseValidation', () => { xtest('Then ', () => {}); });
 describe('snakeCaseValidation', () => { xtest('Then ', () => {}); });
-describe('screamingSnakeCaseValidation', () => { xtest('Then ', () => {}); });
+describe('screamingSnakeCaseValidation', () => {
+    // Notes: screamingSnakeCaseValidation reuse the regex from case-helper. This regex is fully tested
+    //        in the case-helper.test context, so there is no need to go through all the regex
+    //        test cases for 'screamingSnakeCaseValidation'.
+    let result: Promise<boolean | string> | undefined;
+    describe('Given a valid SCREAMING_SNAKE_CASE input', () => {
+        const input = 'SCREAMING_SNAKE_CASE';
+        describe('When I call "screamingSnakeCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = screamingSnakeCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the value "true" is contained inside this promise', async () => {
+                expect(await result).toStrictEqual(true);
+            });
+        });
+    });
+    describe('Given a non valid SCREAMING_SNAKE_CASE input', () => {
+        const input = 'not_screaming_snake_case';
+        describe('When I call "screamingSnakeCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = screamingSnakeCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the promise contains the appropriate message', async () => {
+                expect(await result).toStrictEqual('"not_screaming_snake_case" is not a valid SCREAMING_SNAKE_CASE. Only SCREAMING_SNAKE_CASE inputs are expected.');
+            });
+        });
+    });
+    describe('Given an undefined input', () => {
+        const input = undefined;
+        describe('When I call "screamingSnakeCaseValidation" on this input', () => {
+            beforeEach(() => {
+                result = screamingSnakeCaseValidation(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the promise contains the appropriate message', async () => {
+                expect(await result).toStrictEqual('undefined is not a valid input. Only SCREAMING_SNAKE_CASE inputs are expected.');
+            });
+        });
+    });
+});
 describe('camelCaseValidation', () => {
     // Notes: camelCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
@@ -75,7 +122,7 @@ describe('pascalCaseValidation', () => {
     //        in the case-helper.test context, so there is no need to go through all the regex
     //        test cases for 'pascalCaseValidation'.
     let result: Promise<boolean | string> | undefined;
-    describe('Given a valid pascalCase input', () => {
+    describe('Given a valid PascalCase input', () => {
         const input = 'PascalCase';
         describe('When I call "pascalCaseValidation" on this input', () => {
             beforeEach(() => {
@@ -89,7 +136,7 @@ describe('pascalCaseValidation', () => {
             });
         });
     });
-    describe('Given a non valid pascalCase input', () => {
+    describe('Given a non valid PascalCase input', () => {
         const input = 'not-pascal-case';
         describe('When I call "pascalCaseValidation" on this input', () => {
             beforeEach(() => {

@@ -12,6 +12,10 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
     return async (_: string | undefined): Promise<boolean> => false;
 };
 
+export const screamingSnakeCaseValidation = async (input: string | undefined): Promise<true | string> => {
+    return true;
+};
+
 export const camelCaseValidation = async (input: string | undefined): Promise<true | string> => {
     const notCamelCaseMessage = 'is not a valid camelCase.';
     const notAValidInputMessage = 'is not a valid input.';
