@@ -1,5 +1,5 @@
 import {
-    camelCaseRegex,
+    camelCaseRegex, kebabCaseRegex,
     pascalCaseRegex, screamingKebabCaseRegex, screamingSnakeCaseRegex, snakeCaseRegex
 } from './case-helper';
 
@@ -13,6 +13,18 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
 };
 
 export const kebabCaseValidation = async (input: string | undefined): Promise<true | string> => {
+    const notKebabCaseMessage = 'is not a valid kebab-case.';
+    const notAValidInputMessage = 'is not a valid input.';
+    const commonErrorMessage = 'Only kebab-case inputs are expected.';
+
+    if (input === undefined) {
+        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
+    }
+
+    if (!kebabCaseRegex.test(input)) {
+        return `"${input}" ${notKebabCaseMessage} ${commonErrorMessage}`;
+    }
+
     return true;
 };
 
