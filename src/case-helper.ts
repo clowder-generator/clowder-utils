@@ -9,6 +9,16 @@ import { isBlank } from './string-helper';
  * - screaming snake case
  * - screaming kebab case
  */
+export const snakeCaseRegex = /^[a-z0-9]+(_[a-z0-9]+)*$/;
+export const screamingSnakeCaseRegex = /^[A-Z0-9]+(_[A-Z0-9]+)*$/;
+export const kebabCaseRegex = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+export const screamingKebabCaseRegex = /^[A-Z0-9]+(-[A-Z0-9]+)*$/;
+// TODO: there is a potential issue with the camelCase and pascalCase regex.
+//       with them, ...Hi345hello234test are valid cases while it could be argued that
+//       it should be ...Hi345Hello234Test
+export const camelCaseRegex = /^[a-z0-9]+([A-Z0-9][a-z0-9]*)*$/;
+export const pascalCaseRegex = /^([A-Z0-9][a-z0-9]*)*$/;
+
 export class CaseConversionError extends Error {
     constructor(msg: string) {
         super(msg);
@@ -78,7 +88,7 @@ export class Case {
 export const fromSnakeCase = (str: string): Case => {
     assertValidForConversion(str);
 
-    if (!/^[a-z0-9]+(_[a-z0-9]+)*$/.test(str)) {
+    if (!snakeCaseRegex.test(str)) {
         throw new CaseConversionError(`the string "${str}" does not match snakeCase pattern`);
     }
 
@@ -90,7 +100,7 @@ export const fromSnakeCase = (str: string): Case => {
 export const fromKebabCase = (str: string): Case => {
     assertValidForConversion(str);
 
-    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(str)) {
+    if (!kebabCaseRegex.test(str)) {
         throw new CaseConversionError(`the string "${str}" does not match kebabCase pattern`);
     }
     return new Case(
@@ -101,7 +111,7 @@ export const fromKebabCase = (str: string): Case => {
 export const fromCamelCase = (str: string): Case => {
     assertValidForConversion(str);
 
-    if (!/^[a-z0-9]+([A-Z0-9][a-z0-9]*)*$/.test(str)) {
+    if (!camelCaseRegex.test(str)) {
         throw new CaseConversionError(`the string "${str}" does not match camelCase pattern`);
     }
     return new Case(splitWordOnUpperCaseChar(str));
@@ -110,7 +120,7 @@ export const fromCamelCase = (str: string): Case => {
 export const fromPascalCase = (str: string): Case => {
     assertValidForConversion(str);
 
-    if (!/^([A-Z0-9][a-z0-9]*)*$/.test(str)) {
+    if (!pascalCaseRegex.test(str)) {
         throw new CaseConversionError(`the string "${str}" does not match pascalCase pattern`);
     }
 
@@ -120,7 +130,7 @@ export const fromPascalCase = (str: string): Case => {
 export const fromScreamingSnakeCase = (str: string): Case => {
     assertValidForConversion(str);
 
-    if (!/^[A-Z0-9]+(_[A-Z0-9]+)*$/.test(str)) {
+    if (!screamingSnakeCaseRegex.test(str)) {
         throw new CaseConversionError(`the string "${str}" does not match screamingSnakeCase pattern`);
     }
 
@@ -133,7 +143,7 @@ export const fromScreamingSnakeCase = (str: string): Case => {
 export const fromScreamingKebabCase = (str: string): Case => {
     assertValidForConversion(str);
 
-    if (!/^[A-Z0-9]+(-[A-Z0-9]+)*$/.test(str)) {
+    if (!screamingKebabCaseRegex.test(str)) {
         throw new CaseConversionError(`the string "${str}" does not match screamingKebabCase pattern`);
     }
 
