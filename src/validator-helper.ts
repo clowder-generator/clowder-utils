@@ -12,6 +12,10 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
     return async (_: string | undefined): Promise<boolean> => false;
 };
 
+export const noMiddleBlankValidation = async (input: string | undefined): Promise<true | string> => {
+    return true;
+};
+
 export const kebabCaseValidation = async (input: string | undefined): Promise<true | string> => {
     const notKebabCaseMessage = 'is not a valid kebab-case.';
     const notAValidInputMessage = 'is not a valid input.';

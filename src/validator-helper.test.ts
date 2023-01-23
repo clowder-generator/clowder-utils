@@ -1,7 +1,7 @@
 import {
     camelCaseValidation,
     integerValidation, kebabCaseValidation,
-    naturalNumberValidation,
+    naturalNumberValidation, noMiddleBlankValidation,
     numberValidation,
     pascalCaseValidation,
     screamingKebabCaseValidation,
@@ -21,7 +21,27 @@ describe('noInnerWhiteSpaceValidation', () => { xtest('Then', () => {}); });
 // both of them should have a regex in input and an optional error message as well (if not, default to say that 'input' does or not match the regex
 describe('regexMatchValidation', () => { xtest('Then ', () => {}); });
 describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
-describe('noMiddleBlankValidation', () => { xtest('Then ', () => {}); });
+describe('noMiddleBlankValidation', () => {
+    describe.each([
+        ['noMiddleBlank', true],
+        [' blankAtStartButNotInMiddle', true],
+        ['blankAtEndButNotInMiddle\n', true],
+        [undefined, 'undefined is not a valid input. Only word with no blank in the middle are expected.'],
+        ['with oneMiddleBlank', '"with one middleBlank" contains a blank char in the middle. A valid input should not have blank in the middle.'],
+        ['with more\tthan one\nmiddle blank', '"with more\tthan one\nmiddle blank" contains a blank char in the middle. A valid input should not have blank in the middle.']
+    ])('Given ...', (input: string | undefined, expectedResult: boolean | string) => {
+        let result: Promise<boolean | string> | undefined;
+        beforeEach(() => {
+            result = noMiddleBlankValidation(input);
+        });
+        test('Then a promise is return', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expectedResult);
+        });
+    });
+});
 describe('kebabCaseValidation', () => {
     // Notes: kebabCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
