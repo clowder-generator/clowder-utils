@@ -3,7 +3,7 @@ import {
     integerValidation,
     kebabCaseValidation,
     naturalNumberValidation,
-    noInnerWhiteSpaceValidation,
+    noInnerWhiteSpaceValidation, noLeadingWhiteSpaceValidation,
     numberValidation,
     pascalCaseValidation,
     screamingKebabCaseValidation,
@@ -21,7 +21,28 @@ describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
 describe('noUndefined', () => { xtest('Then ', () => {}); });
 describe('doNotStartWithNumberValidation', () => { xtest('Then', () => {}); });
 describe('noTrailingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
-describe('noLeadingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
+describe('noLeadingWhiteSpaceValidation', () => {
+    describe.each([
+        ['noLeadingWhiteSpace', true],
+        ['trailingButNoLeading ', true],
+        ['space\nin\tbetween but not leading', true],
+        [undefined, 'undefined is not a valid input. Only word with no inner white space are expected.'],
+        [' withOneLeading', '" withOneLeading" contains a leading blank char. A valid input should not have leading white space.'],
+        ['\twithOneWeirdLeading', '"\twithOneWeirdLeading" contains a leading blank char. A valid input should not have leading white space.'],
+        [' \t withMoreThanOneLeading', '" \t withMoreThanOneLeading" contains a leading blank char. A valid input should not have leading white space.']
+    ])('When I call "noLeadingWhiteSpaceValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+        let result: Promise<boolean | string> | undefined;
+        beforeEach(() => {
+            result = noLeadingWhiteSpaceValidation(input);
+        });
+        test('Then a promise is return', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expectedResult);
+        });
+    });
+});
 
 describe('noInnerWhiteSpaceValidation', () => {
     describe.each([
