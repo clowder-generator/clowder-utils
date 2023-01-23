@@ -1,7 +1,9 @@
 import {
     camelCaseValidation,
-    integerValidation, kebabCaseValidation,
-    naturalNumberValidation, noMiddleBlankValidation,
+    integerValidation,
+    kebabCaseValidation,
+    naturalNumberValidation,
+    noInnerWhiteSpaceValidation,
     numberValidation,
     pascalCaseValidation,
     screamingKebabCaseValidation,
@@ -10,30 +12,30 @@ import {
 } from './validator-helper';
 
 describe('validateWith', () => { xtest('Then ', () => {}); });
-describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
-describe('noUndefined', () => { xtest('Then ', () => {}); });
-describe('doNotStartWithNumberValidation', () => { xtest('Then', () => {}); });
-describe('noTrailingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
-describe('noLeadingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
-describe('noInnerWhiteSpaceValidation', () => { xtest('Then', () => {}); });
 
 // assertRegexMatch  and regexShouldNotMatchValidation will be another higher order function that will return a validationFunction based on the provided regex
 // both of them should have a regex in input and an optional error message as well (if not, default to say that 'input' does or not match the regex
 describe('regexMatchValidation', () => { xtest('Then ', () => {}); });
 describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
-describe('noMiddleBlankValidation', () => {
+describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
+describe('noUndefined', () => { xtest('Then ', () => {}); });
+describe('doNotStartWithNumberValidation', () => { xtest('Then', () => {}); });
+describe('noTrailingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
+describe('noLeadingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
+
+describe('noInnerWhiteSpaceValidation', () => {
     describe.each([
         ['noMiddleBlank', true],
         [' blankAtStartButNotInMiddle', true],
         ['blankAtEndButNotInMiddle\n', true],
-        [undefined, 'undefined is not a valid input. Only word with no blank in the middle are expected.'],
-        ['with oneMiddleBlank\n', '"with oneMiddleBlank\n" contains a blank char in the middle. A valid input should not have blank in the middle.'],
-        ['with oneMiddleBlank', '"with oneMiddleBlank" contains a blank char in the middle. A valid input should not have blank in the middle.'],
-        ['with more\tthan one\nmiddle blank', '"with more\tthan one\nmiddle blank" contains a blank char in the middle. A valid input should not have blank in the middle.']
-    ])('When I call "noMiddleBlankValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+        [undefined, 'undefined is not a valid input. Only word with no inner white space are expected.'],
+        ['with oneMiddleBlank\n', '"with oneMiddleBlank\n" contains a blank char in the middle. A valid input should not have inner white space.'],
+        ['with oneMiddleBlank', '"with oneMiddleBlank" contains a blank char in the middle. A valid input should not have inner white space.'],
+        ['with more\tthan one\nmiddle blank', '"with more\tthan one\nmiddle blank" contains a blank char in the middle. A valid input should not have inner white space.']
+    ])('When I call "noInnerWhiteSpaceValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
-            result = noMiddleBlankValidation(input);
+            result = noInnerWhiteSpaceValidation(input);
         });
         test('Then a promise is return', () => {
             expect(result).toBeInstanceOf(Promise);
@@ -43,6 +45,7 @@ describe('noMiddleBlankValidation', () => {
         });
     });
 });
+
 describe('kebabCaseValidation', () => {
     // Notes: kebabCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
@@ -91,6 +94,7 @@ describe('kebabCaseValidation', () => {
         });
     });
 });
+
 describe('screamingKebabCaseValidation', () => {
     // Notes: screamingKebabCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
@@ -139,6 +143,7 @@ describe('screamingKebabCaseValidation', () => {
         });
     });
 });
+
 describe('snakeCaseValidation', () => {
     // Notes: snakeCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
@@ -187,6 +192,7 @@ describe('snakeCaseValidation', () => {
         });
     });
 });
+
 describe('screamingSnakeCaseValidation', () => {
     // Notes: screamingSnakeCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
@@ -235,6 +241,7 @@ describe('screamingSnakeCaseValidation', () => {
         });
     });
 });
+
 describe('camelCaseValidation', () => {
     // Notes: camelCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
@@ -283,6 +290,7 @@ describe('camelCaseValidation', () => {
         });
     });
 });
+
 describe('pascalCaseValidation', () => {
     // Notes: pascalCaseValidation reuse the regex from case-helper. This regex is fully tested
     //        in the case-helper.test context, so there is no need to go through all the regex
@@ -373,6 +381,7 @@ describe('integerValidation', () => {
         });
     });
 });
+
 describe('naturalNumberValidation', () => {
     describe.each([
         ['1', true],

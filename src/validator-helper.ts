@@ -12,13 +12,13 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
     return async (_: string | undefined): Promise<boolean> => false;
 };
 
-export const noMiddleBlankValidation = async (input: string | undefined): Promise<true | string> => {
+export const noInnerWhiteSpaceValidation = async (input: string | undefined): Promise<true | string> => {
     if (input === undefined) {
-        return 'undefined is not a valid input. Only word with no blank in the middle are expected.';
+        return 'undefined is not a valid input. Only word with no inner white space are expected.';
     }
 
     if (/.*\S+\s+\S+.*/.test(input)) {
-        return `"${input}" contains a blank char in the middle. A valid input should not have blank in the middle.`;
+        return `"${input}" contains a blank char in the middle. A valid input should not have inner white space.`;
     }
 
     return true;
