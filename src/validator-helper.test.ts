@@ -27,9 +27,10 @@ describe('noMiddleBlankValidation', () => {
         [' blankAtStartButNotInMiddle', true],
         ['blankAtEndButNotInMiddle\n', true],
         [undefined, 'undefined is not a valid input. Only word with no blank in the middle are expected.'],
-        ['with oneMiddleBlank', '"with one middleBlank" contains a blank char in the middle. A valid input should not have blank in the middle.'],
+        ['with oneMiddleBlank\n', '"with oneMiddleBlank\n" contains a blank char in the middle. A valid input should not have blank in the middle.'],
+        ['with oneMiddleBlank', '"with oneMiddleBlank" contains a blank char in the middle. A valid input should not have blank in the middle.'],
         ['with more\tthan one\nmiddle blank', '"with more\tthan one\nmiddle blank" contains a blank char in the middle. A valid input should not have blank in the middle.']
-    ])('Given ...', (input: string | undefined, expectedResult: boolean | string) => {
+    ])('When I call "noMiddleBlankValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = noMiddleBlankValidation(input);

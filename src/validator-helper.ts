@@ -13,6 +13,14 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
 };
 
 export const noMiddleBlankValidation = async (input: string | undefined): Promise<true | string> => {
+    if (input === undefined) {
+        return 'undefined is not a valid input. Only word with no blank in the middle are expected.';
+    }
+
+    if (/.*\S+\s+\S+.*/.test(input)) {
+        return `"${input}" contains a blank char in the middle. A valid input should not have blank in the middle.`;
+    }
+
     return true;
 };
 
