@@ -1,5 +1,5 @@
 import {
-    camelCaseValidation,
+    camelCaseValidation, doNotStartWithNumberValidation,
     integerValidation,
     kebabCaseValidation,
     naturalNumberValidation,
@@ -19,7 +19,28 @@ describe('regexMatchValidation', () => { xtest('Then ', () => {}); });
 describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
 describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
 describe('noUndefined', () => { xtest('Then ', () => {}); });
-describe('doNotStartWithNumberValidation', () => { xtest('Then', () => {}); });
+describe('doNotStartWithNumberValidation', () => {
+    describe.each([
+        ['noNumber', true],
+        ['numberAtTheEnd123', true],
+        ['number1In2The3Middle', true],
+        [' 123leadingWhiteSpaceBeforeNumber', true],
+        [undefined, 'undefined is not a valid input. Only word with no leading number are expected.'],
+        ['123leadingNumber', '"123leadingNumber" starts with a number. Only word with no leading number are expected.']
+    ])('When I call "doNotStartWithNumberValidation" on the input "%s"', (input: string | undefined, expected: boolean | string) => {
+        let result: Promise<boolean | string> | undefined;
+        beforeEach(() => {
+            result = doNotStartWithNumberValidation(input);
+        });
+        test('Then a promise is returned', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expected);
+        });
+    });
+});
+
 describe('noTrailingWhiteSpaceValidation', () => {
     describe.each([
         ['noTrailingWhiteSpace', true],
@@ -42,6 +63,7 @@ describe('noTrailingWhiteSpaceValidation', () => {
         });
     });
 });
+
 describe('noLeadingWhiteSpaceValidation', () => {
     describe.each([
         ['noLeadingWhiteSpace', true],

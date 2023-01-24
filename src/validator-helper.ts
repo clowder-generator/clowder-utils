@@ -12,6 +12,18 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
     return async (_: string | undefined): Promise<boolean> => false;
 };
 
+export const doNotStartWithNumberValidation = async (input: string | undefined): Promise<true | string> => {
+    if (input === undefined) {
+        return 'undefined is not a valid input. Only word with no leading number are expected.';
+    }
+
+    if (/^\d+.*$/.test(input)) {
+        return `"${input}" starts with a number. Only word with no leading number are expected.`;
+    }
+
+    return true;
+};
+
 export const noTrailingWhiteSpaceValidation = async (input: string | undefined): Promise<true | string> => {
     if (input === undefined) {
         return 'undefined is not a valid input. Only word with no trailing white space are expected.';
