@@ -3,7 +3,7 @@ import {
     integerValidation,
     kebabCaseValidation,
     naturalNumberValidation,
-    noInnerWhiteSpaceValidation, noLeadingWhiteSpaceValidation,
+    noInnerWhiteSpaceValidation, noLeadingWhiteSpaceValidation, noTrailingWhiteSpaceValidation,
     numberValidation,
     pascalCaseValidation,
     screamingKebabCaseValidation,
@@ -20,13 +20,34 @@ describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
 describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
 describe('noUndefined', () => { xtest('Then ', () => {}); });
 describe('doNotStartWithNumberValidation', () => { xtest('Then', () => {}); });
-describe('noTrailingWhiteSpaceValidation', () => { xtest('Then', () => {}); });
+describe('noTrailingWhiteSpaceValidation', () => {
+    describe.each([
+        ['noTrailingWhiteSpace', true],
+        [' leadingButNoTrailing', true],
+        ['space\nin\tbetween but not trailing', true],
+        [undefined, 'undefined is not a valid input. Only word with no trailing white space are expected.'],
+        ['withOneTrailing ', '"withOneTrailing " contains a trailing blank char. A valid input should not have trailing white space.'],
+        ['withOneWeirdTrailing\n', '"withOneWeirdTrailing\n" contains a trailing blank char. A valid input should not have trailing white space.'],
+        ['withMoreThanOneTrailing \t', '"withMoreThanOneTrailing \t" contains a trailing blank char. A valid input should not have trailing white space.']
+    ])('When I call "noTrailingWhiteSpaceValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+        let result: Promise<boolean | string> | undefined;
+        beforeEach(() => {
+            result = noTrailingWhiteSpaceValidation(input);
+        });
+        test('Then a promise is return', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expectedResult);
+        });
+    });
+});
 describe('noLeadingWhiteSpaceValidation', () => {
     describe.each([
         ['noLeadingWhiteSpace', true],
         ['trailingButNoLeading ', true],
         ['space\nin\tbetween but not leading', true],
-        [undefined, 'undefined is not a valid input. Only word with no inner white space are expected.'],
+        [undefined, 'undefined is not a valid input. Only word with no leading white space are expected.'],
         [' withOneLeading', '" withOneLeading" contains a leading blank char. A valid input should not have leading white space.'],
         ['\twithOneWeirdLeading', '"\twithOneWeirdLeading" contains a leading blank char. A valid input should not have leading white space.'],
         [' \t withMoreThanOneLeading', '" \t withMoreThanOneLeading" contains a leading blank char. A valid input should not have leading white space.']

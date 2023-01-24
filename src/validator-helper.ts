@@ -12,9 +12,21 @@ export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func:
     return async (_: string | undefined): Promise<boolean> => false;
 };
 
+export const noTrailingWhiteSpaceValidation = async (input: string | undefined): Promise<true | string> => {
+    if (input === undefined) {
+        return 'undefined is not a valid input. Only word with no trailing white space are expected.';
+    }
+
+    if (/^.*\s+$/.test(input)) {
+        return `"${input}" contains a trailing blank char. A valid input should not have trailing white space.`;
+    }
+
+    return true;
+};
+
 export const noLeadingWhiteSpaceValidation = async (input: string | undefined): Promise<true | string> => {
     if (input === undefined) {
-        return 'undefined is not a valid input. Only word with no inner white space are expected.';
+        return 'undefined is not a valid input. Only word with no leading white space are expected.';
     }
 
     if (/^\s+.*$/.test(input)) {
