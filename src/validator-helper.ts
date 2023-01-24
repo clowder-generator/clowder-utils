@@ -8,6 +8,13 @@ interface ValidationOption {
     trimmed: boolean;
 }
 
+export const noUndefinedValidation = async (input: string | undefined): Promise<true | string> => {
+    if (input === undefined) {
+        return 'undefine is not a valid input.';
+    }
+    return true;
+};
+
 export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func: validationFunction[]): validationFunction => {
     return async (_: string | undefined): Promise<boolean> => false;
 };

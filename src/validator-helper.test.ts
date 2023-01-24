@@ -3,7 +3,10 @@ import {
     integerValidation,
     kebabCaseValidation,
     naturalNumberValidation,
-    noInnerWhiteSpaceValidation, noLeadingWhiteSpaceValidation, noTrailingWhiteSpaceValidation,
+    noInnerWhiteSpaceValidation,
+    noLeadingWhiteSpaceValidation,
+    noTrailingWhiteSpaceValidation,
+    noUndefinedValidation,
     numberValidation,
     pascalCaseValidation,
     screamingKebabCaseValidation,
@@ -18,7 +21,27 @@ describe('validateWith', () => { xtest('Then ', () => {}); });
 describe('regexMatchValidation', () => { xtest('Then ', () => {}); });
 describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
 describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
-describe('noUndefined', () => { xtest('Then ', () => {}); });
+describe('noUndefinedValidation', () => {
+    describe.each([
+        [' ', true],
+        ['', true],
+        ['a', true],
+        ['1', true],
+        [undefined, 'undefine is not a valid input.']
+    ])('When I call "noUndefinedValidation" on the input "%s"', (input: string | undefined, expected: boolean | string) => {
+        let result: Promise<boolean | string> | undefined;
+        beforeEach(() => {
+            result = noUndefinedValidation(input);
+        });
+        test('Then a promise is returned', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expected);
+        });
+    });
+});
+
 describe('doNotStartWithNumberValidation', () => {
     describe.each([
         ['noNumber', true],
