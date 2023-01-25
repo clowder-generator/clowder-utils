@@ -45,6 +45,7 @@ describe('noUndefinedValidation', () => {
 describe('nonBlankValidation', () => {
     describe.each([
         ['notBlank', true],
+        ['not Blank but with spaces ', true],
         [undefined, 'undefined is not a valid input. Only word which are not blank are expected.'],
         ['', '"" is blank. Only word which are not blank are expected.'],
         [' ', '" " is blank. Only word which are not blank are expected.'],
