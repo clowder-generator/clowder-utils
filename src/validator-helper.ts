@@ -8,6 +8,10 @@ interface ValidationOption {
     trimmed: boolean;
 }
 
+export const validateWith = (message: string | undefined, funcs: validationFunction[], opt: ValidationOption = { trimmed: true }): validationFunction => {
+    return async (_: string | undefined): Promise<boolean> => false;
+};
+
 export const noUndefinedValidation = async (input: string | undefined): Promise<true | string> => {
     if (input === undefined) {
         return 'undefine is not a valid input.';
@@ -15,8 +19,16 @@ export const noUndefinedValidation = async (input: string | undefined): Promise<
     return true;
 };
 
-export const validateWith = (opt: ValidationOption = { trimmed: true }, ...func: validationFunction[]): validationFunction => {
-    return async (_: string | undefined): Promise<boolean> => false;
+export const nonBlankValidation = async (input: string | undefined): Promise<true | string> => {
+    if (input === undefined) {
+        return 'undefined is not a valid input. Only word which are not blank are expected.';
+    }
+
+    if (/^\s*$/.test(input)) {
+        return `"${input}" is blank. Only word which are not blank are expected.`;
+    }
+
+    return true;
 };
 
 export const doNotStartWithNumberValidation = async (input: string | undefined): Promise<true | string> => {

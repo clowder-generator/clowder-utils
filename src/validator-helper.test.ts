@@ -4,7 +4,7 @@ import {
     kebabCaseValidation,
     naturalNumberValidation,
     noInnerWhiteSpaceValidation,
-    noLeadingWhiteSpaceValidation,
+    noLeadingWhiteSpaceValidation, nonBlankValidation,
     noTrailingWhiteSpaceValidation,
     noUndefinedValidation,
     numberValidation,
@@ -20,7 +20,7 @@ describe('validateWith', () => { xtest('Then ', () => {}); });
 // both of them should have a regex in input and an optional error message as well (if not, default to say that 'input' does or not match the regex
 describe('regexMatchValidation', () => { xtest('Then ', () => {}); });
 describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
-describe('nonBlankValidation', () => { xtest('Then ', () => {}); });
+
 describe('noUndefinedValidation', () => {
     describe.each([
         [' ', true],
@@ -41,6 +41,32 @@ describe('noUndefinedValidation', () => {
         });
     });
 });
+
+describe('nonBlankValidation', () => {
+    describe.each([
+        ['notBlank', true],
+        [undefined, 'undefined is not a valid input. Only word which are not blank are expected.'],
+        ['', '"" is blank. Only word which are not blank are expected.'],
+        [' ', '" " is blank. Only word which are not blank are expected.'],
+        ['  ', '"  " is blank. Only word which are not blank are expected.'],
+        ['\t \n', '"\t \n" is blank. Only word which are not blank are expected.'],
+        ['\t', '"\t" is blank. Only word which are not blank are expected.'],
+        ['\n', '"\n" is blank. Only word which are not blank are expected.']
+    ])('When I call "nonBlankValidation"', (input: string | undefined, expected: boolean | string) => {
+        let result: Promise<boolean | string>;
+        beforeEach(() => {
+            result = nonBlankValidation(input);
+        });
+        test('Then a promise is returned', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expected);
+        });
+    });
+});
+
+describe('noWhiteSpaceValidation', () => {});
 
 describe('doNotStartWithNumberValidation', () => {
     describe.each([
