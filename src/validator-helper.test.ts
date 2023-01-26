@@ -28,7 +28,7 @@ describe('shouldNotMatchRegexValidation', () => {
                 ['-123', true],
                 ['', true],
                 ['0123', true],
-                [undefined, 'undefined is not a valid input to check the regex "^[1-9]\\d*$"'],
+                [undefined, 'undefined is not a valid input to check the regex /^[1-9]\\d*$/'],
                 ['1234', 'The input "1234" is a natural number. Please do not provide a natural number.']
             ])('When I test the resulting validation function with the input "%s"', (input: string | undefined, expected: boolean | string) => {
                 let result: Promise<boolean | string> | undefined;
@@ -48,8 +48,8 @@ describe('shouldNotMatchRegexValidation', () => {
                 ['-123', true],
                 ['', true],
                 ['0123', true],
-                [undefined, 'undefined is not a valid input to check the regex "^[1-9]\\d*$"'],
-                ['1234', 'The input "1234" should not match the regex "^[1-9]\\d*$"']
+                [undefined, 'undefined is not a valid input to check the regex /^[1-9]\\d*$/'],
+                ['1234', 'The input "1234" should not match the regex /^[1-9]\\d*$/']
             ])('When I test the resulting validation function with the input "%s"', (input: string | undefined, expected: boolean | string) => {
                 let result: Promise<boolean | string> | undefined;
                 beforeEach(() => {
