@@ -10,7 +10,7 @@ import {
     numberValidation,
     pascalCaseValidation,
     screamingKebabCaseValidation,
-    screamingSnakeCaseValidation,
+    screamingSnakeCaseValidation, shouldNotMatchRegexValidation,
     snakeCaseValidation
 } from './validator-helper';
 
@@ -19,7 +19,52 @@ describe('validateWith', () => { xtest('Then ', () => {}); });
 // assertRegexMatch  and regexShouldNotMatchValidation will be another higher order function that will return a validationFunction based on the provided regex
 // both of them should have a regex in input and an optional error message as well (if not, default to say that 'input' does or not match the regex
 describe('regexMatchValidation', () => { xtest('Then ', () => {}); });
-describe('regexShouldNotMatchValidation', () => { xtest('Then ', () => {}); });
+describe('shouldNotMatchRegexValidation', () => {
+    describe('Given a regex to match any valid natural number', () => {
+        const regex: RegExp = /^[1-9]\d*$/;
+        describe('and the a custom error message ', () => {
+            const errorMessage = 'The input "%s" is a natural number. Please do not provide a natural number.';
+            describe.each([
+                ['-123', true],
+                ['', true],
+                ['0123', true],
+                [undefined, 'undefined is not a valid input to check the regex "^[1-9]\\d*$"'],
+                ['1234', 'The input "1234" is a natural number. Please do not provide a natural number.']
+            ])('When I test the resulting validation function with the input "%s"', (input: string | undefined, expected: boolean | string) => {
+                let result: Promise<boolean | string> | undefined;
+                beforeEach(() => {
+                    result = shouldNotMatchRegexValidation(regex, errorMessage)(input);
+                });
+                test('Then a promise should be returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the correct value should be returned', async () => {
+                    expect(await result).toStrictEqual(expected);
+                });
+            });
+        });
+        describe('and no custom error message ', () => {
+            describe.each([
+                ['-123', true],
+                ['', true],
+                ['0123', true],
+                [undefined, 'undefined is not a valid input to check the regex "^[1-9]\\d*$"'],
+                ['1234', 'The input "1234" should not match the regex "^[1-9]\\d*$"']
+            ])('When I test the resulting validation function with the input "%s"', (input: string | undefined, expected: boolean | string) => {
+                let result: Promise<boolean | string> | undefined;
+                beforeEach(() => {
+                    result = shouldNotMatchRegexValidation(regex)(input);
+                });
+                test('Then a promise should be returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the correct value should be returned', async () => {
+                    expect(await result).toStrictEqual(expected);
+                });
+            });
+        });
+    });
+});
 
 describe('noUndefinedValidation', () => {
     describe.each([

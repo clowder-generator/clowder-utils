@@ -1,6 +1,10 @@
 import {
-    camelCaseRegex, kebabCaseRegex,
-    pascalCaseRegex, screamingKebabCaseRegex, screamingSnakeCaseRegex, snakeCaseRegex
+    camelCaseRegex,
+    kebabCaseRegex,
+    pascalCaseRegex,
+    screamingKebabCaseRegex,
+    screamingSnakeCaseRegex,
+    snakeCaseRegex
 } from './case-helper';
 
 type validationFunction = (input: string | undefined) => Promise<boolean | string>;
@@ -10,6 +14,12 @@ interface ValidationOption {
 
 export const validateWith = (message: string | undefined, funcs: validationFunction[], opt: ValidationOption = { trimmed: true }): validationFunction => {
     return async (_: string | undefined): Promise<boolean> => false;
+};
+
+export const shouldNotMatchRegexValidation = (regex: RegExp, errorMessageFormat?: string): validationFunction => {
+    return async (input: string | undefined): Promise<true | string> => {
+        return true;
+    };
 };
 
 export const noUndefinedValidation = async (input: string | undefined): Promise<true | string> => {
@@ -234,6 +244,7 @@ const numberValidationSync = (input: string | undefined): true | string => {
         return `undefined ${baseErrorMessage}`;
     }
 
+    // Stryker disable next-line UnaryOperator: Here, -input or +input have meaning since we test for isFinite and not on actual value
     if (!isFinite(+input)) {
         return `"${input}" ${baseErrorMessage}`;
     }
