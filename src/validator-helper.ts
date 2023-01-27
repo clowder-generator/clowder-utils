@@ -16,10 +16,16 @@ export const validateWith = (message: string | undefined, funcs: validationFunct
     return async (_: string | undefined): Promise<boolean> => false;
 };
 
+export const shouldMatchRegexValidation = (regex: RegExp, errorMessageFormat?: string): validationFunction => {
+    return async (input: string | undefined): Promise<true | string> => {
+        return true;
+    };
+};
+
 export const shouldNotMatchRegexValidation = (regex: RegExp, errorMessageFormat?: string): validationFunction => {
     return async (input: string | undefined): Promise<true | string> => {
         if (input === undefined) {
-            return `undefined is not a valid input to check the regex ${regex.toString()}`;
+            return `undefined is not a valid input to check the regex ${regex.toString()}.`;
         }
 
         if (regex.test(input)) {
