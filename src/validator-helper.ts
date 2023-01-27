@@ -41,7 +41,7 @@ export const shouldNotMatchRegexValidation = (regex: RegExp, errorMessageFormat?
         if (regex.test(input)) {
             return errorMessageFormat
                 ? errorMessageFormat.replace('%s', input)
-                : `The input "${input}" should not match the regex ${regex.toString()}`;
+                : `The input "${input}" should not match the regex ${regex.toString()}.`;
         }
 
         return true;
