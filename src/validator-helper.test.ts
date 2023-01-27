@@ -13,13 +13,44 @@ import {
     screamingSnakeCaseValidation,
     shouldMatchRegexValidation,
     shouldNotMatchRegexValidation,
-    snakeCaseValidation
+    snakeCaseValidation, validateWith, validationFunction
 } from './validator-helper';
 
-describe('validateWith', () => { xtest('Then ', () => {}); });
+describe('validateWith', () => {
+    describe('Given 3 functions that validate if an input is lower  than "3", "2" or "1"', () => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const lowerThan3: validationFunction = async (input) => (+input!) < 3 ? true : 'input is not lower than 3';
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const lowerThan2: validationFunction = async (input) => (+input!) < 2 ? true : 'input is not lower than 2';
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const lowerThan1: validationFunction = async (input) => (+input!) < 1 ? true : 'input is not lower than 1';
+        describe('and no validation option', () => {
+            describe.each([
+                ['4', 'input is not lower than 3'],
+                ['3', 'input is not lower than 3'],
+                ['2', 'input is not lower than 2'],
+                ['1', 'input is not lower than 1'],
+                ['0', true]
+            ])('When I call the composition of function on the input %s', (input: string, expected: boolean | string) => {
+                let result: Promise<boolean | string> | undefined;
+                beforeEach(() => {
+                    result = validateWith([
+                        lowerThan3,
+                        lowerThan2,
+                        lowerThan1
+                    ])(input);
+                });
+                test('Then a promise should be returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the correct value should be returned', async () => {
+                    expect(await result).toStrictEqual(expected);
+                });
+            });
+        });
+    });
+});
 
-// assertRegexMatch  and regexShouldNotMatchValidation will be another higher order function that will return a validationFunction based on the provided regex
-// both of them should have a regex in input and an optional error message as well (if not, default to say that 'input' does or not match the regex
 describe('regexMatchValidation', () => {
     describe('Given a regex to match any valid natural number', () => {
         const regex: RegExp = /^[1-9]\d*$/;

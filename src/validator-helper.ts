@@ -7,13 +7,21 @@ import {
     snakeCaseRegex
 } from './case-helper';
 
-type validationFunction = (input: string | undefined) => Promise<boolean | string>;
+export type validationFunction = (input: string | undefined) => Promise<true | string>;
 interface ValidationOption {
     trimmed: boolean;
 }
 
-export const validateWith = (message: string | undefined, funcs: validationFunction[], opt: ValidationOption = { trimmed: true }): validationFunction => {
-    return async (_: string | undefined): Promise<boolean> => false;
+export const validateWith = (funcs: validationFunction[], opt?: ValidationOption): validationFunction => {
+    return async (input: string | undefined): Promise<true | string> => {
+        for (const fun of funcs) {
+            const result: true | string = await fun(input);
+            if (typeof result === 'string') {
+                return result;
+            }
+        }
+        return true;
+    };
 };
 
 export const shouldMatchRegexValidation = (regex: RegExp, errorMessageFormat?: string): validationFunction => {
