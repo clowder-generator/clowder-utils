@@ -14,8 +14,15 @@ interface ValidationOption {
 
 export const validateWith = (funcs: validationFunction[], opt?: ValidationOption): validationFunction => {
     return async (input: string | undefined): Promise<true | string> => {
+        let transformedInput: string | undefined;
+        if (input === undefined) {
+            transformedInput = undefined;
+        } else {
+            transformedInput = opt?.trimmed ? input.trim() : input;
+        }
+
         for (const fun of funcs) {
-            const result: true | string = await fun(input);
+            const result: true | string = await fun(transformedInput);
             if (typeof result === 'string') {
                 return result;
             }
