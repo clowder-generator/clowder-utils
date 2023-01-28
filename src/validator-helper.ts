@@ -164,11 +164,10 @@ export const pascalCaseValidation = async (input: string): Promise<true | string
 
 export const integerValidation = async (input: string): Promise<true | string> => {
     const notAnIntegerMessage = 'is not an integer.';
-    const notANumberMessage = 'is not a valid number.';
     const commonErrorMessage = 'Only unformatted finite integers are expected.';
 
     if (!isFiniteNumber(input)) {
-        return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
+        return notAValidNumberFormat(input);
     }
 
     if (!Number.isInteger(+input)) {
@@ -180,11 +179,10 @@ export const integerValidation = async (input: string): Promise<true | string> =
 
 export const naturalNumberValidation = async (input: string): Promise<true | string> => {
     const notANaturalNumberMessage = 'is not a natural number.';
-    const notANumberMessage = 'is not a valid number.';
     const commonErrorMessage = 'Only unformatted finite natural numbers are expected.';
 
     if (!isFiniteNumber(input)) {
-        return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
+        return notAValidNumberFormat(input);
     }
 
     const parsedNumber = +input;
@@ -206,11 +204,15 @@ export const naturalNumberValidation = async (input: string): Promise<true | str
  */
 export const numberValidation = async (input: string): Promise<true | string> => {
     if (!isFiniteNumber(input)) {
-        return `"${input}" is not a valid number. Only unformatted finite numbers are expected.`;
+        return notAValidNumberFormat(input);
     }
     return true;
 };
 
 const isFiniteNumber = (input: string): boolean => {
     return (isFinite(+input));
+};
+
+const notAValidNumberFormat = (input: string): string => {
+    return `"${input}" is not a valid number. Only unformatted finite numbers are expected.`;
 };
