@@ -7,19 +7,14 @@ import {
     snakeCaseRegex
 } from './case-helper';
 
-export type validationFunction = (input: string | undefined) => Promise<true | string>;
+export type validationFunction = (input: string) => Promise<true | string>;
 interface ValidationOption {
     trimmed: boolean;
 }
 
 export const validateWith = (funcs: validationFunction[], opt?: ValidationOption): validationFunction => {
-    return async (input: string | undefined): Promise<true | string> => {
-        let transformedInput: string | undefined;
-        if (input === undefined) {
-            transformedInput = undefined;
-        } else {
-            transformedInput = opt?.trimmed ? input.trim() : input;
-        }
+    return async (input: string): Promise<true | string> => {
+        const transformedInput = opt?.trimmed ? input.trim() : input;
 
         for (const fun of funcs) {
             const result: true | string = await fun(transformedInput);
@@ -32,11 +27,7 @@ export const validateWith = (funcs: validationFunction[], opt?: ValidationOption
 };
 
 export const shouldMatchRegexValidation = (regex: RegExp, errorMessageFormat?: string): validationFunction => {
-    return async (input: string | undefined): Promise<true | string> => {
-        if (input === undefined) {
-            return `undefined is not a valid input to check the regex ${regex.toString()}.`;
-        }
-
+    return async (input: string): Promise<true | string> => {
         if (!regex.test(input)) {
             return errorMessageFormat
                 ? errorMessageFormat.replace('%s', input)
@@ -48,11 +39,7 @@ export const shouldMatchRegexValidation = (regex: RegExp, errorMessageFormat?: s
 };
 
 export const shouldNotMatchRegexValidation = (regex: RegExp, errorMessageFormat?: string): validationFunction => {
-    return async (input: string | undefined): Promise<true | string> => {
-        if (input === undefined) {
-            return `undefined is not a valid input to check the regex ${regex.toString()}.`;
-        }
-
+    return async (input: string): Promise<true | string> => {
         if (regex.test(input)) {
             return errorMessageFormat
                 ? errorMessageFormat.replace('%s', input)
@@ -70,11 +57,7 @@ export const noUndefinedValidation = async (input: string | undefined): Promise<
     return true;
 };
 
-export const nonBlankValidation = async (input: string | undefined): Promise<true | string> => {
-    if (input === undefined) {
-        return 'undefined is not a valid input. Only word which are not blank are expected.';
-    }
-
+export const nonBlankValidation = async (input: string): Promise<true | string> => {
     if (/^\s*$/.test(input)) {
         return `"${input}" is blank. Only word which are not blank are expected.`;
     }
@@ -82,11 +65,7 @@ export const nonBlankValidation = async (input: string | undefined): Promise<tru
     return true;
 };
 
-export const doNotStartWithNumberValidation = async (input: string | undefined): Promise<true | string> => {
-    if (input === undefined) {
-        return 'undefined is not a valid input. Only word with no leading number are expected.';
-    }
-
+export const doNotStartWithNumberValidation = async (input: string): Promise<true | string> => {
     if (/^\d+.*$/.test(input)) {
         return `"${input}" starts with a number. Only word with no leading number are expected.`;
     }
@@ -94,11 +73,7 @@ export const doNotStartWithNumberValidation = async (input: string | undefined):
     return true;
 };
 
-export const noTrailingWhiteSpaceValidation = async (input: string | undefined): Promise<true | string> => {
-    if (input === undefined) {
-        return 'undefined is not a valid input. Only word with no trailing white space are expected.';
-    }
-
+export const noTrailingWhiteSpaceValidation = async (input: string): Promise<true | string> => {
     if (/^.*\s+$/.test(input)) {
         return `"${input}" contains a trailing blank char. A valid input should not have trailing white space.`;
     }
@@ -106,22 +81,14 @@ export const noTrailingWhiteSpaceValidation = async (input: string | undefined):
     return true;
 };
 
-export const noLeadingWhiteSpaceValidation = async (input: string | undefined): Promise<true | string> => {
-    if (input === undefined) {
-        return 'undefined is not a valid input. Only word with no leading white space are expected.';
-    }
-
+export const noLeadingWhiteSpaceValidation = async (input: string): Promise<true | string> => {
     if (/^\s+.*$/.test(input)) {
         return `"${input}" contains a leading blank char. A valid input should not have leading white space.`;
     }
     return true;
 };
 
-export const noInnerWhiteSpaceValidation = async (input: string | undefined): Promise<true | string> => {
-    if (input === undefined) {
-        return 'undefined is not a valid input. Only word with no inner white space are expected.';
-    }
-
+export const noInnerWhiteSpaceValidation = async (input: string): Promise<true | string> => {
     if (/.*\S+\s+\S+.*/.test(input)) {
         return `"${input}" contains a blank char in the middle. A valid input should not have inner white space.`;
     }
@@ -129,14 +96,9 @@ export const noInnerWhiteSpaceValidation = async (input: string | undefined): Pr
     return true;
 };
 
-export const kebabCaseValidation = async (input: string | undefined): Promise<true | string> => {
+export const kebabCaseValidation = async (input: string): Promise<true | string> => {
     const notKebabCaseMessage = 'is not a valid kebab-case.';
-    const notAValidInputMessage = 'is not a valid input.';
     const commonErrorMessage = 'Only kebab-case inputs are expected.';
-
-    if (input === undefined) {
-        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
-    }
 
     if (!kebabCaseRegex.test(input)) {
         return `"${input}" ${notKebabCaseMessage} ${commonErrorMessage}`;
@@ -145,14 +107,9 @@ export const kebabCaseValidation = async (input: string | undefined): Promise<tr
     return true;
 };
 
-export const screamingKebabCaseValidation = async (input: string | undefined): Promise<true | string> => {
+export const screamingKebabCaseValidation = async (input: string): Promise<true | string> => {
     const notScreamingKebabCaseMessage = 'is not a valid SCREAMING-KEBAB-CASE.';
-    const notAValidInputMessage = 'is not a valid input.';
     const commonErrorMessage = 'Only SCREAMING-KEBAB-CASE inputs are expected.';
-
-    if (input === undefined) {
-        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
-    }
 
     if (!screamingKebabCaseRegex.test(input)) {
         return `"${input}" ${notScreamingKebabCaseMessage} ${commonErrorMessage}`;
@@ -161,14 +118,9 @@ export const screamingKebabCaseValidation = async (input: string | undefined): P
     return true;
 };
 
-export const snakeCaseValidation = async (input: string | undefined): Promise<true | string> => {
+export const snakeCaseValidation = async (input: string): Promise<true | string> => {
     const notSnakeCaseMessage = 'is not a valid snake_case.';
-    const notAValidInputMessage = 'is not a valid input.';
     const commonErrorMessage = 'Only snake_case inputs are expected.';
-
-    if (input === undefined) {
-        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
-    }
 
     if (!snakeCaseRegex.test(input)) {
         return `"${input}" ${notSnakeCaseMessage} ${commonErrorMessage}`;
@@ -177,14 +129,9 @@ export const snakeCaseValidation = async (input: string | undefined): Promise<tr
     return true;
 };
 
-export const screamingSnakeCaseValidation = async (input: string | undefined): Promise<true | string> => {
+export const screamingSnakeCaseValidation = async (input: string): Promise<true | string> => {
     const notScreamingSnakeCaseMessage = 'is not a valid SCREAMING_SNAKE_CASE.';
-    const notAValidInputMessage = 'is not a valid input.';
     const commonErrorMessage = 'Only SCREAMING_SNAKE_CASE inputs are expected.';
-
-    if (input === undefined) {
-        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
-    }
 
     if (!screamingSnakeCaseRegex.test(input)) {
         return `"${input}" ${notScreamingSnakeCaseMessage} ${commonErrorMessage}`;
@@ -193,14 +140,9 @@ export const screamingSnakeCaseValidation = async (input: string | undefined): P
     return true;
 };
 
-export const camelCaseValidation = async (input: string | undefined): Promise<true | string> => {
+export const camelCaseValidation = async (input: string): Promise<true | string> => {
     const notCamelCaseMessage = 'is not a valid camelCase.';
-    const notAValidInputMessage = 'is not a valid input.';
     const commonErrorMessage = 'Only camelCase inputs are expected.';
-
-    if (input === undefined) {
-        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
-    }
 
     if (!camelCaseRegex.test(input)) {
         return `"${input}" ${notCamelCaseMessage} ${commonErrorMessage}`;
@@ -209,14 +151,9 @@ export const camelCaseValidation = async (input: string | undefined): Promise<tr
     return true;
 };
 
-export const pascalCaseValidation = async (input: string | undefined): Promise<true | string> => {
+export const pascalCaseValidation = async (input: string): Promise<true | string> => {
     const notPascalCaseMessage = 'is not a valid PascalCase.';
-    const notAValidInputMessage = 'is not a valid input.';
     const commonErrorMessage = 'Only PascalCase inputs are expected.';
-
-    if (input === undefined) {
-        return `undefined ${notAValidInputMessage} ${commonErrorMessage}`;
-    }
 
     if (!pascalCaseRegex.test(input)) {
         return `"${input}" ${notPascalCaseMessage} ${commonErrorMessage}`;
@@ -225,14 +162,10 @@ export const pascalCaseValidation = async (input: string | undefined): Promise<t
     return true;
 };
 
-export const integerValidation = async (input: string | undefined): Promise<true | string> => {
+export const integerValidation = async (input: string): Promise<true | string> => {
     const notAnIntegerMessage = 'is not an integer.';
     const notANumberMessage = 'is not a valid number.';
     const commonErrorMessage = 'Only unformatted finite integers are expected.';
-
-    if (input === undefined) {
-        return `undefined ${notANumberMessage} ${commonErrorMessage}`;
-    }
 
     if (numberValidationSync(input) !== true) {
         return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
@@ -245,14 +178,10 @@ export const integerValidation = async (input: string | undefined): Promise<true
     return true;
 };
 
-export const naturalNumberValidation = async (input: string | undefined): Promise<true | string> => {
+export const naturalNumberValidation = async (input: string): Promise<true | string> => {
     const notANaturalNumberMessage = 'is not a natural number.';
     const notANumberMessage = 'is not a valid number.';
     const commonErrorMessage = 'Only unformatted finite natural numbers are expected.';
-
-    if (input === undefined) {
-        return `undefined ${notANumberMessage} ${commonErrorMessage}`;
-    }
 
     if (numberValidationSync(input) !== true) {
         return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
@@ -275,15 +204,11 @@ export const naturalNumberValidation = async (input: string | undefined): Promis
  * @returns: true: if the input is a valid number
  *           string: if the input is not a valid number
  */
-export const numberValidation = async (input: string | undefined): Promise<true | string> => {
+export const numberValidation = async (input: string): Promise<true | string> => {
     return numberValidationSync(input);
 };
-const numberValidationSync = (input: string | undefined): true | string => {
+const numberValidationSync = (input: string): true | string => {
     const baseErrorMessage = 'is not a valid number. Only unformatted finite numbers are expected.';
-
-    if (input === undefined) {
-        return `undefined ${baseErrorMessage}`;
-    }
 
     // Stryker disable next-line UnaryOperator: Here, -input or +input have meaning since we test for isFinite and not on actual value
     if (!isFinite(+input)) {

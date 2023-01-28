@@ -19,11 +19,11 @@ import {
 describe('validateWith', () => {
     describe('Given 3 functions that validate if an input is lower  than "3", "2" or "1"', () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const lowerThan3: validationFunction = async (input) => (+input!) < 3 ? true : 'input is not lower than 3';
+        const lowerThan3: validationFunction = async (input) => (+input) < 3 ? true : 'input is not lower than 3';
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const lowerThan2: validationFunction = async (input) => (+input!) < 2 ? true : 'input is not lower than 2';
+        const lowerThan2: validationFunction = async (input) => (+input) < 2 ? true : 'input is not lower than 2';
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const lowerThan1: validationFunction = async (input) => (+input!) < 1 ? true : 'input is not lower than 1';
+        const lowerThan1: validationFunction = async (input) => (+input) < 1 ? true : 'input is not lower than 1';
         describe('and no validation option', () => {
             describe.each([
                 ['4', 'input is not lower than 3'],
@@ -50,9 +50,9 @@ describe('validateWith', () => {
         });
         describe('and a function to assert some rules on white space char presence', () => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const noLeadingWhiteSpaces: validationFunction = async (input) => /^\s+.*$/.test(input!) ? 'leading :(' : true;
+            const noLeadingWhiteSpaces: validationFunction = async (input) => /^\s+.*$/.test(input) ? 'leading :(' : true;
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const noTrailingWhiteSpaces: validationFunction = async (input) => /^\S*\s+$/.test(input!) ? 'trailing :(' : true;
+            const noTrailingWhiteSpaces: validationFunction = async (input) => /^\S*\s+$/.test(input) ? 'trailing :(' : true;
             describe('and a validationOption for trimmed = true', () => {
                 const opt = { trimmed: true };
                 describe.each([
@@ -114,11 +114,10 @@ describe('regexMatchValidation', () => {
             const errorMessage = 'The input "%s" is not a natural number. Please provide a natural number.';
             describe.each([
                 ['1234', true],
-                [undefined, 'undefined is not a valid input to check the regex /^[1-9]\\d*$/.'],
                 ['-123', 'The input "-123" is not a natural number. Please provide a natural number.'],
                 ['', 'The input "" is not a natural number. Please provide a natural number.'],
                 ['0123', 'The input "0123" is not a natural number. Please provide a natural number.']
-            ])('When I test the resulting validation with the input "%s"', (input: string | undefined, expected: boolean | string) => {
+            ])('When I test the resulting validation with the input "%s"', (input: string, expected: boolean | string) => {
                 let result: Promise<boolean | string> | undefined;
                 beforeEach(() => {
                     result = shouldMatchRegexValidation(regex, errorMessage)(input);
@@ -134,11 +133,10 @@ describe('regexMatchValidation', () => {
         describe('and no custom error message', () => {
             describe.each([
                 ['1234', true],
-                [undefined, 'undefined is not a valid input to check the regex /^[1-9]\\d*$/.'],
                 ['-123', 'The input "-123" should match the regex /^[1-9]\\d*$/.'],
                 ['', 'The input "" should match the regex /^[1-9]\\d*$/.'],
                 ['0123', 'The input "0123" should match the regex /^[1-9]\\d*$/.']
-            ])('When I test the resulting validation with the input "%s"', (input: string | undefined, expected: boolean | string) => {
+            ])('When I test the resulting validation with the input "%s"', (input: string, expected: boolean | string) => {
                 let result: Promise<boolean | string> | undefined;
                 beforeEach(() => {
                     result = shouldMatchRegexValidation(regex)(input);
@@ -163,9 +161,8 @@ describe('shouldNotMatchRegexValidation', () => {
                 ['-123', true],
                 ['', true],
                 ['0123', true],
-                [undefined, 'undefined is not a valid input to check the regex /^[1-9]\\d*$/.'],
                 ['1234', 'The input "1234" is a natural number. Please do not provide a natural number.']
-            ])('When I test the resulting validation function with the input "%s"', (input: string | undefined, expected: boolean | string) => {
+            ])('When I test the resulting validation function with the input "%s"', (input: string, expected: boolean | string) => {
                 let result: Promise<boolean | string> | undefined;
                 beforeEach(() => {
                     result = shouldNotMatchRegexValidation(regex, errorMessage)(input);
@@ -183,9 +180,8 @@ describe('shouldNotMatchRegexValidation', () => {
                 ['-123', true],
                 ['', true],
                 ['0123', true],
-                [undefined, 'undefined is not a valid input to check the regex /^[1-9]\\d*$/.'],
                 ['1234', 'The input "1234" should not match the regex /^[1-9]\\d*$/.']
-            ])('When I test the resulting validation function with the input "%s"', (input: string | undefined, expected: boolean | string) => {
+            ])('When I test the resulting validation function with the input "%s"', (input: string, expected: boolean | string) => {
                 let result: Promise<boolean | string> | undefined;
                 beforeEach(() => {
                     result = shouldNotMatchRegexValidation(regex)(input);
@@ -226,14 +222,13 @@ describe('nonBlankValidation', () => {
     describe.each([
         ['notBlank', true],
         ['not Blank but with spaces ', true],
-        [undefined, 'undefined is not a valid input. Only word which are not blank are expected.'],
         ['', '"" is blank. Only word which are not blank are expected.'],
         [' ', '" " is blank. Only word which are not blank are expected.'],
         ['  ', '"  " is blank. Only word which are not blank are expected.'],
         ['\t \n', '"\t \n" is blank. Only word which are not blank are expected.'],
         ['\t', '"\t" is blank. Only word which are not blank are expected.'],
         ['\n', '"\n" is blank. Only word which are not blank are expected.']
-    ])('When I call "nonBlankValidation"', (input: string | undefined, expected: boolean | string) => {
+    ])('When I call "nonBlankValidation"', (input: string, expected: boolean | string) => {
         let result: Promise<boolean | string>;
         beforeEach(() => {
             result = nonBlankValidation(input);
@@ -255,9 +250,8 @@ describe('doNotStartWithNumberValidation', () => {
         ['numberAtTheEnd123', true],
         ['number1In2The3Middle', true],
         [' 123leadingWhiteSpaceBeforeNumber', true],
-        [undefined, 'undefined is not a valid input. Only word with no leading number are expected.'],
         ['123leadingNumber', '"123leadingNumber" starts with a number. Only word with no leading number are expected.']
-    ])('When I call "doNotStartWithNumberValidation" on the input "%s"', (input: string | undefined, expected: boolean | string) => {
+    ])('When I call "doNotStartWithNumberValidation" on the input "%s"', (input: string, expected: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = doNotStartWithNumberValidation(input);
@@ -276,11 +270,10 @@ describe('noTrailingWhiteSpaceValidation', () => {
         ['noTrailingWhiteSpace', true],
         [' leadingButNoTrailing', true],
         ['space\nin\tbetween but not trailing', true],
-        [undefined, 'undefined is not a valid input. Only word with no trailing white space are expected.'],
         ['withOneTrailing ', '"withOneTrailing " contains a trailing blank char. A valid input should not have trailing white space.'],
         ['withOneWeirdTrailing\n', '"withOneWeirdTrailing\n" contains a trailing blank char. A valid input should not have trailing white space.'],
         ['withMoreThanOneTrailing \t', '"withMoreThanOneTrailing \t" contains a trailing blank char. A valid input should not have trailing white space.']
-    ])('When I call "noTrailingWhiteSpaceValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+    ])('When I call "noTrailingWhiteSpaceValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = noTrailingWhiteSpaceValidation(input);
@@ -299,11 +292,10 @@ describe('noLeadingWhiteSpaceValidation', () => {
         ['noLeadingWhiteSpace', true],
         ['trailingButNoLeading ', true],
         ['space\nin\tbetween but not leading', true],
-        [undefined, 'undefined is not a valid input. Only word with no leading white space are expected.'],
         [' withOneLeading', '" withOneLeading" contains a leading blank char. A valid input should not have leading white space.'],
         ['\twithOneWeirdLeading', '"\twithOneWeirdLeading" contains a leading blank char. A valid input should not have leading white space.'],
         [' \t withMoreThanOneLeading', '" \t withMoreThanOneLeading" contains a leading blank char. A valid input should not have leading white space.']
-    ])('When I call "noLeadingWhiteSpaceValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+    ])('When I call "noLeadingWhiteSpaceValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = noLeadingWhiteSpaceValidation(input);
@@ -322,11 +314,10 @@ describe('noInnerWhiteSpaceValidation', () => {
         ['noMiddleBlank', true],
         [' blankAtStartButNotInMiddle', true],
         ['blankAtEndButNotInMiddle\n', true],
-        [undefined, 'undefined is not a valid input. Only word with no inner white space are expected.'],
         ['with oneMiddleBlank\n', '"with oneMiddleBlank\n" contains a blank char in the middle. A valid input should not have inner white space.'],
         ['with oneMiddleBlank', '"with oneMiddleBlank" contains a blank char in the middle. A valid input should not have inner white space.'],
         ['with more\tthan one\nmiddle blank', '"with more\tthan one\nmiddle blank" contains a blank char in the middle. A valid input should not have inner white space.']
-    ])('When I call "noInnerWhiteSpaceValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+    ])('When I call "noInnerWhiteSpaceValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = noInnerWhiteSpaceValidation(input);
@@ -373,20 +364,6 @@ describe('kebabCaseValidation', () => {
             });
         });
     });
-    describe('Given an undefined input', () => {
-        const input = undefined;
-        describe('When I call "kebabCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = kebabCaseValidation(input);
-            });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
-            });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('undefined is not a valid input. Only kebab-case inputs are expected.');
-            });
-        });
-    });
 });
 
 describe('screamingKebabCaseValidation', () => {
@@ -419,20 +396,6 @@ describe('screamingKebabCaseValidation', () => {
             });
             test('Then the promise contains the appropriate message', async () => {
                 expect(await result).toStrictEqual('"not-screaming-kebab-case" is not a valid SCREAMING-KEBAB-CASE. Only SCREAMING-KEBAB-CASE inputs are expected.');
-            });
-        });
-    });
-    describe('Given an undefined input', () => {
-        const input = undefined;
-        describe('When I call "screamingKebabCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = screamingKebabCaseValidation(input);
-            });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
-            });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('undefined is not a valid input. Only SCREAMING-KEBAB-CASE inputs are expected.');
             });
         });
     });
@@ -471,20 +434,6 @@ describe('snakeCaseValidation', () => {
             });
         });
     });
-    describe('Given an undefined input', () => {
-        const input = undefined;
-        describe('When I call "snakeCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = snakeCaseValidation(input);
-            });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
-            });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('undefined is not a valid input. Only snake_case inputs are expected.');
-            });
-        });
-    });
 });
 
 describe('screamingSnakeCaseValidation', () => {
@@ -517,20 +466,6 @@ describe('screamingSnakeCaseValidation', () => {
             });
             test('Then the promise contains the appropriate message', async () => {
                 expect(await result).toStrictEqual('"not_screaming_snake_case" is not a valid SCREAMING_SNAKE_CASE. Only SCREAMING_SNAKE_CASE inputs are expected.');
-            });
-        });
-    });
-    describe('Given an undefined input', () => {
-        const input = undefined;
-        describe('When I call "screamingSnakeCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = screamingSnakeCaseValidation(input);
-            });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
-            });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('undefined is not a valid input. Only SCREAMING_SNAKE_CASE inputs are expected.');
             });
         });
     });
@@ -569,20 +504,6 @@ describe('camelCaseValidation', () => {
             });
         });
     });
-    describe('Given an undefined input', () => {
-        const input = undefined;
-        describe('When I call "camelCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = camelCaseValidation(input);
-            });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
-            });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('undefined is not a valid input. Only camelCase inputs are expected.');
-            });
-        });
-    });
 });
 
 describe('pascalCaseValidation', () => {
@@ -618,20 +539,6 @@ describe('pascalCaseValidation', () => {
             });
         });
     });
-    describe('Given an undefined input', () => {
-        const input = undefined;
-        describe('When I call "pascalCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = pascalCaseValidation(input);
-            });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
-            });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('undefined is not a valid input. Only PascalCase inputs are expected.');
-            });
-        });
-    });
 });
 
 describe('integerValidation', () => {
@@ -651,7 +558,6 @@ describe('integerValidation', () => {
         ['-1', true],
         ['10e-3', '"10e-3" is not an integer. Only unformatted finite integers are expected.'],
         ['-0.01', '"-0.01" is not an integer. Only unformatted finite integers are expected.'],
-        [undefined, 'undefined is not a valid number. Only unformatted finite integers are expected.'],
         ['12 3', '"12 3" is not a valid number. Only unformatted finite integers are expected.'],
         ['12e999', '"12e999" is not a valid number. Only unformatted finite integers are expected.'],
         ['one', '"one" is not a valid number. Only unformatted finite integers are expected.'],
@@ -662,7 +568,7 @@ describe('integerValidation', () => {
         ['12e', '"12e" is not a valid number. Only unformatted finite integers are expected.'],
         ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted finite integers are expected.'],
         ['Infinity', '"Infinity" is not a valid number. Only unformatted finite integers are expected.']
-    ])('When I call "integerValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+    ])('When I call "integerValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = integerValidation(input);
@@ -693,7 +599,6 @@ describe('naturalNumberValidation', () => {
         ['-123', '"-123" is not a natural number. Only unformatted finite natural numbers are expected.'],
         ['0', '"0" is not a natural number. Only unformatted finite natural numbers are expected.'],
         ['-1', '"-1" is not a natural number. Only unformatted finite natural numbers are expected.'],
-        [undefined, 'undefined is not a valid number. Only unformatted finite natural numbers are expected.'],
         ['12 3', '"12 3" is not a valid number. Only unformatted finite natural numbers are expected.'],
         ['12e999', '"12e999" is not a valid number. Only unformatted finite natural numbers are expected.'],
         ['one', '"one" is not a valid number. Only unformatted finite natural numbers are expected.'],
@@ -704,7 +609,7 @@ describe('naturalNumberValidation', () => {
         ['12e', '"12e" is not a valid number. Only unformatted finite natural numbers are expected.'],
         ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted finite natural numbers are expected.'],
         ['Infinity', '"Infinity" is not a valid number. Only unformatted finite natural numbers are expected.']
-    ])('When I call "naturalNumberValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+    ])('When I call "naturalNumberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = naturalNumberValidation(input);
@@ -734,7 +639,6 @@ describe('numberValidation', () => {
         ['0xBABE', true],
         ['0o10', true],
         ['0b10', true],
-        [undefined, 'undefined is not a valid number. Only unformatted finite numbers are expected.'],
         ['12 3', '"12 3" is not a valid number. Only unformatted finite numbers are expected.'],
         ['12e999', '"12e999" is not a valid number. Only unformatted finite numbers are expected.'],
         ['one', '"one" is not a valid number. Only unformatted finite numbers are expected.'],
@@ -745,7 +649,7 @@ describe('numberValidation', () => {
         ['12e', '"12e" is not a valid number. Only unformatted finite numbers are expected.'],
         ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted finite numbers are expected.'],
         ['Infinity', '"Infinity" is not a valid number. Only unformatted finite numbers are expected.']
-    ])('When I call "numberValidation" on the input "%s"', (input: string | undefined, expectedResult: boolean | string) => {
+    ])('When I call "numberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
             result = numberValidation(input);
