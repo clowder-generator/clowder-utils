@@ -167,7 +167,7 @@ export const integerValidation = async (input: string): Promise<true | string> =
     const notANumberMessage = 'is not a valid number.';
     const commonErrorMessage = 'Only unformatted finite integers are expected.';
 
-    if (numberValidationSync(input) !== true) {
+    if (!isFiniteNumber(input)) {
         return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
     }
 
@@ -183,7 +183,7 @@ export const naturalNumberValidation = async (input: string): Promise<true | str
     const notANumberMessage = 'is not a valid number.';
     const commonErrorMessage = 'Only unformatted finite natural numbers are expected.';
 
-    if (numberValidationSync(input) !== true) {
+    if (!isFiniteNumber(input)) {
         return `"${input}" ${notANumberMessage} ${commonErrorMessage}`;
     }
 
@@ -205,15 +205,12 @@ export const naturalNumberValidation = async (input: string): Promise<true | str
  *           string: if the input is not a valid number
  */
 export const numberValidation = async (input: string): Promise<true | string> => {
-    return numberValidationSync(input);
-};
-const numberValidationSync = (input: string): true | string => {
-    const baseErrorMessage = 'is not a valid number. Only unformatted finite numbers are expected.';
-
-    // Stryker disable next-line UnaryOperator: Here, -input or +input have meaning since we test for isFinite and not on actual value
-    if (!isFinite(+input)) {
-        return `"${input}" ${baseErrorMessage}`;
+    if (!isFiniteNumber(input)) {
+        return `"${input}" is not a valid number. Only unformatted finite numbers are expected.`;
     }
-
     return true;
+};
+
+const isFiniteNumber = (input: string): boolean => {
+    return (isFinite(+input));
 };
