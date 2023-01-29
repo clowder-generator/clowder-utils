@@ -61,6 +61,16 @@ export const nonBlankValidation = (): stringValidationFunction => {
     };
 };
 
+export const noWhiteSpaceValidation = (): stringValidationFunction => {
+    return async (input: string): Promise<true | string> => {
+        if (/^.*\s+.*$/.test(input)) {
+            return `"${input}" contains white chars. Only word with no white char are allowed.`;
+        }
+
+        return true;
+    };
+};
+
 export const doNotStartWithNumberValidation = (): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (/^\d.*$/.test(input)) {

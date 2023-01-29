@@ -5,7 +5,7 @@ import {
     naturalNumberValidation,
     noInnerWhiteSpaceValidation,
     noLeadingWhiteSpaceValidation, nonBlankValidation,
-    noTrailingWhiteSpaceValidation,
+    noTrailingWhiteSpaceValidation, noWhiteSpaceValidation,
     numberValidation,
     pascalCaseValidation,
     screamingKebabCaseValidation,
@@ -223,7 +223,27 @@ describe('nonBlankValidation', () => {
 });
 
 describe('noWhiteSpaceValidation', () => {
-    // TODO: forgot to implement this one...
+    describe.each([
+        ['noWhiteSpace', true],
+        [' whiteAtTheBeginning', '" whiteAtTheBeginning" contains white chars. Only word with no white char are allowed.'],
+        [' \ttwoWhitesAtTheBeginning', '" \ttwoWhitesAtTheBeginning" contains white chars. Only word with no white char are allowed.'],
+        ['whiteAtTheEnd ', '"whiteAtTheEnd " contains white chars. Only word with no white char are allowed.'],
+        ['twoWhitesAtTheEnd \n', '"twoWhitesAtTheEnd \n" contains white chars. Only word with no white char are allowed.'],
+        ['white inTheMiddle', '"white inTheMiddle" contains white chars. Only word with no white char are allowed.'],
+        ['multiple white  in the middle', '"multiple white  in the middle" contains white chars. Only word with no white char are allowed.'],
+        [' white at the beginning, middle and end ', '" white at the beginning, middle and end " contains white chars. Only word with no white char are allowed.']
+    ])('WHen I call "noWhiteSpaceValidation" on the input "%s"', (input: string, expected: boolean | string) => {
+        let result: Promise<boolean | string> | undefined;
+        beforeEach(() => {
+            result = noWhiteSpaceValidation()(input);
+        });
+        test('Then a promise is returned', () => {
+            expect(result).toBeInstanceOf(Promise);
+        });
+        test('Then the correct value should be returned', async () => {
+            expect(await result).toStrictEqual(expected);
+        });
+    });
 });
 
 describe('doNotStartWithNumberValidation', () => {
