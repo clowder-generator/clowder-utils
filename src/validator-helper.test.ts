@@ -6,24 +6,25 @@ import {
     noInnerWhiteSpaceValidation,
     noLeadingWhiteSpaceValidation, nonBlankValidation,
     noTrailingWhiteSpaceValidation,
-    noUndefinedValidation,
     numberValidation,
     pascalCaseValidation,
     screamingKebabCaseValidation,
     screamingSnakeCaseValidation,
     shouldMatchRegexValidation,
     shouldNotMatchRegexValidation,
-    snakeCaseValidation, validateWith, validationFunction
+    snakeCaseValidation,
+    stringValidationFunction,
+    validateWith
 } from './validator-helper';
 
 describe('validateWith', () => {
     describe('Given 3 functions that validate if an input is lower  than "3", "2" or "1"', () => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const lowerThan3: validationFunction = async (input) => (+input) < 3 ? true : 'input is not lower than 3';
+        const lowerThan3: stringValidationFunction = async (input) => (+input) < 3 ? true : 'input is not lower than 3';
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const lowerThan2: validationFunction = async (input) => (+input) < 2 ? true : 'input is not lower than 2';
+        const lowerThan2: stringValidationFunction = async (input) => (+input) < 2 ? true : 'input is not lower than 2';
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const lowerThan1: validationFunction = async (input) => (+input) < 1 ? true : 'input is not lower than 1';
+        const lowerThan1: stringValidationFunction = async (input) => (+input) < 1 ? true : 'input is not lower than 1';
         describe('and no validation option', () => {
             describe.each([
                 ['4', 'input is not lower than 3'],
@@ -50,9 +51,9 @@ describe('validateWith', () => {
         });
         describe('and a function to assert some rules on white space char presence', () => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const noLeadingWhiteSpaces: validationFunction = async (input) => /^\s+.*$/.test(input) ? 'leading :(' : true;
+            const noLeadingWhiteSpaces: stringValidationFunction = async (input) => /^\s+.*$/.test(input) ? 'leading :(' : true;
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const noTrailingWhiteSpaces: validationFunction = async (input) => /^\S*\s+$/.test(input) ? 'trailing :(' : true;
+            const noTrailingWhiteSpaces: stringValidationFunction = async (input) => /^\S*\s+$/.test(input) ? 'trailing :(' : true;
             describe('and a validationOption for trimmed = true', () => {
                 const opt = { trimmed: true };
                 describe.each([
@@ -197,27 +198,6 @@ describe('shouldNotMatchRegexValidation', () => {
     });
 });
 
-describe('noUndefinedValidation', () => {
-    describe.each([
-        [' ', true],
-        ['', true],
-        ['a', true],
-        ['1', true],
-        [undefined, 'undefine is not a valid input.']
-    ])('When I call "noUndefinedValidation" on the input "%s"', (input: string | undefined, expected: boolean | string) => {
-        let result: Promise<boolean | string> | undefined;
-        beforeEach(() => {
-            result = noUndefinedValidation(input);
-        });
-        test('Then a promise is returned', () => {
-            expect(result).toBeInstanceOf(Promise);
-        });
-        test('Then the correct value should be returned', async () => {
-            expect(await result).toStrictEqual(expected);
-        });
-    });
-});
-
 describe('nonBlankValidation', () => {
     describe.each([
         ['notBlank', true],
@@ -231,7 +211,7 @@ describe('nonBlankValidation', () => {
     ])('When I call "nonBlankValidation"', (input: string, expected: boolean | string) => {
         let result: Promise<boolean | string>;
         beforeEach(() => {
-            result = nonBlankValidation(input);
+            result = nonBlankValidation()(input);
         });
         test('Then a promise is returned', () => {
             expect(result).toBeInstanceOf(Promise);
@@ -242,7 +222,9 @@ describe('nonBlankValidation', () => {
     });
 });
 
-describe('noWhiteSpaceValidation', () => {});
+describe('noWhiteSpaceValidation', () => {
+    // TODO: forgot to implement this one...
+});
 
 describe('doNotStartWithNumberValidation', () => {
     describe.each([
@@ -254,7 +236,7 @@ describe('doNotStartWithNumberValidation', () => {
     ])('When I call "doNotStartWithNumberValidation" on the input "%s"', (input: string, expected: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
-            result = doNotStartWithNumberValidation(input);
+            result = doNotStartWithNumberValidation()(input);
         });
         test('Then a promise is returned', () => {
             expect(result).toBeInstanceOf(Promise);
@@ -276,7 +258,7 @@ describe('noTrailingWhiteSpaceValidation', () => {
     ])('When I call "noTrailingWhiteSpaceValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
-            result = noTrailingWhiteSpaceValidation(input);
+            result = noTrailingWhiteSpaceValidation()(input);
         });
         test('Then a promise is return', () => {
             expect(result).toBeInstanceOf(Promise);
@@ -298,7 +280,7 @@ describe('noLeadingWhiteSpaceValidation', () => {
     ])('When I call "noLeadingWhiteSpaceValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
-            result = noLeadingWhiteSpaceValidation(input);
+            result = noLeadingWhiteSpaceValidation()(input);
         });
         test('Then a promise is return', () => {
             expect(result).toBeInstanceOf(Promise);
@@ -320,7 +302,7 @@ describe('noInnerWhiteSpaceValidation', () => {
     ])('When I call "noInnerWhiteSpaceValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
-            result = noInnerWhiteSpaceValidation(input);
+            result = noInnerWhiteSpaceValidation()(input);
         });
         test('Then a promise is return', () => {
             expect(result).toBeInstanceOf(Promise);
@@ -340,7 +322,7 @@ describe('kebabCaseValidation', () => {
         const input = 'kebab-case';
         describe('When I call "kebabCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = kebabCaseValidation(input);
+                result = kebabCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -354,7 +336,7 @@ describe('kebabCaseValidation', () => {
         const input = 'notKebabCase';
         describe('When I call "kebabCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = kebabCaseValidation(input);
+                result = kebabCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -375,7 +357,7 @@ describe('screamingKebabCaseValidation', () => {
         const input = 'SCREAMING-KEBAB-CASE';
         describe('When I call "screamingKebabCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = screamingKebabCaseValidation(input);
+                result = screamingKebabCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -389,7 +371,7 @@ describe('screamingKebabCaseValidation', () => {
         const input = 'not-screaming-kebab-case';
         describe('When I call "screamingKebabCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = screamingKebabCaseValidation(input);
+                result = screamingKebabCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -410,7 +392,7 @@ describe('snakeCaseValidation', () => {
         const input = 'snake_case';
         describe('When I call "snakeCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = snakeCaseValidation(input);
+                result = snakeCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -424,7 +406,7 @@ describe('snakeCaseValidation', () => {
         const input = 'not-snake-case';
         describe('When I call "snakeCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = snakeCaseValidation(input);
+                result = snakeCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -445,7 +427,7 @@ describe('screamingSnakeCaseValidation', () => {
         const input = 'SCREAMING_SNAKE_CASE';
         describe('When I call "screamingSnakeCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = screamingSnakeCaseValidation(input);
+                result = screamingSnakeCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -459,7 +441,7 @@ describe('screamingSnakeCaseValidation', () => {
         const input = 'not_screaming_snake_case';
         describe('When I call "screamingSnakeCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = screamingSnakeCaseValidation(input);
+                result = screamingSnakeCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -480,7 +462,7 @@ describe('camelCaseValidation', () => {
         const input = 'camelCase';
         describe('When I call "camelCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = camelCaseValidation(input);
+                result = camelCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -494,7 +476,7 @@ describe('camelCaseValidation', () => {
         const input = 'not-camel-case';
         describe('When I call "camelCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = camelCaseValidation(input);
+                result = camelCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -515,7 +497,7 @@ describe('pascalCaseValidation', () => {
         const input = 'PascalCase';
         describe('When I call "pascalCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = pascalCaseValidation(input);
+                result = pascalCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -529,7 +511,7 @@ describe('pascalCaseValidation', () => {
         const input = 'not-pascal-case';
         describe('When I call "pascalCaseValidation" on this input', () => {
             beforeEach(() => {
-                result = pascalCaseValidation(input);
+                result = pascalCaseValidation()(input);
             });
             test('Then a promise is returned', () => {
                 expect(result).toBeInstanceOf(Promise);
@@ -571,7 +553,7 @@ describe('integerValidation', () => {
     ])('When I call "integerValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
-            result = integerValidation(input);
+            result = integerValidation()(input);
         });
         test('Then a promise is return', () => {
             expect(result).toBeInstanceOf(Promise);
@@ -612,7 +594,7 @@ describe('naturalNumberValidation', () => {
     ])('When I call "naturalNumberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
-            result = naturalNumberValidation(input);
+            result = naturalNumberValidation()(input);
         });
         test('Then a promise is return', () => {
             expect(result).toBeInstanceOf(Promise);
@@ -652,7 +634,7 @@ describe('numberValidation', () => {
     ])('When I call "numberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
         beforeEach(() => {
-            result = numberValidation(input);
+            result = numberValidation()(input);
         });
         test('Then a Promise is returned', () => {
             expect(result).toBeInstanceOf(Promise);

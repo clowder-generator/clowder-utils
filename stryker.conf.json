@@ -14,7 +14,7 @@
   "tempDirName": ".stryker-tmp",
   "jest": {
     "projectType": "custom",
-    "configFile": "jestconfig.json",
+    "configFile": "jest.config.json",
     "enableFindRelatedTests": true
   },
   "testRunner_comment": "Take a look at https://stryker-mutator.io/docs/stryker-js/jest-runner for information about the jest plugin.",
