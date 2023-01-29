@@ -97,97 +97,73 @@ export const noInnerWhiteSpaceValidation = async (input: string): Promise<true |
 };
 
 export const kebabCaseValidation = async (input: string): Promise<true | string> => {
-    const notKebabCaseMessage = 'is not a valid kebab-case.';
-    const commonErrorMessage = 'Only kebab-case inputs are expected.';
-
     if (!kebabCaseRegex.test(input)) {
-        return `"${input}" ${notKebabCaseMessage} ${commonErrorMessage}`;
+        return `"${input}" is not a valid kebab-case. Only kebab-case inputs are expected.`;
     }
 
     return true;
 };
 
 export const screamingKebabCaseValidation = async (input: string): Promise<true | string> => {
-    const notScreamingKebabCaseMessage = 'is not a valid SCREAMING-KEBAB-CASE.';
-    const commonErrorMessage = 'Only SCREAMING-KEBAB-CASE inputs are expected.';
-
     if (!screamingKebabCaseRegex.test(input)) {
-        return `"${input}" ${notScreamingKebabCaseMessage} ${commonErrorMessage}`;
+        return `"${input}" is not a valid SCREAMING-KEBAB-CASE. Only SCREAMING-KEBAB-CASE inputs are expected.`;
     }
 
     return true;
 };
 
 export const snakeCaseValidation = async (input: string): Promise<true | string> => {
-    const notSnakeCaseMessage = 'is not a valid snake_case.';
-    const commonErrorMessage = 'Only snake_case inputs are expected.';
-
     if (!snakeCaseRegex.test(input)) {
-        return `"${input}" ${notSnakeCaseMessage} ${commonErrorMessage}`;
+        return `"${input}" is not a valid snake_case. Only snake_case inputs are expected.`;
     }
 
     return true;
 };
 
 export const screamingSnakeCaseValidation = async (input: string): Promise<true | string> => {
-    const notScreamingSnakeCaseMessage = 'is not a valid SCREAMING_SNAKE_CASE.';
-    const commonErrorMessage = 'Only SCREAMING_SNAKE_CASE inputs are expected.';
-
     if (!screamingSnakeCaseRegex.test(input)) {
-        return `"${input}" ${notScreamingSnakeCaseMessage} ${commonErrorMessage}`;
+        return `"${input}" is not a valid SCREAMING_SNAKE_CASE. Only SCREAMING_SNAKE_CASE inputs are expected.`;
     }
 
     return true;
 };
 
 export const camelCaseValidation = async (input: string): Promise<true | string> => {
-    const notCamelCaseMessage = 'is not a valid camelCase.';
-    const commonErrorMessage = 'Only camelCase inputs are expected.';
-
     if (!camelCaseRegex.test(input)) {
-        return `"${input}" ${notCamelCaseMessage} ${commonErrorMessage}`;
+        return `"${input}" is not a valid camelCase. Only camelCase inputs are expected.`;
     }
 
     return true;
 };
 
 export const pascalCaseValidation = async (input: string): Promise<true | string> => {
-    const notPascalCaseMessage = 'is not a valid PascalCase.';
-    const commonErrorMessage = 'Only PascalCase inputs are expected.';
-
     if (!pascalCaseRegex.test(input)) {
-        return `"${input}" ${notPascalCaseMessage} ${commonErrorMessage}`;
+        return `"${input}" is not a valid PascalCase. Only PascalCase inputs are expected.`;
     }
 
     return true;
 };
 
 export const integerValidation = async (input: string): Promise<true | string> => {
-    const notAnIntegerMessage = 'is not an integer.';
-    const commonErrorMessage = 'Only unformatted finite integers are expected.';
-
     if (!isFiniteNumber(input)) {
         return notAValidNumberFormat(input);
     }
 
     if (!Number.isInteger(+input)) {
-        return `"${input}" ${notAnIntegerMessage} ${commonErrorMessage}`;
+        return `"${input}" is not an integer. Only unformatted finite integers are expected.`;
     }
 
     return true;
 };
 
 export const naturalNumberValidation = async (input: string): Promise<true | string> => {
-    const notANaturalNumberMessage = 'is not a natural number.';
-    const commonErrorMessage = 'Only unformatted finite natural numbers are expected.';
-
     if (!isFiniteNumber(input)) {
         return notAValidNumberFormat(input);
     }
 
     const parsedNumber = +input;
     if (!Number.isInteger(parsedNumber) || parsedNumber <= 0) {
-        return `"${input}" ${notANaturalNumberMessage} ${commonErrorMessage}`;
+        return `"${input}" is not a natural number. Only unformatted finite natural numbers are expected.`;
     }
 
     return true;
