@@ -666,6 +666,24 @@ describe('naturalNumberValidation', () => {
             });
         });
     });
+    describe('Given a "falsy" string custom error message', () => {
+        const errorMessage = '';
+        describe('And a non valid input', () => {
+            const invalidInput = '-1';
+            describe('When I call "numberValidation" with those parameters', () => {
+                let result: Promise<boolean | string> | undefined;
+                beforeEach(() => {
+                    result = naturalNumberValidation(errorMessage)(invalidInput);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then an empty string is returned as error message', async () => {
+                    expect(await result).toStrictEqual('');
+                });
+            });
+        });
+    });
 });
 
 describe('numberValidation', () => {
@@ -745,6 +763,24 @@ describe('numberValidation', () => {
             });
             test('Then the correct value is returned', async () => {
                 expect(await result).toStrictEqual(expected);
+            });
+        });
+    });
+    describe('Given a "falsy" string custom error message', () => {
+        const errorMessage = '';
+        describe('And a non valid input', () => {
+            const invalidInput = 'one';
+            describe('When I call "numberValidation" with those parameters', () => {
+                let result: Promise<boolean | string> | undefined;
+                beforeEach(() => {
+                    result = numberValidation(errorMessage)(invalidInput);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then an empty string is returned as error message', async () => {
+                    expect(await result).toStrictEqual('');
+                });
             });
         });
     });

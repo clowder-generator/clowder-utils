@@ -188,13 +188,15 @@ export const integerValidation = (): stringValidationFunction => {
 export const naturalNumberValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!isFiniteNumber(input)) {
-            return errorMessage ? format(errorMessage, input) : notAValidNumberFormat(input);
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : notAValidNumberFormat(input);
         }
 
         // Stryker disable next-line UnaryOperator: Here, -input or +input have meaning since we test for isFinite and not on actual value
         const parsedNumber = +input;
         if (!Number.isInteger(parsedNumber) || parsedNumber <= 0) {
-            return errorMessage
+            return errorMessage !== undefined
                 ? format(errorMessage, input)
                 : `"${input}" is not a natural number. Only unformatted finite natural numbers are expected.`;
         }
@@ -206,7 +208,9 @@ export const naturalNumberValidation = (errorMessage?: string): stringValidation
 export const numberValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!isFiniteNumber(input)) {
-            return errorMessage ? format(errorMessage, input) : notAValidNumberFormat(input);
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : notAValidNumberFormat(input);
         }
 
         return true;
