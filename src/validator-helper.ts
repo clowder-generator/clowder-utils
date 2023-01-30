@@ -170,15 +170,19 @@ export const pascalCaseValidation = (): stringValidationFunction => {
     };
 };
 
-export const integerValidation = (): stringValidationFunction => {
+export const integerValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!isFiniteNumber(input)) {
-            return notAValidNumberFormat(input);
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : notAValidNumberFormat(input);
         }
 
         // Stryker disable next-line UnaryOperator: Here, -input or +input have meaning since we test for isFinite and not on actual value
         if (!Number.isInteger(+input)) {
-            return `"${input}" is not an integer. Only unformatted finite integers are expected.`;
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : `"${input}" is not an integer. Only unformatted finite integers are expected.`;
         }
 
         return true;
