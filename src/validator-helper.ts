@@ -150,10 +150,12 @@ export const screamingSnakeCaseValidation = (): stringValidationFunction => {
     };
 };
 
-export const camelCaseValidation = (): stringValidationFunction => {
+export const camelCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!camelCaseRegex.test(input)) {
-            return `"${input}" is not a valid camelCase. Only camelCase inputs are expected.`;
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : `"${input}" is not a valid camelCase. Only camelCase inputs are expected.`;
         }
 
         return true;

@@ -494,15 +494,45 @@ describe('camelCaseValidation', () => {
     });
     describe('Given a non valid camelCase input', () => {
         const input = 'not-camel-case';
-        describe('When I call "camelCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = camelCaseValidation()(input);
+        describe('and no custom error message', () => {
+            describe('When I call "camelCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = camelCaseValidation()(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('"not-camel-case" is not a valid camelCase. Only camelCase inputs are expected.');
+                });
             });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
+        });
+        describe('and the custom error message "nope, not a camelCase: %s"', () => {
+            const errorMessage = 'nope, not a camelCase: "%s"';
+            describe('When I call "camelCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = camelCaseValidation(errorMessage)(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('nope, not a camelCase: "not-camel-case"');
+                });
             });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('"not-camel-case" is not a valid camelCase. Only camelCase inputs are expected.');
+        });
+        describe('and a "falsy" string error message', () => {
+            const errorMessage = '';
+            describe('When I call "camelCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = camelCaseValidation(errorMessage)(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('');
+                });
             });
         });
     });
@@ -542,8 +572,8 @@ describe('pascalCaseValidation', () => {
                 });
             });
         });
-        describe('and a custom error message "nope, not a pascalCase: %s"', () => {
-            const errorMessage = 'nope, not a pascalCase: "%s"';
+        describe('and a custom error message "nope, not a PascalCase: %s"', () => {
+            const errorMessage = 'nope, not a PascalCase: "%s"';
             describe('When I call "pascalCaseValidation" on this input', () => {
                 beforeEach(() => {
                     result = pascalCaseValidation(errorMessage)(input);
@@ -552,7 +582,7 @@ describe('pascalCaseValidation', () => {
                     expect(result).toBeInstanceOf(Promise);
                 });
                 test('Then the promise contains the appropriate message', async () => {
-                    expect(await result).toStrictEqual('nope, not a pascalCase: "not-pascal-case"');
+                    expect(await result).toStrictEqual('nope, not a PascalCase: "not-pascal-case"');
                 });
             });
         });
