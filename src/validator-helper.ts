@@ -201,19 +201,10 @@ export const naturalNumberValidation = (): stringValidationFunction => {
     };
 };
 
-/**
- * Validate if the given input is a valid number. Validation is done with 'isFinite' and
- * string to number conversion using the unary operator '+'. Hence, every number that
- * is not interpreted as Infinity or NaN is a valid number
- *
- * @param input: the input you want to test
- * @returns: true: if the input is a valid number
- *           string: if the input is not a valid number
- */
-export const numberValidation = (): stringValidationFunction => {
+export const numberValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!isFiniteNumber(input)) {
-            return notAValidNumberFormat(input);
+            return errorMessage ? format(errorMessage, input) : notAValidNumberFormat(input);
         }
 
         return true;
@@ -227,4 +218,8 @@ const isFiniteNumber = (input: string): boolean => {
 
 const notAValidNumberFormat = (input: string): string => {
     return `"${input}" is not a valid number. Only unformatted finite numbers are expected.`;
+};
+
+const format = (message: string, input: string): string => {
+    return message.replace('%s', input);
 };

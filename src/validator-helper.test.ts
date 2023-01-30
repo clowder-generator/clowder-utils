@@ -626,41 +626,83 @@ describe('naturalNumberValidation', () => {
 });
 
 describe('numberValidation', () => {
-    describe.each([
-        ['0', true],
-        ['1', true],
-        ['1234', true],
-        ['1.0', true],
-        ['+123', true],
-        ['-123', true],
-        ['-1', true],
-        ['-0.01', true],
-        ['10e3', true],
-        ['10e-3', true],
-        ['0123', true],
-        ['0xBABE', true],
-        ['0o10', true],
-        ['0b10', true],
-        ['12 3', '"12 3" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['12e999', '"12e999" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['one', '"one" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['.0.1', '".0.1" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['0o88', '"0o88" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['0b12', '"0b12" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['0xGG', '"0xGG" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['12e', '"12e" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['Infinity', '"Infinity" is not a valid number. Only unformatted finite numbers are expected.']
-    ])('When I call "numberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
-        let result: Promise<boolean | string> | undefined;
-        beforeEach(() => {
-            result = numberValidation()(input);
+    describe('Given no custom error message', () => {
+        describe.each([
+            ['0', true],
+            ['1', true],
+            ['1234', true],
+            ['1.0', true],
+            ['+123', true],
+            ['-123', true],
+            ['-1', true],
+            ['-0.01', true],
+            ['10e3', true],
+            ['10e-3', true],
+            ['0123', true],
+            ['0xBABE', true],
+            ['0o10', true],
+            ['0b10', true],
+            ['12 3', '"12 3" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['12e999', '"12e999" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['one', '"one" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['.0.1', '".0.1" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['0o88', '"0o88" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['0b12', '"0b12" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['0xGG', '"0xGG" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['12e', '"12e" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['Infinity', '"Infinity" is not a valid number. Only unformatted finite numbers are expected.']
+        ])('When I call "numberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = numberValidation()(input);
+            });
+            test('Then a Promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct value should be returned', async () => {
+                expect(await result).toStrictEqual(expectedResult);
+            });
         });
-        test('Then a Promise is returned', () => {
-            expect(result).toBeInstanceOf(Promise);
-        });
-        test('Then the correct value should be returned', async () => {
-            expect(await result).toStrictEqual(expectedResult);
+    });
+    describe('Given a custom error message "not a proper number: %s"', () => {
+        const errorMessage = 'not a proper number: "%s"';
+        describe.each([
+            ['0', true],
+            ['1', true],
+            ['1234', true],
+            ['1.0', true],
+            ['+123', true],
+            ['-123', true],
+            ['-1', true],
+            ['-0.01', true],
+            ['10e3', true],
+            ['10e-3', true],
+            ['0123', true],
+            ['0xBABE', true],
+            ['0o10', true],
+            ['0b10', true],
+            ['12 3', 'not a proper number: "12 3"'],
+            ['12e999', 'not a proper number: "12e999"'],
+            ['one', 'not a proper number: "one"'],
+            ['.0.1', 'not a proper number: ".0.1"'],
+            ['0o88', 'not a proper number: "0o88"'],
+            ['0b12', 'not a proper number: "0b12"'],
+            ['0xGG', 'not a proper number: "0xGG"'],
+            ['12e', 'not a proper number: "12e"'],
+            ['1,000,000.00', 'not a proper number: "1,000,000.00"'],
+            ['Infinity', 'not a proper number: "Infinity"']
+        ])('', (input: string, expected: boolean | string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = numberValidation(errorMessage)(input);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct value is returned', async () => {
+                expect(await result).toStrictEqual(expected);
+            });
         });
     });
 });
