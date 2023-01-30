@@ -585,42 +585,85 @@ describe('integerValidation', () => {
 });
 
 describe('naturalNumberValidation', () => {
-    describe.each([
-        ['1', true],
-        ['1234', true],
-        ['1.0', true],
-        ['+123', true],
-        ['10e3', true],
-        ['0123', true],
-        ['0xBABE', true],
-        ['0o10', true],
-        ['0b10', true],
-        ['', '"" is not a natural number. Only unformatted finite natural numbers are expected.'],
-        ['10e-3', '"10e-3" is not a natural number. Only unformatted finite natural numbers are expected.'],
-        ['-0.01', '"-0.01" is not a natural number. Only unformatted finite natural numbers are expected.'],
-        ['-123', '"-123" is not a natural number. Only unformatted finite natural numbers are expected.'],
-        ['0', '"0" is not a natural number. Only unformatted finite natural numbers are expected.'],
-        ['-1', '"-1" is not a natural number. Only unformatted finite natural numbers are expected.'],
-        ['12 3', '"12 3" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['12e999', '"12e999" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['one', '"one" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['.0.1', '".0.1" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['0o88', '"0o88" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['0b12', '"0b12" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['0xGG', '"0xGG" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['12e', '"12e" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted finite numbers are expected.'],
-        ['Infinity', '"Infinity" is not a valid number. Only unformatted finite numbers are expected.']
-    ])('When I call "naturalNumberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
-        let result: Promise<boolean | string> | undefined;
-        beforeEach(() => {
-            result = naturalNumberValidation()(input);
+    describe('Given no custom error message', () => {
+        describe.each([
+            ['1', true],
+            ['1234', true],
+            ['1.0', true],
+            ['+123', true],
+            ['10e3', true],
+            ['0123', true],
+            ['0xBABE', true],
+            ['0o10', true],
+            ['0b10', true],
+            ['', '"" is not a natural number. Only unformatted finite natural numbers are expected.'],
+            ['10e-3', '"10e-3" is not a natural number. Only unformatted finite natural numbers are expected.'],
+            ['-0.01', '"-0.01" is not a natural number. Only unformatted finite natural numbers are expected.'],
+            ['-123', '"-123" is not a natural number. Only unformatted finite natural numbers are expected.'],
+            ['0', '"0" is not a natural number. Only unformatted finite natural numbers are expected.'],
+            ['-1', '"-1" is not a natural number. Only unformatted finite natural numbers are expected.'],
+            ['12 3', '"12 3" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['12e999', '"12e999" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['one', '"one" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['.0.1', '".0.1" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['0o88', '"0o88" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['0b12', '"0b12" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['0xGG', '"0xGG" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['12e', '"12e" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['1,000,000.00', '"1,000,000.00" is not a valid number. Only unformatted finite numbers are expected.'],
+            ['Infinity', '"Infinity" is not a valid number. Only unformatted finite numbers are expected.']
+        ])('When I call "naturalNumberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = naturalNumberValidation()(input);
+            });
+            test('Then a promise is return', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct value should be returned', async () => {
+                expect(await result).toStrictEqual(expectedResult);
+            });
         });
-        test('Then a promise is return', () => {
-            expect(result).toBeInstanceOf(Promise);
-        });
-        test('Then the correct value should be returned', async () => {
-            expect(await result).toStrictEqual(expectedResult);
+    });
+    describe('Given a custom error message "nope, not a natural number: %s"', () => {
+        const errorMessage = 'nope, not a natural number: "%s"';
+        describe.each([
+            ['1', true],
+            ['1234', true],
+            ['1.0', true],
+            ['+123', true],
+            ['10e3', true],
+            ['0123', true],
+            ['0xBABE', true],
+            ['0o10', true],
+            ['0b10', true],
+            ['', 'nope, not a natural number: ""'],
+            ['10e-3', 'nope, not a natural number: "10e-3"'],
+            ['-0.01', 'nope, not a natural number: "-0.01"'],
+            ['-123', 'nope, not a natural number: "-123"'],
+            ['0', 'nope, not a natural number: "0"'],
+            ['-1', 'nope, not a natural number: "-1"'],
+            ['12 3', 'nope, not a natural number: "12 3"'],
+            ['12e999', 'nope, not a natural number: "12e999"'],
+            ['one', 'nope, not a natural number: "one"'],
+            ['.0.1', 'nope, not a natural number: ".0.1"'],
+            ['0o88', 'nope, not a natural number: "0o88"'],
+            ['0b12', 'nope, not a natural number: "0b12"'],
+            ['0xGG', 'nope, not a natural number: "0xGG"'],
+            ['12e', 'nope, not a natural number: "12e"'],
+            ['1,000,000.00', 'nope, not a natural number: "1,000,000.00"'],
+            ['Infinity', 'nope, not a natural number: "Infinity"']
+        ])('When I call "naturalNumberValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = naturalNumberValidation(errorMessage)(input);
+            });
+            test('Then a promise is return', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct value should be returned', async () => {
+                expect(await result).toStrictEqual(expectedResult);
+            });
         });
     });
 });
