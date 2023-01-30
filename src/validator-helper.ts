@@ -160,10 +160,12 @@ export const camelCaseValidation = (): stringValidationFunction => {
     };
 };
 
-export const pascalCaseValidation = (): stringValidationFunction => {
+export const pascalCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!pascalCaseRegex.test(input)) {
-            return `"${input}" is not a valid PascalCase. Only PascalCase inputs are expected.`;
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : `"${input}" is not a valid PascalCase. Only PascalCase inputs are expected.`;
         }
 
         return true;
