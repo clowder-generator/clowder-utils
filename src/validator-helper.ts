@@ -110,10 +110,12 @@ export const noInnerWhiteSpaceValidation = (): stringValidationFunction => {
     };
 };
 
-export const kebabCaseValidation = (): stringValidationFunction => {
+export const kebabCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!kebabCaseRegex.test(input)) {
-            return `"${input}" is not a valid kebab-case. Only kebab-case inputs are expected.`;
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : `"${input}" is not a valid kebab-case. Only kebab-case inputs are expected.`;
         }
 
         return true;
