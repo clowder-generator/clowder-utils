@@ -424,15 +424,45 @@ describe('snakeCaseValidation', () => {
     });
     describe('Given a non valid snake_case input', () => {
         const input = 'not-snake-case';
-        describe('When I call "snakeCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = snakeCaseValidation()(input);
+        describe('and no custom error message', () => {
+            describe('When I call "snakeCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = snakeCaseValidation()(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('"not-snake-case" is not a valid snake_case. Only snake_case inputs are expected.');
+                });
             });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
+        });
+        describe('and the custom error message "nope, not a snake_case: %s"', () => {
+            const errorMessage = 'nope, not a snake_case: "%s"';
+            describe('When I call "snakeCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = snakeCaseValidation(errorMessage)(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('nope, not a snake_case: "not-snake-case"');
+                });
             });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('"not-snake-case" is not a valid snake_case. Only snake_case inputs are expected.');
+        });
+        describe('and a "falsy" string error message', () => {
+            const errorMessage = '';
+            describe('When I call "snakeCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = snakeCaseValidation(errorMessage)(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('');
+                });
             });
         });
     });

@@ -130,10 +130,12 @@ export const screamingKebabCaseValidation = (): stringValidationFunction => {
     };
 };
 
-export const snakeCaseValidation = (): stringValidationFunction => {
+export const snakeCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!snakeCaseRegex.test(input)) {
-            return `"${input}" is not a valid snake_case. Only snake_case inputs are expected.`;
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : `"${input}" is not a valid snake_case. Only snake_case inputs are expected.`;
         }
 
         return true;
