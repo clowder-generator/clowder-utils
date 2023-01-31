@@ -389,15 +389,45 @@ describe('screamingKebabCaseValidation', () => {
     });
     describe('Given a non valid SCREAMING-KEBAB-CASE input', () => {
         const input = 'not-screaming-kebab-case';
-        describe('When I call "screamingKebabCaseValidation" on this input', () => {
-            beforeEach(() => {
-                result = screamingKebabCaseValidation()(input);
+        describe('and no custom error message', () => {
+            describe('When I call "screamingKebabCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = screamingKebabCaseValidation()(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('"not-screaming-kebab-case" is not a valid SCREAMING-KEBAB-CASE. Only SCREAMING-KEBAB-CASE inputs are expected.');
+                });
             });
-            test('Then a promise is returned', () => {
-                expect(result).toBeInstanceOf(Promise);
+        });
+        describe('and the custom error message "nope, not a SCREAMING-KEBAB-CASE: %s"', () => {
+            const errorMessage = 'nope, not a SCREAMING-KEBAB-CASE: "%s"';
+            describe('When I call "screamingKebabCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = screamingKebabCaseValidation(errorMessage)(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('nope, not a SCREAMING-KEBAB-CASE: "not-screaming-kebab-case"');
+                });
             });
-            test('Then the promise contains the appropriate message', async () => {
-                expect(await result).toStrictEqual('"not-screaming-kebab-case" is not a valid SCREAMING-KEBAB-CASE. Only SCREAMING-KEBAB-CASE inputs are expected.');
+        });
+        describe('and a "falsy" string error message', () => {
+            const errorMessage = '';
+            describe('When I call "screamingKebabCaseValidation" on this input', () => {
+                beforeEach(() => {
+                    result = screamingKebabCaseValidation(errorMessage)(input);
+                });
+                test('Then a promise is returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the promise contains the appropriate message', async () => {
+                    expect(await result).toStrictEqual('');
+                });
             });
         });
     });

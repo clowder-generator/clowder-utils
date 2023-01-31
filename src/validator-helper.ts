@@ -120,10 +120,12 @@ export const kebabCaseValidation = (): stringValidationFunction => {
     };
 };
 
-export const screamingKebabCaseValidation = (): stringValidationFunction => {
+export const screamingKebabCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!screamingKebabCaseRegex.test(input)) {
-            return `"${input}" is not a valid SCREAMING-KEBAB-CASE. Only SCREAMING-KEBAB-CASE inputs are expected.`;
+            return errorMessage !== undefined
+                ? format(errorMessage, input)
+                : `"${input}" is not a valid SCREAMING-KEBAB-CASE. Only SCREAMING-KEBAB-CASE inputs are expected.`;
         }
 
         return true;
