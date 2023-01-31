@@ -472,8 +472,8 @@ describe('screamingSnakeCaseValidation', () => {
                 });
             });
         });
-        describe('and the custom error message "nope, not SCREAMING-SNAKE-CASE: %s"', () => {
-            const errorMessage = 'nope, not SCREAMING-SNAKE-CASE: "%s"';
+        describe('and the custom error message "nope, not SCREAMING_SNAKE_CASE: %s"', () => {
+            const errorMessage = 'nope, not SCREAMING_SNAKE_CASE: "%s"';
             describe('When I call "screamingSnakeCaseValidation" on this input', () => {
                 beforeEach(() => {
                     result = screamingSnakeCaseValidation(errorMessage)(input);
@@ -482,7 +482,7 @@ describe('screamingSnakeCaseValidation', () => {
                     expect(result).toBeInstanceOf(Promise);
                 });
                 test('Then the promise contains the appropriate message', async () => {
-                    expect(await result).toStrictEqual('nope, not SCREAMING-SNAKE-CASE: "not_screaming_snake_case"');
+                    expect(await result).toStrictEqual('nope, not SCREAMING_SNAKE_CASE: "not_screaming_snake_case"');
                 });
             });
         });
