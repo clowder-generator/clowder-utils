@@ -131,6 +131,26 @@ describe('regexMatchValidation', () => {
                 });
             });
         });
+        describe('and a "falsy" string error message', () => {
+            const errorMessage = '';
+            describe.each([
+                ['1234', true],
+                ['-123', ''],
+                ['', ''],
+                ['0123', '']
+            ])('When I test the resulting validation function with the input "%s"', (input: string, expected: boolean | string) => {
+                let result: Promise<boolean | string> | undefined;
+                beforeEach(() => {
+                    result = shouldMatchRegexValidation(regex, errorMessage)(input);
+                });
+                test('Then a promise should be returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the correct value should be returned', async () => {
+                    expect(await result).toStrictEqual(expected);
+                });
+            });
+        });
         describe('and no custom error message', () => {
             describe.each([
                 ['1234', true],
@@ -163,6 +183,26 @@ describe('shouldNotMatchRegexValidation', () => {
                 ['', true],
                 ['0123', true],
                 ['1234', 'The input "1234" is a natural number. Please do not provide a natural number.']
+            ])('When I test the resulting validation function with the input "%s"', (input: string, expected: boolean | string) => {
+                let result: Promise<boolean | string> | undefined;
+                beforeEach(() => {
+                    result = shouldNotMatchRegexValidation(regex, errorMessage)(input);
+                });
+                test('Then a promise should be returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the correct value should be returned', async () => {
+                    expect(await result).toStrictEqual(expected);
+                });
+            });
+        });
+        describe('and a "falsy" string error message', () => {
+            const errorMessage = '';
+            describe.each([
+                ['-123', true],
+                ['', true],
+                ['0123', true],
+                ['1234', '']
             ])('When I test the resulting validation function with the input "%s"', (input: string, expected: boolean | string) => {
                 let result: Promise<boolean | string> | undefined;
                 beforeEach(() => {
@@ -220,6 +260,25 @@ describe('nonBlankValidation', () => {
             expect(await result).toStrictEqual(expected);
         });
     });
+    describe('Given the non valid input ""', () => {
+        const invalidInput = '';
+        describe.each([
+            [undefined, '"" is blank. Only word which are not blank are expected.'],
+            ['nope, blank: "%s"', 'nope, blank: ""'],
+            ['', '']
+        ])('when I call "nonBlankValidation" on the invalid input with the errorMessage "%s"', (errorMessageTemplate: string | undefined, expectedErrorMessage: string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = nonBlankValidation(errorMessageTemplate)(invalidInput);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct returned string is expected', async () => {
+                expect(await result).toStrictEqual(expectedErrorMessage);
+            });
+        });
+    });
 });
 
 describe('noWhiteSpaceValidation', () => {
@@ -244,6 +303,25 @@ describe('noWhiteSpaceValidation', () => {
             expect(await result).toStrictEqual(expected);
         });
     });
+    describe('Given the non valid input " <here <here"', () => {
+        const invalidInput = ' <here <here';
+        describe.each([
+            [undefined, '" <here <here" contains white chars. Only word with no white char are allowed.'],
+            ['nope, white space: "%s"', 'nope, white space: " <here <here"'],
+            ['', '']
+        ])('when I call "noWhiteSpaceValidation" on the invalid input with the errorMessage "%s"', (errorMessageTemplate: string | undefined, expectedErrorMessage: string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = noWhiteSpaceValidation(errorMessageTemplate)(invalidInput);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct returned string is expected', async () => {
+                expect(await result).toStrictEqual(expectedErrorMessage);
+            });
+        });
+    });
 });
 
 describe('doNotStartWithNumberValidation', () => {
@@ -263,6 +341,25 @@ describe('doNotStartWithNumberValidation', () => {
         });
         test('Then the correct value should be returned', async () => {
             expect(await result).toStrictEqual(expected);
+        });
+    });
+    describe('Given the non valid input "9<here"', () => {
+        const invalidInput = '9<here';
+        describe.each([
+            [undefined, '"9<here" starts with a number. Only word with no leading number are expected.'],
+            ['nope, start with a number: "%s"', 'nope, start with a number: "9<here"'],
+            ['', '']
+        ])('when I call "doNotStartWithNumberValidation" on the invalid input with the errorMessage "%s"', (errorMessageTemplate: string | undefined, expectedErrorMessage: string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = doNotStartWithNumberValidation(errorMessageTemplate)(invalidInput);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct returned string is expected', async () => {
+                expect(await result).toStrictEqual(expectedErrorMessage);
+            });
         });
     });
 });
@@ -287,6 +384,25 @@ describe('noTrailingWhiteSpaceValidation', () => {
             expect(await result).toStrictEqual(expectedResult);
         });
     });
+    describe('Given the non valid input "here> "', () => {
+        const invalidInput = 'here> ';
+        describe.each([
+            [undefined, '"here> " contains a trailing blank char. A valid input should not have trailing white space.'],
+            ['nope, contains trailing white space "%s"', 'nope, contains trailing white space "here> "'],
+            ['', '']
+        ])('when I call "noTrailingWhiteSpaceValidation" on the invalid input with the errorMessage "%s"', (errorMessageTemplate: string | undefined, expectedErrorMessage: string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = noTrailingWhiteSpaceValidation(errorMessageTemplate)(invalidInput);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct returned string is expected', async () => {
+                expect(await result).toStrictEqual(expectedErrorMessage);
+            });
+        });
+    });
 });
 
 describe('noLeadingWhiteSpaceValidation', () => {
@@ -309,6 +425,25 @@ describe('noLeadingWhiteSpaceValidation', () => {
             expect(await result).toStrictEqual(expectedResult);
         });
     });
+    describe('Given the non valid input " <here"', () => {
+        const invalidInput = ' <here';
+        describe.each([
+            [undefined, '" <here" contains a leading blank char. A valid input should not have leading white space.'],
+            ['nope, contains leading white space "%s"', 'nope, contains leading white space " <here"'],
+            ['', '']
+        ])('when I call "noLeadingWhiteSpaceValidation" on the invalid input with the errorMessage "%s"', (errorMessageTemplate: string | undefined, expectedErrorMessage: string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = noLeadingWhiteSpaceValidation(errorMessageTemplate)(invalidInput);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct returned string is expected', async () => {
+                expect(await result).toStrictEqual(expectedErrorMessage);
+            });
+        });
+    });
 });
 
 describe('noInnerWhiteSpaceValidation', () => {
@@ -329,6 +464,25 @@ describe('noInnerWhiteSpaceValidation', () => {
         });
         test('Then the correct value should be returned', async () => {
             expect(await result).toStrictEqual(expectedResult);
+        });
+    });
+    describe('Given the non valid input "here> <here"', () => {
+        const invalidInput = 'here> <here';
+        describe.each([
+            [undefined, '"here> <here" contains a blank char in the middle. A valid input should not have inner white space.'],
+            ['nope, contains inner white space "%s"', 'nope, contains inner white space "here> <here"'],
+            ['', '']
+        ])('when I call "noInnerWhiteSpaceValidation" on the invalid input with the errorMessage "%s"', (errorMessageTemplate: string | undefined, expectedErrorMessage: string) => {
+            let result: Promise<boolean | string> | undefined;
+            beforeEach(() => {
+                result = noInnerWhiteSpaceValidation(errorMessageTemplate)(invalidInput);
+            });
+            test('Then a promise is returned', () => {
+                expect(result).toBeInstanceOf(Promise);
+            });
+            test('Then the correct returned string is expected', async () => {
+                expect(await result).toStrictEqual(expectedErrorMessage);
+            });
         });
     });
 });
