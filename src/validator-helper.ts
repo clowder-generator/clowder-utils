@@ -11,6 +11,8 @@ export type stringValidationFunction = (input: string) => Promise<true | string>
 
 export interface ValidationOption {
     trimmed?: boolean;
+    globalErrorMessage?: string;
+    hideRootCause?: boolean;
 }
 
 export const validateWith = (funcs: stringValidationFunction[], opt?: ValidationOption): stringValidationFunction => {
@@ -20,7 +22,15 @@ export const validateWith = (funcs: stringValidationFunction[], opt?: Validation
         for (const fun of funcs) {
             const result: true | string = await fun(transformedInput);
             if (typeof result === 'string') {
-                return result;
+                if (opt?.globalErrorMessage !== undefined && opt?.hideRootCause) {
+                    return format(opt.globalErrorMessage, transformedInput);
+                }
+                if (opt?.globalErrorMessage !== undefined && !opt?.hideRootCause) {
+                    return `${format(opt.globalErrorMessage, transformedInput)} Cause: ${result}`.trimStart();
+                }
+                if (!opt?.globalErrorMessage) {
+                    return result;
+                }
             }
         }
         return true;
