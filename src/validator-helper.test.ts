@@ -49,6 +49,30 @@ describe('validateWith', () => {
                 });
             });
         });
+        describe('and empty validation option', () => {
+            describe.each([
+                ['4', 'input is not lower than 3'],
+                ['3', 'input is not lower than 3'],
+                ['2', 'input is not lower than 2'],
+                ['1', 'input is not lower than 1'],
+                ['0', true]
+            ])('When I call the composition of function on the input "%s"', (input: string, expected: boolean | string) => {
+                let result: Promise<boolean | string> | undefined;
+                beforeEach(() => {
+                    result = validateWith([
+                        lowerThan3,
+                        lowerThan2,
+                        lowerThan1
+                    ], {})(input);
+                });
+                test('Then a promise should be returned', () => {
+                    expect(result).toBeInstanceOf(Promise);
+                });
+                test('Then the correct value should be returned', async () => {
+                    expect(await result).toStrictEqual(expected);
+                });
+            });
+        });
         describe('and a function to assert some rules on white space char presence', () => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const noLeadingWhiteSpaces: stringValidationFunction = async (input) => /^\s+.*$/.test(input) ? 'leading :(' : true;

@@ -9,11 +9,11 @@ import {
 
 export type stringValidationFunction = (input: string) => Promise<true | string>;
 
-export interface StringValidationOption {
-    trimmed: boolean;
+export interface ValidationOption {
+    trimmed?: boolean;
 }
 
-export const validateWith = (funcs: stringValidationFunction[], opt?: StringValidationOption): stringValidationFunction => {
+export const validateWith = (funcs: stringValidationFunction[], opt?: ValidationOption): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         const transformedInput = opt?.trimmed ? input.trim() : input;
 
