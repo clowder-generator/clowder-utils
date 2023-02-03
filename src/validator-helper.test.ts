@@ -208,6 +208,30 @@ describe('validateWith', () => {
                         });
                     });
                 });
+                describe('and hideRootCause undefined', () => {
+                    describe.each([
+                        ['not valid: "%s".', 'not valid: "2". Cause: input is not lower than 2'],
+                        ['not valid.', 'not valid. Cause: input is not lower than 2'],
+                        ['', 'Cause: input is not lower than 2']
+                    ])('When I call the composition function on the input "%s" with the error message', (errorMessage: string, expectedErrorMessage: string) => {
+                        let result: Promise<boolean | string> | undefined;
+                        beforeEach(() => {
+                            result = validateWith([
+                                lowerThan3,
+                                lowerThan2,
+                                lowerThan1
+                            ], {
+                                globalErrorMessage: errorMessage
+                            })(invalidInput);
+                        });
+                        test('Then a promise should be returned', () => {
+                            expect(result).toBeInstanceOf(Promise);
+                        });
+                        test('Then the correct error message should be returned', async () => {
+                            expect(await result).toStrictEqual(expectedErrorMessage);
+                        });
+                    });
+                });
             });
         });
     });

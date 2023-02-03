@@ -15,6 +15,20 @@ export interface ValidationOption {
     hideRootCause?: boolean;
 }
 
+const defaultErrorMessageOnly = (validationOption: ValidationOption | undefined): boolean => {
+    return validationOption === undefined || validationOption.globalErrorMessage === undefined;
+};
+const globalErrorMessageOnly = (validationOption: ValidationOption | undefined): boolean => {
+    return validationOption?.globalErrorMessage !== undefined &&
+        validationOption.hideRootCause === true;
+};
+const globalAndDefaultErrorMessage = (validationOption: ValidationOption | undefined): boolean => {
+    return validationOption !== undefined && (
+        validationOption.globalErrorMessage !== undefined &&
+        validationOption.hideRootCause !== true
+    );
+};
+
 export const validateWith = (funcs: stringValidationFunction[], opt?: ValidationOption): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         const transformedInput = opt?.trimmed ? input.trim() : input;
@@ -22,13 +36,13 @@ export const validateWith = (funcs: stringValidationFunction[], opt?: Validation
         for (const fun of funcs) {
             const result: true | string = await fun(transformedInput);
             if (typeof result === 'string') {
-                if (opt?.globalErrorMessage !== undefined && opt?.hideRootCause) {
-                    return format(opt.globalErrorMessage, transformedInput);
+                if (globalErrorMessageOnly(opt)) {
+                    return format((opt as ValidationOption).globalErrorMessage as string, transformedInput);
                 }
-                if (opt?.globalErrorMessage !== undefined && !opt?.hideRootCause) {
-                    return `${format(opt.globalErrorMessage, transformedInput)} Cause: ${result}`.trimStart();
+                if (globalAndDefaultErrorMessage(opt)) {
+                    return `${format((opt as ValidationOption).globalErrorMessage as string, transformedInput)} Cause: ${result}`.trimStart();
                 }
-                if (!opt?.globalErrorMessage) {
+                if (defaultErrorMessageOnly(opt)) {
                     return result;
                 }
             }
