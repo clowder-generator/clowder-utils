@@ -54,9 +54,9 @@ export const validateWith = (funcs: stringValidationFunction[], opt?: Validation
 export const shouldMatchRegexValidation = (regex: RegExp, errorMessageFormat?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!regex.test(input)) {
-            return errorMessageFormat !== undefined
-                ? format(errorMessageFormat, input)
-                : `The input "${input}" should match the regex ${regex.toString()}.`;
+            return formatWithDefault(errorMessageFormat, input,
+                `The input "${input}" should match the regex ${regex.toString()}.`
+            );
         }
 
         return true;
@@ -66,9 +66,9 @@ export const shouldMatchRegexValidation = (regex: RegExp, errorMessageFormat?: s
 export const shouldNotMatchRegexValidation = (regex: RegExp, errorMessageFormat?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (regex.test(input)) {
-            return errorMessageFormat !== undefined
-                ? format(errorMessageFormat, input)
-                : `The input "${input}" should not match the regex ${regex.toString()}.`;
+            return formatWithDefault(errorMessageFormat, input,
+                `The input "${input}" should not match the regex ${regex.toString()}.`
+            );
         }
 
         return true;
@@ -78,9 +78,7 @@ export const shouldNotMatchRegexValidation = (regex: RegExp, errorMessageFormat?
 export const nonBlankValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (/^\s*$/.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is blank. Only word which are not blank are expected.`;
+            return formatWithDefault(errorMessage, input, `"${input}" is blank. Only word which are not blank are expected.`);
         }
 
         return true;
@@ -90,9 +88,9 @@ export const nonBlankValidation = (errorMessage?: string): stringValidationFunct
 export const noWhiteSpaceValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (/^.*\s+.*$/.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" contains white chars. Only word with no white char are allowed.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" contains white chars. Only word with no white char are allowed.`
+            );
         }
 
         return true;
@@ -102,9 +100,9 @@ export const noWhiteSpaceValidation = (errorMessage?: string): stringValidationF
 export const doNotStartWithNumberValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (/^\d.*$/.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" starts with a number. Only word with no leading number are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" starts with a number. Only word with no leading number are expected.`
+            );
         }
 
         return true;
@@ -114,9 +112,9 @@ export const doNotStartWithNumberValidation = (errorMessage?: string): stringVal
 export const noTrailingWhiteSpaceValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (/^.*\s$/.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" contains a trailing blank char. A valid input should not have trailing white space.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" contains a trailing blank char. A valid input should not have trailing white space.`
+            );
         }
 
         return true;
@@ -126,9 +124,9 @@ export const noTrailingWhiteSpaceValidation = (errorMessage?: string): stringVal
 export const noLeadingWhiteSpaceValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (/^\s.*$/.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" contains a leading blank char. A valid input should not have leading white space.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" contains a leading blank char. A valid input should not have leading white space.`
+            );
         }
         return true;
     };
@@ -137,9 +135,9 @@ export const noLeadingWhiteSpaceValidation = (errorMessage?: string): stringVali
 export const noInnerWhiteSpaceValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (/.*\S\s+\S.*/.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" contains a blank char in the middle. A valid input should not have inner white space.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" contains a blank char in the middle. A valid input should not have inner white space.`
+            );
         }
 
         return true;
@@ -149,9 +147,9 @@ export const noInnerWhiteSpaceValidation = (errorMessage?: string): stringValida
 export const kebabCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!kebabCaseRegex.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is not a valid kebab-case. Only kebab-case inputs are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" is not a valid kebab-case. Only kebab-case inputs are expected.`
+            );
         }
 
         return true;
@@ -161,9 +159,9 @@ export const kebabCaseValidation = (errorMessage?: string): stringValidationFunc
 export const screamingKebabCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!screamingKebabCaseRegex.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is not a valid SCREAMING-KEBAB-CASE. Only SCREAMING-KEBAB-CASE inputs are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" is not a valid SCREAMING-KEBAB-CASE. Only SCREAMING-KEBAB-CASE inputs are expected.`
+            );
         }
 
         return true;
@@ -173,9 +171,9 @@ export const screamingKebabCaseValidation = (errorMessage?: string): stringValid
 export const snakeCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!snakeCaseRegex.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is not a valid snake_case. Only snake_case inputs are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" is not a valid snake_case. Only snake_case inputs are expected.`
+            );
         }
 
         return true;
@@ -185,9 +183,9 @@ export const snakeCaseValidation = (errorMessage?: string): stringValidationFunc
 export const screamingSnakeCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!screamingSnakeCaseRegex.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is not a valid SCREAMING_SNAKE_CASE. Only SCREAMING_SNAKE_CASE inputs are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" is not a valid SCREAMING_SNAKE_CASE. Only SCREAMING_SNAKE_CASE inputs are expected.`
+            );
         }
 
         return true;
@@ -197,9 +195,9 @@ export const screamingSnakeCaseValidation = (errorMessage?: string): stringValid
 export const camelCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!camelCaseRegex.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is not a valid camelCase. Only camelCase inputs are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" is not a valid camelCase. Only camelCase inputs are expected.`
+            );
         }
 
         return true;
@@ -209,9 +207,9 @@ export const camelCaseValidation = (errorMessage?: string): stringValidationFunc
 export const pascalCaseValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!pascalCaseRegex.test(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is not a valid PascalCase. Only PascalCase inputs are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" is not a valid PascalCase. Only PascalCase inputs are expected.`
+            );
         }
 
         return true;
@@ -221,16 +219,14 @@ export const pascalCaseValidation = (errorMessage?: string): stringValidationFun
 export const integerValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!isFiniteNumber(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : notAValidNumberFormat(input);
+            return formatWithDefault(errorMessage, input, notAValidNumberFormat(input));
         }
 
         // Stryker disable next-line UnaryOperator: Here, -input or +input have meaning since we test for isFinite and not on actual value
         if (!Number.isInteger(+input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is not an integer. Only unformatted finite integers are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" is not an integer. Only unformatted finite integers are expected.`
+            );
         }
 
         return true;
@@ -240,17 +236,15 @@ export const integerValidation = (errorMessage?: string): stringValidationFuncti
 export const naturalNumberValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!isFiniteNumber(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : notAValidNumberFormat(input);
+            return formatWithDefault(errorMessage, input, notAValidNumberFormat(input));
         }
 
         // Stryker disable next-line UnaryOperator: Here, -input or +input have meaning since we test for isFinite and not on actual value
         const parsedNumber = +input;
         if (!Number.isInteger(parsedNumber) || parsedNumber <= 0) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : `"${input}" is not a natural number. Only unformatted finite natural numbers are expected.`;
+            return formatWithDefault(errorMessage, input,
+                `"${input}" is not a natural number. Only unformatted finite natural numbers are expected.`
+            );
         }
 
         return true;
@@ -260,9 +254,7 @@ export const naturalNumberValidation = (errorMessage?: string): stringValidation
 export const numberValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
         if (!isFiniteNumber(input)) {
-            return errorMessage !== undefined
-                ? format(errorMessage, input)
-                : notAValidNumberFormat(input);
+            return formatWithDefault(errorMessage, input, notAValidNumberFormat(input));
         }
 
         return true;
@@ -280,4 +272,10 @@ const notAValidNumberFormat = (input: string): string => {
 
 const format = (message: string, input: string): string => {
     return message.replace('%s', input);
+};
+
+const formatWithDefault = (message: string | undefined, input: string, defaultMessage: string): string => {
+    return message !== undefined
+        ? format(message, input)
+        : defaultMessage;
 };
