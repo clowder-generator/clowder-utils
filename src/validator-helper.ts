@@ -43,9 +43,6 @@ export interface ValidationOption {
     hideRootCause?: boolean;
 }
 
-const defaultErrorMessageOnly = (validationOption: ValidationOption | undefined): boolean => {
-    return validationOption === undefined || validationOption.globalErrorMessage === undefined;
-};
 const globalErrorMessageOnly = (validationOption: ValidationOption | undefined): boolean => {
     return validationOption?.globalErrorMessage !== undefined &&
         validationOption.hideRootCause === true;
@@ -79,11 +76,9 @@ export const validateWith = (funcs: stringValidationFunction[], opt?: Validation
             if (typeof result === 'string') {
                 if (globalErrorMessageOnly(opt)) {
                     return format((opt as ValidationOption).globalErrorMessage as string, transformedInput);
-                }
-                if (globalAndDefaultErrorMessage(opt)) {
+                } else if (globalAndDefaultErrorMessage(opt)) {
                     return `${format((opt as ValidationOption).globalErrorMessage as string, transformedInput)} Cause: ${result}`.trimStart();
-                }
-                if (defaultErrorMessageOnly(opt)) {
+                } else { // then default error message only
                     return result;
                 }
             }
@@ -173,7 +168,7 @@ export const nonBlankValidation = (errorMessage?: string): stringValidationFunct
  */
 export const noWhiteSpaceValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
-        if (/^.*\s+.*$/.test(input)) {
+        if (/\s/.test(input)) {
             return formatWithDefault(errorMessage, input,
                 `"${input}" contains white chars. Only word with no white char are allowed.`
             );
@@ -196,7 +191,7 @@ export const noWhiteSpaceValidation = (errorMessage?: string): stringValidationF
  */
 export const doNotStartWithNumberValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
-        if (/^\d.*$/.test(input)) {
+        if (/^\d/.test(input)) {
             return formatWithDefault(errorMessage, input,
                 `"${input}" starts with a number. Only word with no leading number are expected.`
             );
@@ -219,7 +214,7 @@ export const doNotStartWithNumberValidation = (errorMessage?: string): stringVal
  */
 export const noTrailingWhiteSpaceValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
-        if (/^.*\s$/.test(input)) {
+        if (/\s$/.test(input)) {
             return formatWithDefault(errorMessage, input,
                 `"${input}" contains a trailing blank char. A valid input should not have trailing white space.`
             );
@@ -242,7 +237,7 @@ export const noTrailingWhiteSpaceValidation = (errorMessage?: string): stringVal
  */
 export const noLeadingWhiteSpaceValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
-        if (/^\s.*$/.test(input)) {
+        if (/^\s/.test(input)) {
             return formatWithDefault(errorMessage, input,
                 `"${input}" contains a leading blank char. A valid input should not have leading white space.`
             );
@@ -266,7 +261,7 @@ export const noLeadingWhiteSpaceValidation = (errorMessage?: string): stringVali
  */
 export const noInnerWhiteSpaceValidation = (errorMessage?: string): stringValidationFunction => {
     return async (input: string): Promise<true | string> => {
-        if (/.*\S\s+\S.*/.test(input)) {
+        if (/\S\s+\S/.test(input)) {
             return formatWithDefault(errorMessage, input,
                 `"${input}" contains a blank char in the middle. A valid input should not have inner white space.`
             );

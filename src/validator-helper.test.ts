@@ -582,6 +582,7 @@ describe('noInnerWhiteSpaceValidation', () => {
         ['blankAtEndButNotInMiddle\n', true],
         ['with oneMiddleBlank\n', '"with oneMiddleBlank\n" contains a blank char in the middle. A valid input should not have inner white space.'],
         ['with oneMiddleBlank', '"with oneMiddleBlank" contains a blank char in the middle. A valid input should not have inner white space.'],
+        ['with  oneWideMiddleBlank', '"with  oneWideMiddleBlank" contains a blank char in the middle. A valid input should not have inner white space.'],
         ['with more\tthan one\nmiddle blank', '"with more\tthan one\nmiddle blank" contains a blank char in the middle. A valid input should not have inner white space.']
     ])('When I call "noInnerWhiteSpaceValidation" on the input "%s"', (input: string, expectedResult: boolean | string) => {
         let result: Promise<boolean | string> | undefined;
