@@ -8,7 +8,7 @@
     "/dist"
   ],
   "scripts": {
-    "test": "jest --passWithNoTests --config jestconfig.json",
+    "test": "jest --passWithNoTests --config jest.config.json",
     "coverage": "npm run test -- --coverage",
     "coverage:istanbul": "nyc npm run test",
     "mutation": "npx stryker run",
