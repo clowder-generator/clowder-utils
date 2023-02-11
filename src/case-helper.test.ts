@@ -1,4 +1,5 @@
 import {
+    assertDoesNotContainsImproperChar,
     Case,
     CaseConversionError,
     fromCamelCase,
@@ -480,3 +481,109 @@ describe('fromScreamingKebabCase', () => {
         });
     });
 });
+
+describe('assertDoesNotContainsImproperChar', () => {
+    let exception: CaseConversionError | undefined;
+    beforeEach(() => {
+        exception = undefined;
+    });
+    describe('Given proper chars', function () {
+        describe.each([
+            ['a'],
+            ['ab'],
+            ['A'],
+            ['AB'],
+            ['aB'],
+            ['0'],
+            ['01'],
+            ['a1'],
+            ['A1'],
+            ['aA1'],
+            ['aA1'],
+            ['-'],
+            ['a-'],
+            ['a-A'],
+            ['a-A-1'],
+            ['_'],
+            ['a_'],
+            ['a_A'],
+            ['a_A_1'],
+            ['a_A-1']
+        ])('When I call "assertDoesNotContainsImproperChar" on "%s"', (input: string) => {
+            beforeEach(() => {
+                try {
+                    assertDoesNotContainsImproperChar(input);
+                } catch (error: unknown) {
+                    exception = error as Error;
+                }
+            });
+            test('Then I should not get an error', () => {
+                expect(exception).toBeUndefined();
+            });
+        });
+    });
+    describe('Given improper chars', () => {
+        describe.each([
+            ['!'],
+            ['@'],
+            ['#'],
+            ['$'],
+            ['%'],
+            ['^'],
+            ['&'],
+            ['*'],
+            ['('],
+            [')'],
+            ['+'],
+            ['='],
+            ['{'],
+            ['}'],
+            ['['],
+            [']'],
+            ['\\'],
+            ['/'],
+            ['.'],
+            [','],
+            [':'],
+            [';'],
+            ['\''],
+            ['"'],
+            ['`'],
+            ['<'],
+            ['>'],
+            ['?'],
+            ['/'],
+            ['~'],
+            ['ç'],
+            ['é'],
+            ['è'],
+            [' '],
+            ['\t'],
+            ['\n'],
+            ['A mix of: valid, invalid chars <3 ;)'],
+            ['==> A mix of: valid, invalid chars <3 ;)'],
+            ['!this']
+        ])('When I call "assertDoesNotContainsImproperChar" on "%s"', (input: string) => {
+            beforeEach(() => {
+                try {
+                    assertDoesNotContainsImproperChar(input);
+                } catch (error: unknown) {
+                    exception = error as Error;
+                }
+            });
+            test('Then I get an error', () => {
+                expect(exception).not.toBeUndefined();
+            });
+            test('Then the error should be a CaseConversionError', () => {
+                expect(exception).toBeInstanceOf(CaseConversionError);
+            });
+            test('Then the message should be invalid string with special char"', () => {
+                expect(exception?.message).toBe('invalid string with special char');
+            });
+        });
+    });
+});
+
+describe('assertNotEmptyString', () => {});
+
+describe('assertNoBlankInWord', () => {});

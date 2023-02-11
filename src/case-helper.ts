@@ -153,20 +153,20 @@ export const fromScreamingKebabCase = (str: string): Case => {
     );
 };
 
-const assertDoesNotContainsImproperChar = (str: string): void => {
+export const assertDoesNotContainsImproperChar = (str: string): void => {
     if (!/^[a-zA-Z0-9_-]+$/.test(str)) {
         throw new CaseConversionError('invalid string with special char');
     }
 };
 
-const assertNotEmptyString = (str: string): void => {
+export const assertNotEmptyString = (str: string): void => {
     if (str === '') {
         throw new CaseConversionError('invalid empty string');
     }
 };
 
 const assertNoBlankInWord = (str: string): void => {
-    if (/^.*\s+.*$/.test(str)) {
+    if (/\s/.test(str)) {
         throw new CaseConversionError('invalid string with blank char');
     }
 };
