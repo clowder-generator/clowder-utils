@@ -4,75 +4,6 @@
 import { rename } from './destination-path-processor';
 
 describe('rename', () => {
-    describe('Given a path as a string with no duplicated folder name', () => {
-        const pathString = 'this/is/my/path/here.my.ts';
-        describe('And a name to replace that is present in the path', () => {
-            const nameToReplace = 'my';
-            describe('When I call the "rename" higher function result on the pathString with the name to replace on the path', () => {
-                const newNameForReplacement = 'your';
-                let result: string | undefined;
-                beforeEach(() => {
-                    result = rename(nameToReplace, newNameForReplacement)(pathString);
-                });
-                afterEach(() => {
-                    result = undefined;
-                });
-                test('Then the result is not undefined', () => {
-                    expect(result).not.toBeUndefined();
-                });
-                test('Then the resulting string should not contains the previous name', () => {
-                    expect(result).not.toContain(nameToReplace);
-                });
-                test('Then the resulting string should be correctly updated', () => {
-                    expect(result).toStrictEqual('this/is/your/path/here.my.ts');
-                });
-            });
-        });
-        describe('And a name to replace that is not present in the path', () => {
-            const nameToReplace = 'not-my';
-            describe('When I call the "rename" higher function result on  the pathString with the name to replace on the path', () => {
-                const newNameForReplacement = 'your';
-                let result: string | undefined;
-                beforeEach(() => {
-                    result = rename(nameToReplace, newNameForReplacement)(pathString);
-                });
-                afterEach(() => {
-                    result = undefined;
-                });
-                test('Then the result is not undefined', () => {
-                    expect(result).not.toBeUndefined();
-                });
-                test('Then the resulting string should be the same as the original', () => {
-                    expect(result).toStrictEqual(pathString);
-                });
-            });
-        });
-    });
-    describe('Given a path as a string with duplicated folder name', () => {
-        const pathString = 'this/and/this/are/my/path/this.ts';
-        describe('And a name to replace that is present on time in the path', () => {
-            const nameToReplace = 'my';
-            describe('When I call the "rename" higher order function result on the pathString with the name to replace on the path', () => {
-                const newNameForReplacement = 'your';
-                let result: string | undefined;
-                beforeEach(() => {
-                    result = rename(nameToReplace, newNameForReplacement)(pathString);
-                });
-                afterEach(() => {
-                    result = undefined;
-                });
-                test('Then the result should not be undefined', () => {
-                    expect(result).not.toBeUndefined();
-                });
-                test('Then the resulting string should not contains the previous name', () => {
-
-                });
-            });
-        });
-        describe('And a name to replace that is present multiple time in the path', () => {});
-        describe('And a name to replace that is not present in the path', () => {});
-    });
-    // TODO: insert a describe each to test most of combinaison
     class Given {
         public readonly pathString: string;
         public readonly nameToReplace: string;
@@ -93,48 +24,48 @@ describe('rename', () => {
         ],
         [
             'relative path, not duplicate on name to replace, name present in the path',
-            new Given('', '', ''),
-            'expected'
+            new Given('this/is/my/folder/with/one/file.ts', 'my', 'your'),
+            'this/is/you/folder/with/one/file.ts'
         ],
         [
             'Absolute path, not duplicate on name to replace, name NOT present in the path',
-            new Given('', '', ''),
-            'expected'
+            new Given('/this/is/my/folder/with/one/file.ts', 'two', 'three'),
+            '/this/is/my/folder/with/one/file.ts'
         ],
         [
             'relative path, not duplicate on name to replace, name NOT present in the path',
-            new Given('', '', ''),
-            'expected'
+            new Given('this/is/my/folder/with/one/file.ts', 'two', 'three'),
+            'this/is/my/folder/with/one/file.ts'
         ],
         [
             'Absolute path, duplicate on name to replace',
-            new Given('', '', ''),
-            'expected'
+            new Given('/this/and/this/are/my/folder/with/one/file.ts', 'this', 'that'),
+            '/that/and/that/are/my/folder/with/one/file.ts'
         ],
         [
             'Absolute path, duplicate on name to replace',
-            new Given('', '', ''),
-            'expected'
+            new Given('this/and/this/are/my/folder/with/one/file.ts', 'this', 'that'),
+            'that/and/that/are/my/folder/with/one/file.ts'
         ],
         [
             'Absolute path, no duplicate on name to replace, name present in the path and as substring of other parts',
-            new Given('', '', ''),
-            'expected'
+            new Given('/this/is/my/folder/with-additional-my/and/one/myfile.ts', 'my', 'your'),
+            '/this/is/your/folder/with-additional-my/and/one/myfile.ts'
         ],
         [
             'relative path, not duplicate on name to replace, name present in the path and as substring of other parts',
-            new Given('', '', ''),
-            'expected'
+            new Given('this/is/my/folder/with-additional-my/and/one/myfile.ts', 'my', 'your'),
+            'this/is/your/folder/with-additional-my/and/one/myfile.ts'
         ],
         [
             'Absolute path, no duplicate on name to replace, name NOT present in the path BUT as substring of other parts',
-            new Given('', '', ''),
-            'expected'
+            new Given('/this/is/my/folder/with-additional-your/and/one/yourfile.ts', 'your', 'my'),
+            '/this/is/my/folder/with-additional-your/and/one/yourfile.ts'
         ],
         [
             'relative path, not duplicate on name to replace, name NOT present in the path BUT as substring of other parts',
-            new Given('', '', ''),
-            'expected'
+            new Given('this/is/my/folder/with-additional-your/and/one/yourfile.ts', 'your', 'my'),
+            'this/is/my/folder/with-additional-your/and/one/yourfile.ts'
         ]
     ])('Given the context %s', (context: string, given: Given, expected: string) => {
         describe('When I call the "rename" HoC o this input and use the resulting function to modify the given path', () => {
