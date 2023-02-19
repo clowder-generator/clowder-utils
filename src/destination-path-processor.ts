@@ -7,22 +7,15 @@ import * as path from 'path';
  * Disclaimer: there are no plans to support windows specific path name
  */
 
-// TODO: reference from generator-kata where it worked
-// const _rename = (destinationPath: string): string => {
-//     let baseName = path.basename(destinationPath);
-//     let dirName = path.dirname(destinationPath);
-//
-//     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-//     baseName = baseName.replace(/kotlinPackageName/g, 'newValue');
-//     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-//     dirName = dirName.replace(/kotlinPackageName/g, 'newValue');
-//     return path.join(dirName, baseName);
-// };
+export class DestinationPathProcessingError extends Error {
+    constructor(msg: string) {
+        super(msg);
+        Object.setPrototypeOf(this, DestinationPathProcessingError.prototype);
+    }
+}
 
 type PathNameManipulationFunction = (pathToProcess: string) => string;
 
-// TODO: remove this eslint disabling
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const splitPath = (pathName: string): string[] => {
     const recursiveSplitPath = (remainingPathName: string, accumulator: string[]): string[] => {
         const shorterPathName = path.dirname(remainingPathName);
@@ -38,7 +31,12 @@ const splitPath = (pathName: string): string[] => {
 
 export const rename = (source: string, target: string): PathNameManipulationFunction => {
     return (pathToProcess: string): string => {
-        return '';
+        if (path.isAbsolute(pathToProcess)) {
+            throw new DestinationPathProcessingError('unable to process absolute path. Path should be relative');
+        }
+        const updatedPathElements = splitPath(pathToProcess)
+            .map(item => item === source ? target : item);
+        return path.join(...updatedPathElements);
     };
 };
 
