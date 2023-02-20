@@ -40,7 +40,7 @@ export const rename = (source: string, target: string): PathNameManipulationFunc
     };
 };
 
-export const renameAll = (): PathNameManipulationFunction => {
+export const renameAll = (...fromTo: Array<[string, string]>): PathNameManipulationFunction => {
     return (pathToProcess: string): string => {
         return '';
     };
