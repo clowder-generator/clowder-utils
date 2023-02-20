@@ -3,7 +3,7 @@
 
 import {
     DestinationPathProcessingError,
-    rename
+    rename, renameAll
 } from './destination-path-processor';
 
 describe('rename', () => {
@@ -46,7 +46,7 @@ describe('rename', () => {
             'this/is/my/folder/with-additional-your/and/one/yourfile.ts'
         ]
     ])('Given the context %s', (context: string, given: Given, expected: string) => {
-        describe('When I call the "rename" HoC o this input and use the resulting function to modify the given path', () => {
+        describe('When I call the "rename" HoF o this input and use the resulting function to modify the given path', () => {
             let result: string | undefined;
             let exception: Error | undefined;
             beforeEach(() => {
@@ -93,7 +93,7 @@ describe('rename', () => {
             new Given('/this/is/my/folder/with-additional-your/and/one/yourfile.ts', 'your', 'my')
         ]
     ])('Given the context %s', (context: string, given: Given) => {
-        describe('When I call the "rename" HoC o this input and use the resulting function to modify the given path', () => {
+        describe('When I call the "rename" HoF on this input and use the resulting function to modify the given path', () => {
             let exception: Error | undefined;
             beforeEach(() => {
                 try {
@@ -117,4 +117,51 @@ describe('rename', () => {
         });
     });
 });
-describe('renameAll', () => {});
+describe('renameAll', () => {
+    interface FromTo {
+        from: string;
+        to: string;
+    }
+
+    class Given {
+        public readonly pathString: string;
+        public readonly replaceFromTo: FromTo[];
+        public readonly newNameForReplacement: string;
+
+        constructor(pathString: string, replaceFromTo: FromTo[], newNameForReplacement: string) {
+            this.pathString = pathString;
+            this.replaceFromTo = replaceFromTo;
+            this.newNameForReplacement = newNameForReplacement;
+        }
+    }
+
+    describe.each([
+        ['input', new Given('', [{ from: '', to: '' }], ''), 'expected'],
+        ['input', new Given('', [{ from: '', to: '' }], ''), 'expected']
+    ])('Given the context "%s"', (context: string, given: Given, expected: string) => {
+        describe('When I call the "renameAll" HoF on this input and use the resulting function to modify the given path', () => {
+            let result: string | undefined;
+            let exception: Error | undefined;
+            beforeEach(() => {
+                try {
+                    result = renameAll(...(given.replaceFromTo.map(fromTo => [fromTo.from, fromTo.to])))(given.pathString);
+                } catch (error: unknown) {
+                    exception = error as Error;
+                }
+            });
+            afterEach(() => {
+                result = undefined;
+                exception = undefined;
+            });
+            test('Then the result should not be undefined', () => {
+                expect(result).not.toBeUndefined();
+            });
+            test('Then no exception should be thrown', () => {
+                expect(exception).toBeUndefined();
+            });
+            test('Then the transformed path should be as expected', () => {
+                expect(result).toStrictEqual(expected);
+            });
+        });
+    });
+});
