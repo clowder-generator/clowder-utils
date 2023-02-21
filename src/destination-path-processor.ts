@@ -35,13 +35,21 @@ export const rename = (source: string, target: string): PathNameManipulationFunc
             throw new DestinationPathProcessingError('unable to process absolute path. Path should be relative');
         }
         const updatedPathElements = splitPath(pathToProcess)
-            .map(item => item === source ? target : item);
+            .map(pathItem => pathItem === source ? target : pathItem);
         return path.join(...updatedPathElements);
     };
 };
 
 export const renameAll = (...fromTo: Array<[string, string]>): PathNameManipulationFunction => {
+    const replacementValue = (subject: string, ...matchingPatterns: Array<[string, string]>): string => {
+        const pattern: [string, string] | undefined = matchingPatterns.find(pattern => pattern[0] === subject);
+        return (pattern === undefined)
+            ? subject
+            : pattern[1];
+    };
     return (pathToProcess: string): string => {
-        return '';
+        const updatedPathElements = splitPath(pathToProcess)
+            .map(pathElement => replacementValue(pathElement, ...fromTo));
+        return path.join(...updatedPathElements);
     };
 };
