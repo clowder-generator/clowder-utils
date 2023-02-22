@@ -236,4 +236,30 @@ describe('renameAll', () => {
             });
         });
     });
+    describe('Given an absolute path', () => {
+        const absolutePath = '/thIS/IS/MY/folder/and/so/IS/thIS/with/one/file.TS';
+        describe('When I call "renameAll" on this path, whatever what I want to rename', () => {
+            let result: string | undefined;
+            let exception: Error | undefined;
+            beforeEach(() => {
+                try {
+                    result = renameAll(['fromWhatever', 'toWhatever'])(absolutePath);
+                } catch (error: unknown) {
+                    exception = error as Error;
+                }
+            });
+            test('Then the result should be undefined', () => {
+                expect(result).toBeUndefined();
+            });
+            test('Then I should have an error', () => {
+                expect(exception).not.toBeUndefined();
+            });
+            test('Then the exception should be of type "DestinationPathProcessingError"', () => {
+                expect(exception).toBeInstanceOf(DestinationPathProcessingError);
+            });
+            test('Then the error message in the exception should be "unable to process absolute path. Path should be relative"', () => {
+                expect(exception?.message).toStrictEqual('unable to process absolute path. Path should be relative');
+            });
+        });
+    });
 });
