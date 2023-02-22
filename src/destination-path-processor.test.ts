@@ -3,7 +3,8 @@
 
 import {
     DestinationPathProcessingError,
-    rename, renameAll
+    rename,
+    renameAll
 } from './destination-path-processor';
 
 describe('rename', () => {
@@ -157,7 +158,7 @@ describe('renameAll', () => {
             [
                 'given some duplicate in the path, one name in input, present in the path but as substring',
                 new Given('this/is/my/folder/and/so/is/this/with/oneOrTwo/file.ts', [{ from: 'Two', to: 'So' }]),
-                'this/is/my/folder/and/so/is/this/with/oneOrTwo/file'
+                'this/is/my/folder/and/so/is/this/with/oneOrTwo/file.ts'
             ],
             [
                 'given some duplicate in the path, one name in input, present in the path but only one time',
@@ -171,7 +172,7 @@ describe('renameAll', () => {
             ],
             [
                 'given some duplicate in the path, one name in input, present in the path multiple time not as substring',
-                new Given('THIS/is/ny/folder/and/so/is/THIS/with/one/file.ts', [{ from: 'THIS', to: 'THAT' }]),
+                new Given('THIS/is/my/folder/and/so/is/THIS/with/one/file.ts', [{ from: 'THIS', to: 'THAT' }]),
                 'THAT/is/my/folder/and/so/is/THAT/with/one/file.ts'
             ],
             [
