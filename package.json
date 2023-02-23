@@ -1,6 +1,6 @@
 {
   "name": "@clowder-generator/utils",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "A utils collection to help building clowder related generator",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
