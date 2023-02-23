@@ -16,6 +16,12 @@ export class DestinationPathProcessingError extends Error {
 
 type PathNameManipulationFunction = (pathToProcess: string) => string;
 
+const assertNotAbsolutePath = (pathToTest: string): void => {
+    if (path.isAbsolute(pathToTest)) {
+        throw new DestinationPathProcessingError('unable to process absolute path. Path should be relative');
+    }
+};
+
 const splitPath = (pathName: string): string[] => {
     const recursiveSplitPath = (remainingPathName: string, accumulator: string[]): string[] => {
         const shorterPathName = path.dirname(remainingPathName);
@@ -31,9 +37,7 @@ const splitPath = (pathName: string): string[] => {
 
 export const rename = (source: string, target: string): PathNameManipulationFunction => {
     return (pathToProcess: string): string => {
-        if (path.isAbsolute(pathToProcess)) {
-            throw new DestinationPathProcessingError('unable to process absolute path. Path should be relative');
-        }
+        assertNotAbsolutePath(pathToProcess);
         const updatedPathElements = splitPath(pathToProcess)
             .map(pathItem => pathItem === source ? target : pathItem);
         return path.join(...updatedPathElements);
@@ -48,9 +52,7 @@ export const renameAll = (...fromTo: Array<[string, string]>): PathNameManipulat
             : pattern[1];
     };
     return (pathToProcess: string): string => {
-        if (path.isAbsolute(pathToProcess)) {
-            throw new DestinationPathProcessingError('unable to process absolute path. Path should be relative');
-        }
+        assertNotAbsolutePath(pathToProcess);
         const updatedPathElements = splitPath(pathToProcess)
             .map(pathElement => replacementValue(pathElement, ...fromTo));
         return path.join(...updatedPathElements);
