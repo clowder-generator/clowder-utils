@@ -42,3 +42,8 @@ export {
     naturalNumberValidation,
     numberValidation
 } from './validator-helper';
+export {
+    rename,
+    renameAll,
+    DestinationPathProcessingError
+} from './destination-path-processor';
