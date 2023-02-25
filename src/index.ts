@@ -44,6 +44,5 @@ export {
 } from './validator-helper';
 export {
     rename,
-    renameAll,
-    DestinationPathProcessingError
+    renameAll
 } from './destination-path-processor';
