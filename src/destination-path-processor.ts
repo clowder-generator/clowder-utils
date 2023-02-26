@@ -1,4 +1,5 @@
 import * as path from 'path';
+import { isBlank } from './string-helper';
 
 /**
  * For yeoman copyOptions, the processDestinationPath is an optional function
@@ -8,6 +9,13 @@ import * as path from 'path';
  */
 
 type PathNameManipulationFunction = (pathToProcess: string) => string;
+
+export class DestinationPathProcessingError extends Error {
+    constructor(msg: string) {
+        super(msg);
+        Object.setPrototypeOf(this, DestinationPathProcessingError.prototype);
+    }
+}
 
 const splitPath = (pathName: string): string[] => {
     const recursiveSplitPath = (remainingPathName: string, accumulator: string[]): string[] => {
@@ -23,6 +31,9 @@ const splitPath = (pathName: string): string[] => {
 };
 
 export const rename = (source: string, target: string): PathNameManipulationFunction => {
+    if (isBlank(target)) {
+        throw new DestinationPathProcessingError('The replacement target should not be blank');
+    }
     return (pathToProcess: string): string => {
         const updatedPathElements = splitPath(pathToProcess)
             .map(pathItem => pathItem === source ? target : pathItem);
@@ -31,6 +42,10 @@ export const rename = (source: string, target: string): PathNameManipulationFunc
 };
 
 export const renameAll = (...fromTo: Array<[string, string]>): PathNameManipulationFunction => {
+    const invalidBlankTarget = fromTo.find(fromTo => isBlank(fromTo[1]));
+    if (invalidBlankTarget !== undefined) {
+        throw new DestinationPathProcessingError(`The replacement target should not be blank. Trying to replace "${invalidBlankTarget[0]}"`);
+    }
     const replacementValue = (subject: string, ...matchingPatterns: Array<[string, string]>): string => {
         const pattern: [string, string] | undefined = matchingPatterns.find(pattern => pattern[0] === subject);
         return (pattern === undefined)

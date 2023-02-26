@@ -2,6 +2,7 @@
 // base system. There are no plans to support windows
 
 import {
+    DestinationPathProcessingError,
     rename,
     renameAll
 } from './destination-path-processor';
@@ -70,7 +71,7 @@ describe('rename', () => {
             new Given('/this/is/my/folder/with-additional-your/and/one/yourfile.ts', 'your', 'my'),
             '/this/is/my/folder/with-additional-your/and/one/yourfile.ts'
         ]
-    ])('Given the context %s', (context: string, given: Given, expected: string) => {
+    ])('Given the context valid %s', (context: string, given: Given, expected: string) => {
         describe('When I call the "rename" HoF o this input and use the resulting function to modify the given path', () => {
             let result: string | undefined;
             beforeEach(() => {
@@ -84,6 +85,41 @@ describe('rename', () => {
             });
             test('Then the resulting new path should be as expected', () => {
                 expect(result).toStrictEqual(expected);
+            });
+        });
+    });
+
+    describe('Given a valid path', () => {
+        const validPath = '/this/is/my/path/here.ts';
+        describe('and a non blank string to replace ', () => {
+            const from = 'this';
+            describe.each([
+                '',
+                ' ',
+                '\t',
+                '\n',
+                '\t \n'
+            ])('When I call "rename" with a blank string fo replacement', (to: string) => {
+                let exception: Error | undefined;
+                beforeEach(() => {
+                    try {
+                        rename(from, to)(validPath);
+                    } catch (error: unknown) {
+                        exception = error as Error;
+                    }
+                });
+                afterEach(() => {
+                    exception = undefined;
+                });
+                test('Then an exception should be thrown', () => {
+                    expect(exception).not.toBeUndefined();
+                });
+                test('Then the exception should be of type DestinationPathProcessingError', () => {
+                    expect(exception).toBeInstanceOf(DestinationPathProcessingError);
+                });
+                test('Then the error message should tell that it is invalid to replace a path element with a blank string', () => {
+                    expect(exception?.message).toStrictEqual('The replacement target should not be blank');
+                });
             });
         });
     });
@@ -250,7 +286,7 @@ describe('renameAll', () => {
             ]),
             '/thIS/SHOULD_BE/YOUR/folder/and/so/SHOULD_BE/thIS/with/one/file.TS'
         ]
-    ])('Given the context "%s"', (context: string, given: Given, expected: string) => {
+    ])('Given the context valid "%s"', (context: string, given: Given, expected: string) => {
         describe('When I call the "renameAll" HoF on this input and use the resulting function to modify the given path', () => {
             let result: string | undefined;
             beforeEach(() => {
@@ -265,6 +301,49 @@ describe('renameAll', () => {
             });
             test('Then the transformed path should be as expected', () => {
                 expect(result).toStrictEqual(expected);
+            });
+        });
+    });
+
+    describe('Given a valid path', () => {
+        const validPath = '/this/is/my/path/here.ts';
+        describe.each([
+            [{ from: 'this', to: '' }, { from: 'is', to: 'are' }, 'this'],
+            [{ from: 'this', to: ' ' }, { from: 'is', to: 'are' }, 'this'],
+            [{ from: 'this', to: '\t' }, { from: 'is', to: 'are' }, 'this'],
+            [{ from: 'this', to: '\n' }, { from: 'is', to: 'are' }, 'this'],
+            [{ from: 'this', to: '\t \n' }, { from: 'is', to: 'are' }, 'this'],
+            [{ from: 'this', to: '' }, { from: 'is', to: '' }, 'this'],
+            [{ from: 'this', to: ' ' }, { from: 'is', to: ' ' }, 'this'],
+            [{ from: 'this', to: '\t' }, { from: 'is', to: '' }, 'this'],
+            [{ from: 'this', to: '\n' }, { from: 'is', to: ' ' }, 'this'],
+            [{ from: 'this', to: '\t \n' }, { from: 'is', to: ' ' }, 'this'],
+            [{ from: 'this', to: 'that' }, { from: 'is', to: '' }, 'is'],
+            [{ from: 'this', to: 'that' }, { from: 'is', to: ' ' }, 'is'],
+            [{ from: 'this', to: 'that' }, { from: 'is', to: '\t' }, 'is'],
+            [{ from: 'this', to: 'that' }, { from: 'is', to: '\n' }, 'is'],
+            [{ from: 'this', to: 'that' }, { from: 'is', to: '\t \n' }, 'is']
+        ])('When I call "renameAll" on with at least one pair with a blank replacement target', (firstFromTo: FromTo, secondFromTo: FromTo, invalidReplacementString: string) => {
+            let exception: Error | undefined;
+            beforeEach(() => {
+                const fromToReplacements = [[firstFromTo.from, firstFromTo.to], [secondFromTo.from, secondFromTo.to]] as Array<[string, string]>;
+                try {
+                    renameAll(...fromToReplacements)(validPath);
+                } catch (error: unknown) {
+                    exception = error as Error;
+                }
+            });
+            afterEach(() => {
+                exception = undefined;
+            });
+            test('Then an exception should be thrown', () => {
+                expect(exception).not.toBeUndefined();
+            });
+            test('Then the exception should be of type DestinationPathProcessingError', () => {
+                expect(exception).toBeInstanceOf(DestinationPathProcessingError);
+            });
+            test('Then the error message should tell that it is invalid to replace a path element with a blank string', () => {
+                expect(exception?.message).toStrictEqual(`The replacement target should not be blank. Trying to replace "${invalidReplacementString}"`);
             });
         });
     });
