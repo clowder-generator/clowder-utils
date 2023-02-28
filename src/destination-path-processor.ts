@@ -30,7 +30,7 @@ const splitPath = (pathName: string): string[] => {
     return recursiveSplitPath(pathName, []);
 };
 
-export const rename = (source: string, target: string): PathNameManipulationFunction => {
+export const rename = (source: string, target: string | undefined | null): PathNameManipulationFunction => {
     if (isBlank(target)) {
         throw new DestinationPathProcessingError('The replacement target should not be blank');
     }
@@ -41,7 +41,7 @@ export const rename = (source: string, target: string): PathNameManipulationFunc
     };
 };
 
-export const renameAll = (...fromTo: Array<[string, string]>): PathNameManipulationFunction => {
+export const renameAll = (...fromTo: Array<[string, string | undefined | null]>): PathNameManipulationFunction => {
     const invalidBlankTarget = fromTo.find(fromTo => isBlank(fromTo[1]));
     if (invalidBlankTarget !== undefined) {
         throw new DestinationPathProcessingError(`The replacement target should not be blank. Trying to replace "${invalidBlankTarget[0]}"`);
