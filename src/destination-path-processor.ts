@@ -31,7 +31,7 @@ const splitPath = (pathName: string): string[] => {
 };
 
 export const rename = (source: string, target: string | undefined | null): PathNameManipulationFunction => {
-    if (isBlank(target)) {
+    if (isBlank(target) || target === undefined || target === null) {
         throw new DestinationPathProcessingError('The replacement target should not be blank');
     }
     return (pathToProcess: string): string => {
@@ -42,7 +42,7 @@ export const rename = (source: string, target: string | undefined | null): PathN
 };
 
 export const renameAll = (...fromTo: Array<[string, string | undefined | null]>): PathNameManipulationFunction => {
-    const invalidBlankTarget = fromTo.find(fromTo => isBlank(fromTo[1]));
+    const invalidBlankTarget = fromTo.find(fromTo => isBlank(fromTo[1]) || fromTo[1] === undefined || fromTo[1] === null);
     if (invalidBlankTarget !== undefined) {
         throw new DestinationPathProcessingError(`The replacement target should not be blank. Trying to replace "${invalidBlankTarget[0]}"`);
     }
@@ -54,7 +54,7 @@ export const renameAll = (...fromTo: Array<[string, string | undefined | null]>)
     };
     return (pathToProcess: string): string => {
         const updatedPathElements = splitPath(pathToProcess)
-            .map(pathElement => replacementValue(pathElement, ...fromTo));
+            .map(pathElement => replacementValue(pathElement, ...fromTo as Array<[string, string]>));
         return path.join(path.parse(pathToProcess).root, ...updatedPathElements);
     };
 };
