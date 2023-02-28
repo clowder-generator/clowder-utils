@@ -31,18 +31,18 @@ const splitPath = (pathName: string): string[] => {
 };
 
 export const rename = (source: string, target: string | undefined | null): PathNameManipulationFunction => {
-    if (isBlank(target) || target === undefined || target === null) {
+    if (isBlank(target)) {
         throw new DestinationPathProcessingError('The replacement target should not be blank');
     }
     return (pathToProcess: string): string => {
         const updatedPathElements = splitPath(pathToProcess)
-            .map(pathItem => pathItem === source ? target : pathItem);
+            .map(pathItem => pathItem === source ? target as string : pathItem);
         return path.join(path.parse(pathToProcess).root, ...updatedPathElements);
     };
 };
 
 export const renameAll = (...fromTo: Array<[string, string | undefined | null]>): PathNameManipulationFunction => {
-    const invalidBlankTarget = fromTo.find(fromTo => isBlank(fromTo[1]) || fromTo[1] === undefined || fromTo[1] === null);
+    const invalidBlankTarget = fromTo.find(fromTo => isBlank(fromTo[1]));
     if (invalidBlankTarget !== undefined) {
         throw new DestinationPathProcessingError(`The replacement target should not be blank. Trying to replace "${invalidBlankTarget[0]}"`);
     }
