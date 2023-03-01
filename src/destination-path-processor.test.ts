@@ -7,6 +7,8 @@ import {
     renameAll
 } from './destination-path-processor';
 
+type nullishString = string | undefined | null;
+
 describe('rename', () => {
     class Given {
         public readonly pathString: string;
@@ -96,10 +98,12 @@ describe('rename', () => {
             describe.each([
                 '',
                 ' ',
+                null,
+                undefined,
                 '\t',
                 '\n',
                 '\t \n'
-            ])('When I call "rename" with a blank string fo replacement', (to: string) => {
+            ])('When I call "rename" with a blank string fo replacement', (to: nullishString) => {
                 let exception: Error | undefined;
                 beforeEach(() => {
                     try {
@@ -127,7 +131,7 @@ describe('rename', () => {
 describe('renameAll', () => {
     interface FromTo {
         from: string;
-        to: string;
+        to: nullishString;
     }
 
     class Given {
@@ -322,11 +326,19 @@ describe('renameAll', () => {
             [{ from: 'this', to: 'that' }, { from: 'is', to: ' ' }, 'is'],
             [{ from: 'this', to: 'that' }, { from: 'is', to: '\t' }, 'is'],
             [{ from: 'this', to: 'that' }, { from: 'is', to: '\n' }, 'is'],
-            [{ from: 'this', to: 'that' }, { from: 'is', to: '\t \n' }, 'is']
+            [{ from: 'this', to: 'that' }, { from: 'is', to: '\t \n' }, 'is'],
+            [{ from: 'this', to: null }, { from: 'is', to: 'are' }, 'this'],
+            [{ from: 'this', to: undefined }, { from: 'is', to: 'are' }, 'this'],
+            [{ from: 'this', to: 'that' }, { from: 'is', to: null }, 'is'],
+            [{ from: 'this', to: 'that' }, { from: 'is', to: undefined }, 'is'],
+            [{ from: 'this', to: '\t \n' }, { from: 'is', to: null }, 'this'],
+            [{ from: 'this', to: '\t \n' }, { from: 'is', to: undefined }, 'this'],
+            [{ from: 'this', to: null }, { from: 'is', to: '\t \n' }, 'this'],
+            [{ from: 'this', to: undefined }, { from: 'is', to: '\t \n' }, 'this']
         ])('When I call "renameAll" on with at least one pair with a blank replacement target', (firstFromTo: FromTo, secondFromTo: FromTo, invalidReplacementString: string) => {
             let exception: Error | undefined;
             beforeEach(() => {
-                const fromToReplacements = [[firstFromTo.from, firstFromTo.to], [secondFromTo.from, secondFromTo.to]] as Array<[string, string]>;
+                const fromToReplacements = [[firstFromTo.from, firstFromTo.to], [secondFromTo.from, secondFromTo.to]] as Array<[string, nullishString]>;
                 try {
                     renameAll(...fromToReplacements)(validPath);
                 } catch (error: unknown) {

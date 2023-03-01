@@ -30,18 +30,18 @@ const splitPath = (pathName: string): string[] => {
     return recursiveSplitPath(pathName, []);
 };
 
-export const rename = (source: string, target: string): PathNameManipulationFunction => {
+export const rename = (source: string, target: string | undefined | null): PathNameManipulationFunction => {
     if (isBlank(target)) {
         throw new DestinationPathProcessingError('The replacement target should not be blank');
     }
     return (pathToProcess: string): string => {
         const updatedPathElements = splitPath(pathToProcess)
-            .map(pathItem => pathItem === source ? target : pathItem);
+            .map(pathItem => pathItem === source ? target as string : pathItem);
         return path.join(path.parse(pathToProcess).root, ...updatedPathElements);
     };
 };
 
-export const renameAll = (...fromTo: Array<[string, string]>): PathNameManipulationFunction => {
+export const renameAll = (...fromTo: Array<[string, string | undefined | null]>): PathNameManipulationFunction => {
     const invalidBlankTarget = fromTo.find(fromTo => isBlank(fromTo[1]));
     if (invalidBlankTarget !== undefined) {
         throw new DestinationPathProcessingError(`The replacement target should not be blank. Trying to replace "${invalidBlankTarget[0]}"`);
@@ -54,7 +54,7 @@ export const renameAll = (...fromTo: Array<[string, string]>): PathNameManipulat
     };
     return (pathToProcess: string): string => {
         const updatedPathElements = splitPath(pathToProcess)
-            .map(pathElement => replacementValue(pathElement, ...fromTo));
+            .map(pathElement => replacementValue(pathElement, ...fromTo as Array<[string, string]>));
         return path.join(path.parse(pathToProcess).root, ...updatedPathElements);
     };
 };
