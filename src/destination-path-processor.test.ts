@@ -131,7 +131,7 @@ describe('rename', () => {
 describe('renameAll', () => {
     interface FromTo {
         from: string;
-        to: string | undefined | null;
+        to: nullishString;
     }
 
     class Given {
@@ -338,7 +338,7 @@ describe('renameAll', () => {
         ])('When I call "renameAll" on with at least one pair with a blank replacement target', (firstFromTo: FromTo, secondFromTo: FromTo, invalidReplacementString: string) => {
             let exception: Error | undefined;
             beforeEach(() => {
-                const fromToReplacements = [[firstFromTo.from, firstFromTo.to], [secondFromTo.from, secondFromTo.to]] as Array<[string, string | undefined | null]>;
+                const fromToReplacements = [[firstFromTo.from, firstFromTo.to], [secondFromTo.from, secondFromTo.to]] as Array<[string, nullishString]>;
                 try {
                     renameAll(...fromToReplacements)(validPath);
                 } catch (error: unknown) {
