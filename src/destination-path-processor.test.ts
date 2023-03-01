@@ -7,6 +7,8 @@ import {
     renameAll
 } from './destination-path-processor';
 
+type nullishString = string | undefined | null;
+
 describe('rename', () => {
     class Given {
         public readonly pathString: string;
@@ -101,7 +103,7 @@ describe('rename', () => {
                 '\t',
                 '\n',
                 '\t \n'
-            ])('When I call "rename" with a blank string fo replacement', (to: string | undefined | null) => {
+            ])('When I call "rename" with a blank string fo replacement', (to: nullishString) => {
                 let exception: Error | undefined;
                 beforeEach(() => {
                     try {
