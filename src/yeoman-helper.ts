@@ -39,3 +39,10 @@ export interface IYeomanGenerator {
      */
     end?: () => void;
 }
+
+/**
+ * This is a default interface to hold Context definition in Yeoman
+ * TemplateData is an internal type use for Yeoman, so the name was kept
+ * instead of IContext to avoid confusion
+ */
+export type ITemplateData = Record<string, any>;

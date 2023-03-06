@@ -9,7 +9,7 @@ import { isBlank } from './string-helper';
  */
 
 type PathNameManipulationFunction = (pathToProcess: string) => string;
-
+export type DestinationPathProcessor = PathNameManipulationFunction | undefined;
 export class DestinationPathProcessingError extends Error {
     constructor(msg: string) {
         super(msg);

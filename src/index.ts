@@ -1,4 +1,4 @@
-export { IYeomanGenerator } from './yeoman-helper';
+export { IYeomanGenerator, ITemplateData } from './yeoman-helper';
 export * as PathHelper from './path-helper';
 export * as StringHelper from './string-helper';
 export * as CaseHelper from './case-helper';
