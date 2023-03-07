@@ -1,3 +1,24 @@
+/**
+ * Define methods expected by a Yeoman generator.
+ * A Yeoman generator expects the following methods that will
+ * be executed in this exact order:
+ *
+ *      1) initializing
+ *      2) prompting
+ *      3) configuring
+ *      4) default
+ *      5) writing
+ *      6) conflicts
+ *      7) install
+ *      8) end
+ *
+ * If a generator contains a method preceded by an underscore "_",
+ * this method will not be automatically called.
+ *
+ * If a method does not start by "_" but does not match one of the previous
+ * listed methods, it will be invoked between "configuring" and "writing",
+ * in the default group.
+ */
 export interface IYeomanGenerator {
 
     /**
@@ -19,8 +40,9 @@ export interface IYeomanGenerator {
      * If the method name does not match a priority, it will be pushed to this group.
      */
     default?: () => void;
+
     /**
-     * Where you write the generator specific files (routes, controllers, etc)
+     * Where you write the generator-specific files (routes, controllers, etc)
      */
     writing?: () => void;
 
@@ -35,7 +57,7 @@ export interface IYeomanGenerator {
     install?: () => void;
 
     /**
-     * Called last, cleanup, say good bye, etc
+     * Called last, cleanup, say goodbye, etc
      */
     end?: () => void;
 }
