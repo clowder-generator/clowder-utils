@@ -7,8 +7,8 @@ export interface Context {
     destinationPathProcessor?: () => [string, string | undefined | null] | Array<[string, string | undefined | null]>;
 }
 
-export const mergeTemplateContext = (...context: Context[]): ITemplateData | undefined => {
-    return undefined;
+export const mergeTemplateContext = (mergeStrategy?: MergeTemplateContextStrategy | Context, ...context: Context[]): ITemplateData => {
+    return {};
 };
 
 export const mergeTemplatePath = (...context: Context[]): string | string[] => {
@@ -18,3 +18,5 @@ export const mergeTemplatePath = (...context: Context[]): string | string[] => {
 export const mergeDestinationPathProcessor = (...context: Context[]): DestinationPathProcessor => {
     return undefined;
 };
+
+export type MergeTemplateContextStrategy = (firstEntry: any, secondEntry: any) => any;

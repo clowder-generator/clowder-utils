@@ -7,16 +7,20 @@ describe('mergeTemplateContext', () => {
         const context1: Context = mock<Context>();
         const context2: Context = mock<Context>();
 
+        const templateContext1: ITemplateData = {
+            first: 'one',
+            second: 'two'
+        };
+
+        beforeEach(() => {
+            when(context1.templateContext).thenReturn(() => templateContext1);
+        });
+
         describe('with no conflicted template context', () => {
-            const templateContext1: ITemplateData = {
-                first: 'one',
-                second: 'two'
-            };
             const templateContext2: ITemplateData = {
                 third: 'three'
             };
             beforeEach(() => {
-                when(context1.templateContext).thenReturn(() => templateContext1);
                 when(context2.templateContext).thenReturn(() => templateContext2);
             });
 
@@ -30,6 +34,10 @@ describe('mergeTemplateContext', () => {
                         exception = error as Error;
                     }
                 });
+                afterEach(() => {
+                    result = undefined;
+                    exception = undefined;
+                });
 
                 test('Then I got no error', () => {
                     expect(exception).toBeUndefined();
@@ -38,16 +46,38 @@ describe('mergeTemplateContext', () => {
                     expect(result).not.toBeUndefined();
                 });
                 test('Then I got a new ITemplateData with all field from both templateContext', () => {
-                    // TODO
+                    expect(result).toEqual({
+                        first: 'one',
+                        second: 'two',
+                        third: 'three'
+                    });
                 });
             });
         });
+
         describe('with conflicted template context', () => {
-            describe('and no overlapping merge strategy', () => {});
+            const templateContext2: ITemplateData = {
+                second: 'three',
+                third: 'three-bis'
+            };
+
+            beforeEach(() => {
+                when(context2.templateContext).thenReturn(() => templateContext2);
+            });
+
+            describe('and no overlapping merge strategy', () => {
+                // let result: ITemplateData | undefined;
+                // let exception: Error | undefined;
+                // beforeEach(() => {
+                //     try {
+                //         result = mergeTemplateContext(instance(context1), instance(context2));
+                //     } catch (error: unknown) {
+                //         exception = error as Error;
+                //     }
+                // });
+            });
             describe('and an overlapping merge strategy', () => {});
         });
-        describe('with one undefined template context', () => {});
-        describe('with two undefined template context', () => {});
     });
 });
 xdescribe('mergeTemplatePath', () => {});
