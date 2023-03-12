@@ -7,6 +7,10 @@ export interface Context {
     destinationPathProcessor?: () => [string, string | undefined | null] | Array<[string, string | undefined | null]>;
 }
 
+const isTemplateContextProvider = (obj: any): obj is Context => {
+    return 'templateContext' in obj;
+};
+
 export class TemplateContextMergeConflictError extends Error {
     constructor(msg?: string) {
         super(msg);
@@ -15,11 +19,38 @@ export class TemplateContextMergeConflictError extends Error {
 }
 
 export const mergeTemplateContext = (mergeStrategy?: MergeTemplateContextStrategy | Context, ...context: Context[]): ITemplateData => {
-    return {};
+    const totalTemplateData: ITemplateData[] = isTemplateContextProvider(mergeStrategy)
+        ? [mergeStrategy.templateContext(), ...context.map(ctx => ctx.templateContext())]
+        : context.map(ctx => ctx.templateContext());
+    const merger: MergeTemplateContextStrategy | undefined = isTemplateContextProvider(mergeStrategy) ? undefined : mergeStrategy;
+    const finalTemplateContext: ITemplateData = {};
+    for (const templateContext of totalTemplateData) {
+        for (const key of Object.keys(templateContext)) {
+            if (key in finalTemplateContext) {
+                if (merger) {
+                    try {
+                        finalTemplateContext[key] = merger(finalTemplateContext[key], templateContext[key]);
+                    } catch (error: unknown) {
+                        throw new TemplateContextMergeConflictError(`Merge conflict for field "${key}". cause: ${(error as Error).message}`);
+                    }
+                } else {
+                    throw new TemplateContextMergeConflictError(`Merge conflict for field "${key}".`);
+                }
+            } else {
+                finalTemplateContext[key] = templateContext[key];
+            }
+        }
+    }
+
+    return finalTemplateContext;
 };
 
-export const silentIfSameValue: MergeTemplateContextStrategy = (...entries: any[]): any => {
-    return undefined;
+export const silentIfSameValue: MergeTemplateContextStrategy = (firstEntry: any, secondEntry: any): any => {
+    if (firstEntry === secondEntry) {
+        return firstEntry;
+    } else {
+        throw new TemplateContextMergeConflictError(`value are different "${firstEntry}" vs. "${secondEntry}"`);
+    }
 };
 
 export const mergeTemplatePath = (...context: Context[]): string | string[] => {

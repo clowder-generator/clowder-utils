@@ -163,7 +163,7 @@ describe('mergeTemplateContext', () => {
                 let exception: Error | undefined;
                 beforeEach(() => {
                     try {
-                        result = mergeTemplateContext(instance(context1), instance(context2));
+                        result = mergeTemplateContext(silentIfSameValue, instance(context1), instance(context2));
                     } catch (error: unknown) {
                         exception = error as Error;
                     }
@@ -182,7 +182,7 @@ describe('mergeTemplateContext', () => {
                     expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
                 });
                 test('Then the message should tell the first field which is in conflict', () => {
-                    expect(exception?.message).toEqual('Merge conflict for field "second".');
+                    expect(exception?.message).toEqual('Merge conflict for field "second". cause: value are different "two" vs. "bis"');
                 });
             });
         });
