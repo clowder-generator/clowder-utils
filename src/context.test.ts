@@ -1,7 +1,7 @@
 import { instance, mock, when } from 'ts-mockito';
 import {
     Context,
-    mergeTemplateContext,
+    mergeTemplateContext, mergeTemplatePath,
     silentIfSameValue,
     TemplateContextMergeConflictError
 } from './context';
@@ -170,9 +170,15 @@ describe('mergeTemplateContext', () => {
     });
 });
 describe('mergeTemplatePath', () => {
+    let result: string[] | undefined;
+    let exception: Error | undefined;
+    beforeEach(() => {
+        result = undefined;
+        exception = undefined;
+    });
     describe('Given a set of valid context', () => {
         describe.each([
-            ['one context, with template path as a single string', ['path'], 'path'],
+            ['one context, with template path as a single string', ['path'], ['path']],
             ['one context, with template path as an array with one element', [['path']], ['path']],
             ['one context, with template path as an array with multiple unique element', [['p1', 'p2', 'p3']], ['p1', 'p2', 'p3']],
             ['one context, with template path as an array with multiple overlapping element', [['p1', 'p2', 'p2', 'p3', 'p3', 'p3']], ['p1', 'p2', 'p3']],
@@ -182,15 +188,39 @@ describe('mergeTemplatePath', () => {
             ['two contexts, both with an array of only one string as templatePath, with overlap', [['p1'], ['p1']], ['p1']],
             ['two contexts, both with an array of multiple string as templatePath, no overlap', [['p1', 'p2', 'p3'], ['p4', 'p5']], ['p1', 'p2', 'p3', 'p4', 'p5']],
             ['two contexts, both with an array of multiple string as templatePath, with overlap', [['p1', 'p2', 'p3'], ['p2', 'p4']], ['p1', 'p2', 'p3', 'p4']],
-            ['three contexts, with a mix of string and arrays of one or multiple string as templatePath, no overlap', ['todo'], []],
-            ['three contexts, with a mix of string and arrays of one or multiple string as templatePath, with overlap', ['todo'], []],
-            ['three contexts, with a mix of string and arrays of one or multiple string as templatePath, no overlap', ['todo'], []],
-            ['', [], ['expected']]
-        ])('%s', (description: string, templatePath: Array<string | string[]>, expectedAfterMerge: string | string[]) => {
+            ['three contexts, with a mix of string and arrays of one or multiple string as templatePath, no overlap', ['p1', ['p2'], ['p3', 'p4']], ['p1', 'p2', 'p3', 'p4']],
+            ['three contexts, with a mix of string and arrays of one or multiple string as templatePath, with overlap', ['p1', ['p1'], ['p1', 'p2']], ['p1', 'p2']]
+        ])('%s', (description: string, templatePath: Array<string | string[]>, expectedAfterMerge: string[]) => {
+            let contexts: Context[] = [];
+            beforeEach(() => {
+                contexts = templatePath.map(_ => mock<Context>());
+                contexts.forEach((context, index) => when(context.templatePath).thenReturn(() => templatePath[index]));
+            });
 
+            describe('When I call "mergeTemplatePath"', () => {
+                beforeEach(() => {
+                    try {
+                        result = mergeTemplatePath(...contexts.map(context => instance(context)));
+                    } catch (error: unknown) {
+                        exception = error as Error;
+                    }
+                });
+                test('Then I should not get an error', () => {
+                    expect(exception).toBeUndefined();
+                });
+                test('Then I should get a result', () => {
+                    expect(result).not.toBeUndefined();
+                });
+                test('Then the result should be an array', () => {
+                    expect(result).toBeInstanceOf(Array<string>);
+                });
+                test('Then the result should be as expected', () => {
+                    expect(result).toEqual(expectedAfterMerge);
+                });
+            });
         });
     });
-    describe('Given a context wih an empty array of string as templatePath', () => {
+    xdescribe('Given a context wih an empty array of string as templatePath', () => {
         describe('When I call "mergeTemplatePath"', () => {
             test('Then I got an error', () => {});
             test('Then I do not have a result', () => {});

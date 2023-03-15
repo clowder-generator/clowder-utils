@@ -15,8 +15,9 @@ export const silentIfSameValue: MergeTemplateContextStrategy = (firstEntry: any,
     }
 };
 
-export const mergeTemplatePath = (...context: Context[]): string | string[] => {
-    return '';
+export const mergeTemplatePath = (...contexts: Context[]): string[] => {
+    const templatePaths: string[] = contexts.map(context => context.templatePath()).flat();
+    return [...new Set(templatePaths)];
 };
 
 export const mergeDestinationPathProcessor = (...context: Context[]): DestinationPathProcessor => {
