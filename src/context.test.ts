@@ -1,6 +1,6 @@
 import { instance, mock, when } from 'ts-mockito';
 import {
-    Context,
+    Context, EmptyTemplatePath,
     mergeTemplateContext, mergeTemplatePath,
     silentIfSameValue,
     TemplateContextMergeConflictError
@@ -220,12 +220,42 @@ describe('mergeTemplatePath', () => {
             });
         });
     });
-    xdescribe('Given a context wih an empty array of string as templatePath', () => {
+    describe.each([
+        ['one context, one template path as string, empty', ''],
+        ['one context, one template path as string, blank', ' '],
+        ['one context, one template path as string, blank', '\t'],
+        ['one context, one template path as string, blank', '\n'],
+        ['one context, one template path as string, blank', '\t \n'],
+        ['one context, one array of template path as string, one empty', ['']],
+        ['one context, one empty array of template path', []],
+        ['one context, one array of template path as string, multiple empty or blank', ['thisOneIsOk', '', ' ', '\n']]
+    ])('Given %s', (description: string, input: string | string[]) => {
+        let context: Context;
+        beforeEach(() => {
+            context = mock<Context>();
+            when(context.templatePath).thenReturn(() => input);
+        });
+
         describe('When I call "mergeTemplatePath"', () => {
-            test('Then I got an error', () => {});
-            test('Then I do not have a result', () => {});
-            test('Then the error is of type "TODO"', () => {});
-            test('Then the error contains the error message "TODO"', () => {});
+            beforeEach(() => {
+                try {
+                    result = mergeTemplatePath(instance(context));
+                } catch (error: unknown) {
+                    exception = error as Error;
+                }
+            });
+            test('Then I got an error', () => {
+                expect(exception).not.toBeUndefined();
+            });
+            test('Then I do not have a result', () => {
+                expect(result).toBeUndefined();
+            });
+            test('Then the error is of type "EmptyTemplatePath"', () => {
+                expect(exception).toBeInstanceOf(EmptyTemplatePath);
+            });
+            test('Then the error contains the error message "invalid empty or blank templatePath"', () => {
+                expect(exception?.message).toEqual('invalid empty or blank templatePath');
+            });
         });
     });
 });

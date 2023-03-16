@@ -1,5 +1,6 @@
 import { ITemplateData } from './yeoman-helper';
 import { DestinationPathProcessor } from './destination-path-processor';
+import { isBlank } from './string-helper';
 
 export interface Context {
     templateContext: () => ITemplateData;
@@ -15,14 +16,46 @@ export const silentIfSameValue: MergeTemplateContextStrategy = (firstEntry: any,
     }
 };
 
+export const mergeDestinationPathProcessor = (...context: Context[]): DestinationPathProcessor => {
+    return undefined;
+};
+
+/**
+ * Merge together, into a single array of string, the template path of the given contexts.
+ *
+ * @param contexts
+ */
 export const mergeTemplatePath = (...contexts: Context[]): string[] => {
+    contexts.forEach(context => {
+        const path = context.templatePath();
+        if (path instanceof Array<string>) {
+            assertArrayIsValid(path);
+        } else {
+            assertPathStringIsValid(path);
+        }
+    });
     const templatePaths: string[] = contexts.map(context => context.templatePath()).flat();
     return [...new Set(templatePaths)];
 };
 
-export const mergeDestinationPathProcessor = (...context: Context[]): DestinationPathProcessor => {
-    return undefined;
+const assertArrayIsValid = (array: string[]): void => {
+    if ((array.length === 0) || (array.filter(e => isBlank(e)).length !== 0)) {
+        throw new EmptyTemplatePath('invalid empty or blank templatePath');
+    }
 };
+
+const assertPathStringIsValid = (path: string): void => {
+    if (isBlank(path)) {
+        throw new EmptyTemplatePath('invalid empty or blank templatePath');
+    }
+};
+
+export class EmptyTemplatePath extends Error {
+    constructor(msg: string) {
+        super(msg);
+        Object.setPrototypeOf(this, EmptyTemplatePath.prototype);
+    }
+}
 
 /**
  * merge templateContext from multiple Context applying the given mergeStrategy in case of conflict keys
