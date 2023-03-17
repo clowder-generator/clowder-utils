@@ -1,11 +1,14 @@
 import { instance, mock, when } from 'ts-mockito';
 import {
-    Context, EmptyTemplatePath,
+    Context, EmptyTemplatePath, mergeDestinationPathProcessor,
     mergeTemplateContext, mergeTemplatePath,
     silentIfSameValue,
     TemplateContextMergeConflictError
 } from './context';
 import { ITemplateData } from './yeoman-helper';
+import { renameAll } from './destination-path-processor';
+
+jest.mock('./destination-path-processor');
 
 describe('mergeTemplateContext', () => {
     let result: ITemplateData | undefined;
@@ -259,4 +262,21 @@ describe('mergeTemplatePath', () => {
         });
     });
 });
-xdescribe('mergeDestinationPathProcessor', () => {});
+
+describe('mergeDestinationPathProcessor', () => {
+    describe('test - todo - remove later', () => {
+        test('Then renameAll is mocked', () => {
+            (renameAll as jest.Mock).mockReturnValue((anythong: any) => 'mock called');
+            const result = mergeDestinationPathProcessor(instance(mock<Context>()))!('');
+            expect(result).toBeUndefined();
+        });
+    });
+
+    xdescribe('Given the following context and destination path processor entries', () => {
+        describe.each([
+            ['description', 'input', 'expected']
+        ])('%s', (description: string, input: string, expected: string) => {
+
+        });
+    });
+});
