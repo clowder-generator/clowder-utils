@@ -6,7 +6,7 @@ import {
     TemplateContextMergeConflictError
 } from './context';
 import { ITemplateData } from './yeoman-helper';
-import { renameAll } from './destination-path-processor';
+import { DestinationPathProcessor } from './destination-path-processor';
 
 jest.mock('./destination-path-processor');
 
@@ -264,19 +264,61 @@ describe('mergeTemplatePath', () => {
 });
 
 describe('mergeDestinationPathProcessor', () => {
-    describe('test - todo - remove later', () => {
-        test('Then renameAll is mocked', () => {
-            (renameAll as jest.Mock).mockReturnValue((anythong: any) => 'mock called');
-            const result = mergeDestinationPathProcessor(instance(mock<Context>()))!('');
-            expect(result).toBeUndefined();
+    describe('Given 3 defined destination path processors', () => {
+        let pathProcessor1: DestinationPathProcessor;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        let pathProcessor1CallCounter: number;
+        let pathProcessor2: DestinationPathProcessor;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        let pathProcessor2CallCounter: number;
+        let pathProcessor3: DestinationPathProcessor;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        let pathProcessor3CallCounter: number;
+
+        beforeEach(() => {
+            pathProcessor1CallCounter = 0;
+            pathProcessor2CallCounter = 0;
+            pathProcessor3CallCounter = 0;
+            pathProcessor1 = (pathToProcess) => {
+                pathProcessor1CallCounter++;
+                return pathToProcess;
+            };
+            pathProcessor2 = (pathToProcess) => {
+                pathProcessor2CallCounter++;
+                return pathToProcess;
+            };
+            pathProcessor3 = (pathToProcess) => {
+                pathProcessor3CallCounter++;
+                return pathToProcess;
+            };
         });
-    });
+        describe('Given three context that returned those 3 processors', () => {
+            let context1: Context;
+            let context2: Context;
+            let context3: Context;
+            beforeEach(() => {
+                context1 = mock<Context>();
+                when(context1.destinationPathProcessor).thenReturn(pathProcessor1);
+                context2 = mock<Context>();
+                when(context2.destinationPathProcessor).thenReturn(pathProcessor2);
+                context3 = mock<Context>();
+                when(context3.destinationPathProcessor).thenReturn(pathProcessor3);
+            });
 
-    xdescribe('Given the following context and destination path processor entries', () => {
-        describe.each([
-            ['description', 'input', 'expected']
-        ])('%s', (description: string, input: string, expected: string) => {
+            describe('When I call "mergeDestinationPathProcessor"', () => {
+                let resultingFunction: DestinationPathProcessor;
+                beforeEach(() => {
+                    resultingFunction = mergeDestinationPathProcessor(instance(context1), instance(context2), instance(context3));
+                });
 
+                test('Then I got a resulting function', () => {
+                    expect(resultingFunction).not.toBeUndefined();
+                });
+
+                test('Then the resulting function is a function', () => {
+                    expect(typeof resultingFunction).toEqual('function');
+                });
+            });
         });
     });
 });

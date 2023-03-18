@@ -1,11 +1,11 @@
 import { ITemplateData } from './yeoman-helper';
-import { DestinationPathProcessor, renameAll } from './destination-path-processor';
+import { DestinationPathProcessor } from './destination-path-processor';
 import { isBlank } from './string-helper';
 
 export interface Context {
     templateContext: () => ITemplateData;
     templatePath: () => string | string[];
-    destinationPathProcessor?: () => [string, string | undefined | null] | Array<[string, string | undefined | null]>;
+    destinationPathProcessor: DestinationPathProcessor;
 }
 
 export const silentIfSameValue: MergeTemplateContextStrategy = (firstEntry: any, secondEntry: any): any => {
@@ -17,7 +17,7 @@ export const silentIfSameValue: MergeTemplateContextStrategy = (firstEntry: any,
 };
 
 export const mergeDestinationPathProcessor = (...context: Context[]): DestinationPathProcessor => {
-    return renameAll(['a', 'b']);
+    return context[0].destinationPathProcessor;
 };
 
 /**
