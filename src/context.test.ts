@@ -266,13 +266,10 @@ describe('mergeTemplatePath', () => {
 describe('mergeDestinationPathProcessor', () => {
     describe('Given 3 defined destination path processors', () => {
         let pathProcessor1: DestinationPathProcessor;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let pathProcessor1CallCounter: number;
         let pathProcessor2: DestinationPathProcessor;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let pathProcessor2CallCounter: number;
         let pathProcessor3: DestinationPathProcessor;
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let pathProcessor3CallCounter: number;
 
         beforeEach(() => {
@@ -317,6 +314,34 @@ describe('mergeDestinationPathProcessor', () => {
 
                 test('Then the resulting function is a function', () => {
                     expect(typeof resultingFunction).toEqual('function');
+                });
+
+                describe('And when I call the resulting function', () => {
+                    let result: string | undefined;
+                    const input = 'path';
+                    beforeEach(() => {
+                        result = resultingFunction?.(input);
+                    });
+
+                    test('Then result is not undefined', () => {
+                        expect(result).not.toBeUndefined();
+                    });
+
+                    test('Then result is', () => {
+                        expect(result).toEqual('path');
+                    });
+
+                    test('Then "pathProcessor1" has been called once', () => {
+                        expect(pathProcessor1CallCounter).toEqual(1);
+                    });
+
+                    test('Then "pathProcessor2" has been called once', () => {
+                        expect(pathProcessor2CallCounter).toEqual(1);
+                    });
+
+                    test('Then "pathProcessor3" has been called once', () => {
+                        expect(pathProcessor3CallCounter).toEqual(1);
+                    });
                 });
             });
         });

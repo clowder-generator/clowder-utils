@@ -16,8 +16,18 @@ export const silentIfSameValue: MergeTemplateContextStrategy = (firstEntry: any,
     }
 };
 
-export const mergeDestinationPathProcessor = (...context: Context[]): DestinationPathProcessor => {
-    return context[0].destinationPathProcessor;
+export const mergeDestinationPathProcessor = (...contexts: Context[]): DestinationPathProcessor => {
+    const destinationPathProcessor: DestinationPathProcessor[] = contexts
+        .map(context => context.destinationPathProcessor)
+        .filter(context => context !== undefined);
+    return (pathToProcess: string) => {
+        let processedPath = pathToProcess;
+        for (const processor of destinationPathProcessor) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            processedPath = processor!(processedPath);
+        }
+        return processedPath;
+    };
 };
 
 /**
