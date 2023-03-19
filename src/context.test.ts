@@ -289,58 +289,132 @@ describe('mergeDestinationPathProcessor', () => {
                 return pathToProcess;
             };
         });
-        describe('Given three context that returned those 3 processors', () => {
+        describe('And given 3 contexts', () => {
             let context1: Context;
             let context2: Context;
             let context3: Context;
-            beforeEach(() => {
-                context1 = mock<Context>();
-                when(context1.destinationPathProcessor).thenReturn(pathProcessor1);
-                context2 = mock<Context>();
-                when(context2.destinationPathProcessor).thenReturn(pathProcessor2);
-                context3 = mock<Context>();
-                when(context3.destinationPathProcessor).thenReturn(pathProcessor3);
-            });
-
-            describe('When I call "mergeDestinationPathProcessor"', () => {
-                let resultingFunction: DestinationPathProcessor;
+            describe('and all three context returned those 3 processors', () => {
                 beforeEach(() => {
-                    resultingFunction = mergeDestinationPathProcessor(instance(context1), instance(context2), instance(context3));
+                    context1 = mock<Context>();
+                    when(context1.destinationPathProcessor).thenReturn(pathProcessor1);
+                    context2 = mock<Context>();
+                    when(context2.destinationPathProcessor).thenReturn(pathProcessor2);
+                    context3 = mock<Context>();
+                    when(context3.destinationPathProcessor).thenReturn(pathProcessor3);
                 });
 
-                test('Then I got a resulting function', () => {
-                    expect(resultingFunction).not.toBeUndefined();
-                });
-
-                test('Then the resulting function is a function', () => {
-                    expect(typeof resultingFunction).toEqual('function');
-                });
-
-                describe('And when I call the resulting function', () => {
-                    let result: string | undefined;
-                    const input = 'path';
+                describe('When I call "mergeDestinationPathProcessor"', () => {
+                    let resultingFunction: DestinationPathProcessor;
                     beforeEach(() => {
-                        result = resultingFunction?.(input);
+                        resultingFunction = mergeDestinationPathProcessor(instance(context1), instance(context2), instance(context3));
                     });
 
-                    test('Then result is not undefined', () => {
-                        expect(result).not.toBeUndefined();
+                    test('Then I got a resulting function', () => {
+                        expect(resultingFunction).not.toBeUndefined();
                     });
 
-                    test('Then result is', () => {
-                        expect(result).toEqual('path');
+                    test('Then the resulting function is a function', () => {
+                        expect(typeof resultingFunction).toEqual('function');
                     });
 
-                    test('Then "pathProcessor1" has been called once', () => {
-                        expect(pathProcessor1CallCounter).toEqual(1);
+                    describe('And when I call the resulting function', () => {
+                        let result: string | undefined;
+                        const input = 'path';
+                        beforeEach(() => {
+                            result = resultingFunction?.(input);
+                        });
+
+                        test('Then result is not undefined', () => {
+                            expect(result).not.toBeUndefined();
+                        });
+
+                        test('Then result is', () => {
+                            expect(result).toEqual('path');
+                        });
+
+                        test('Then "pathProcessor1" has been called once', () => {
+                            expect(pathProcessor1CallCounter).toEqual(1);
+                        });
+
+                        test('Then "pathProcessor2" has been called once', () => {
+                            expect(pathProcessor2CallCounter).toEqual(1);
+                        });
+
+                        test('Then "pathProcessor3" has been called once', () => {
+                            expect(pathProcessor3CallCounter).toEqual(1);
+                        });
+                    });
+                });
+            });
+            describe('and two context have non undefined processor', () => {
+                beforeEach(() => {
+                    context1 = mock<Context>();
+                    when(context1.destinationPathProcessor).thenReturn(pathProcessor1);
+                    context2 = mock<Context>();
+                    when(context2.destinationPathProcessor).thenReturn(undefined);
+                    context3 = mock<Context>();
+                    when(context3.destinationPathProcessor).thenReturn(pathProcessor3);
+                });
+                describe('When I call "mergeDestinationPathProcessor"', () => {
+                    let resultingFunction: DestinationPathProcessor;
+                    beforeEach(() => {
+                        resultingFunction = mergeDestinationPathProcessor(instance(context1), instance(context2), instance(context3));
                     });
 
-                    test('Then "pathProcessor2" has been called once', () => {
-                        expect(pathProcessor2CallCounter).toEqual(1);
+                    test('Then I got a resulting function', () => {
+                        expect(resultingFunction).not.toBeUndefined();
                     });
 
-                    test('Then "pathProcessor3" has been called once', () => {
-                        expect(pathProcessor3CallCounter).toEqual(1);
+                    test('Then the resulting function is a function', () => {
+                        expect(typeof resultingFunction).toEqual('function');
+                    });
+
+                    describe('And when I call the resulting function', () => {
+                        let result: string | undefined;
+                        const input = 'path';
+                        beforeEach(() => {
+                            result = resultingFunction?.(input);
+                        });
+
+                        test('Then result is not undefined', () => {
+                            expect(result).not.toBeUndefined();
+                        });
+
+                        test('Then result is', () => {
+                            expect(result).toEqual('path');
+                        });
+
+                        test('Then "pathProcessor1" has been called once', () => {
+                            expect(pathProcessor1CallCounter).toEqual(1);
+                        });
+
+                        test('Then "pathProcessor2" should not have been called once', () => {
+                            expect(pathProcessor2CallCounter).toEqual(0);
+                        });
+
+                        test('Then "pathProcessor3" has been called once', () => {
+                            expect(pathProcessor3CallCounter).toEqual(1);
+                        });
+                    });
+                });
+            });
+            describe('and the 3 context have undefined destinationPathProcessor', () => {
+                beforeEach(() => {
+                    context1 = mock<Context>();
+                    when(context1.destinationPathProcessor).thenReturn(undefined);
+                    context2 = mock<Context>();
+                    when(context2.destinationPathProcessor).thenReturn(undefined);
+                    context3 = mock<Context>();
+                    when(context3.destinationPathProcessor).thenReturn(undefined);
+                });
+                describe('When I call "mergeDestinationPathProcessor"', () => {
+                    let resultingFunction: DestinationPathProcessor;
+                    beforeEach(() => {
+                        resultingFunction = mergeDestinationPathProcessor(instance(context1), instance(context2), instance(context3));
+                    });
+
+                    test('Then I get a  undefined resulting function', () => {
+                        expect(resultingFunction).toBeUndefined();
                     });
                 });
             });
