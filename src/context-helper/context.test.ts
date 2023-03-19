@@ -5,10 +5,8 @@ import {
     silentIfSameValue,
     TemplateContextMergeConflictError
 } from './context';
-import { ITemplateData } from './yeoman-helper';
-import { DestinationPathProcessor } from './destination-path-processor';
-
-jest.mock('./destination-path-processor');
+import { ITemplateData } from '../yeoman-helper';
+import { DestinationPathProcessor } from '../destination-path-processor-helper/destination-path-processor';
 
 describe('mergeTemplateContext', () => {
     let result: ITemplateData | undefined;
@@ -276,15 +274,15 @@ describe('mergeDestinationPathProcessor', () => {
             pathProcessor1CallCounter = 0;
             pathProcessor2CallCounter = 0;
             pathProcessor3CallCounter = 0;
-            pathProcessor1 = (pathToProcess) => {
+            pathProcessor1 = (pathToProcess: string) => {
                 pathProcessor1CallCounter++;
                 return pathToProcess;
             };
-            pathProcessor2 = (pathToProcess) => {
+            pathProcessor2 = (pathToProcess: string) => {
                 pathProcessor2CallCounter++;
                 return pathToProcess;
             };
-            pathProcessor3 = (pathToProcess) => {
+            pathProcessor3 = (pathToProcess: string) => {
                 pathProcessor3CallCounter++;
                 return pathToProcess;
             };

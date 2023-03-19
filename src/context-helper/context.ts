@@ -1,6 +1,6 @@
-import { ITemplateData } from './yeoman-helper';
-import { DestinationPathProcessor } from './destination-path-processor';
-import { isBlank } from './string-helper';
+import { ITemplateData } from '../yeoman-helper';
+import { DestinationPathProcessor } from '../destination-path-processor-helper/destination-path-processor';
+import { isBlank } from '../string-helper/string-helper';
 
 export interface Context {
     templateContext: () => ITemplateData;
