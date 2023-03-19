@@ -32,6 +32,7 @@ module.exports = {
             "asyncArrow": "always"
         }],
         "@typescript-eslint/no-non-null-assertion": [1],
-        "@typescript-eslint/prefer-nullish-coalescing": [1]
+        "@typescript-eslint/prefer-nullish-coalescing": [1],
+        "@typescript-eslint/restrict-template-expressions": [1, { allowAny: true }]
     }
 }
