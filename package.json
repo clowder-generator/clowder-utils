@@ -1,6 +1,6 @@
 {
     "name": "@clowder-generator/utils",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "A utils collection to help building clowder related generator",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -17,6 +17,37 @@
         "build": "tsc",
         "lint": "eslint . --ext .ts",
         "prepare": "husky install"
+    },
+    "exports": {
+        ".": {
+            "node": "./dist/index.js",
+            "require": "./dist/index.js"
+        },
+        "./case-helper": {
+            "node": "./dist/case-helper/index.js",
+            "require": "./dist/case-helper/index.js"
+        },
+        "./context-helper": {
+            "node": "./dist/context-helper/index.js",
+            "require": "./dist/context-helper/index.js"
+        },
+        "./destination-path-processor-helper": {
+            "node": "./dist/destination-path-processor-helper/index.js",
+            "require": "./dist/destination-path-processor-helper/index.js"
+        },
+        "./path-helper": {
+            "node": "./dist/path-helper/index.js",
+            "require": "./dist/path-helper/index.js"
+        },
+        "./string-helper": {
+            "node": "./dist/string-helper/index.js",
+            "require": "./dist/string-helper/index.js"
+        },
+        "./validator-helper": {
+            "node": "./dist/validator-helper/index.js",
+            "require": "./dist/validator-helper/index.js"
+        },
+        "./package.json": "./package.json"
     },
     "keywords": [
         "clowder",
