@@ -1,6 +1,6 @@
 {
     "name": "@clowder-generator/utils",
-    "version": "2.0.2",
+    "version": "2.0.3",
     "description": "A utils collection to help building clowder related generator",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -21,31 +21,38 @@
     "exports": {
         ".": {
             "node": "./dist/index.js",
-            "require": "./dist/index.js"
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
         },
         "./case-helper": {
             "node": "./dist/case-helper/index.js",
-            "require": "./dist/case-helper/index.js"
+            "require": "./dist/case-helper/index.js",
+            "types": "./dist/case-helper/index.d.ts"
         },
         "./context-helper": {
             "node": "./dist/context-helper/index.js",
-            "require": "./dist/context-helper/index.js"
+            "require": "./dist/context-helper/index.js",
+            "types": "./dist/context-helper/index.d.ts"
         },
         "./destination-path-processor-helper": {
             "node": "./dist/destination-path-processor-helper/index.js",
-            "require": "./dist/destination-path-processor-helper/index.js"
+            "require": "./dist/destination-path-processor-helper/index.js",
+            "types": "./dist/estination-path-processor-helper/index.d.ts"
         },
         "./path-helper": {
             "node": "./dist/path-helper/index.js",
-            "require": "./dist/path-helper/index.js"
+            "require": "./dist/path-helper/index.js",
+            "types": "./dist/path-helper/index.d.ts"
         },
         "./string-helper": {
             "node": "./dist/string-helper/index.js",
-            "require": "./dist/string-helper/index.js"
+            "require": "./dist/string-helper/index.js",
+            "types": "./dist/string-helper/index.d.ts"
         },
         "./validator-helper": {
             "node": "./dist/validator-helper/index.js",
-            "require": "./dist/validator-helper/index.js"
+            "require": "./dist/validator-helper/index.js",
+            "types": "./dist/validator-helper/index.d.ts"
         },
         "./package.json": "./package.json"
     },
