@@ -5,7 +5,7 @@ import {
     screamingKebabCaseRegex,
     screamingSnakeCaseRegex,
     snakeCaseRegex
-} from '../case-helper/case-helper';
+} from '../case-helper';
 
 /**
  * Type representing a validation function for yeoman or inquirer.js.

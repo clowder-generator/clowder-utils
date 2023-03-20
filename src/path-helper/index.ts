@@ -1,1 +1,6 @@
-export * from './path-helper';
+export {
+    PathAssertionError,
+    assertPathDoesNotExist,
+    assertPathIsEmpty,
+    assertPathDoesNotExistOrIsEmpty
+} from './path-helper';

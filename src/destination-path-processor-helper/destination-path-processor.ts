@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { isBlank } from '../string-helper/string-helper';
+import { isBlank } from '../string-helper';
 
 /**
  * For yeoman copyOptions, the processDestinationPath is an optional function

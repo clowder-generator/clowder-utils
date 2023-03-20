@@ -1,1 +1,5 @@
-export * from './string-helper';
+export {
+    StringAssertionError,
+    isBlank,
+    assertNotBlank
+} from './string-helper';

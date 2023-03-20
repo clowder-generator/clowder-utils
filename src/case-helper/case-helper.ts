@@ -1,4 +1,4 @@
-import { isBlank } from '../string-helper/string-helper';
+import { isBlank } from '../string-helper';
 
 /**
  * Case:

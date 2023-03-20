@@ -1,1 +1,4 @@
-export * from './yeoman-helper';
+export {
+    IYeomanGenerator,
+    ITemplateData
+} from './yeoman-helper';

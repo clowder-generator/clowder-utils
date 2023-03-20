@@ -6,7 +6,7 @@ import {
     TemplateContextMergeConflictError
 } from './context';
 import { ITemplateData } from '../yeoman-helper';
-import { DestinationPathProcessor } from '../destination-path-processor-helper/destination-path-processor';
+import { DestinationPathProcessor } from '../destination-path-processor-helper';
 
 describe('mergeTemplateContext', () => {
     let result: ITemplateData | undefined;
