@@ -75,7 +75,7 @@ describe('validateWith', () => {
         });
         describe('and a function to assert some rules on white space char presence', () => {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            const noLeadingWhiteSpaces: stringValidationFunction = async (input) => /^\s+.*$/.test(input) ? 'leading :(' : true;
+            const noLeadingWhiteSpaces: stringValidationFunction = async (input) => /^\s+.*$/.test(input) ? 'leading :(' : true; // NOSONAR
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const noTrailingWhiteSpaces: stringValidationFunction = async (input) => /^\S*\s+$/.test(input) ? 'trailing :(' : true;
             describe('and a validationOption for trimmed = true', () => {

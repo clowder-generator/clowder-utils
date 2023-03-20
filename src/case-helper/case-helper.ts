@@ -16,8 +16,8 @@ export const screamingKebabCaseRegex = /^[A-Z0-9]+(-[A-Z0-9]+)*$/;
 // TODO: there is a potential issue with the camelCase and pascalCase regex.
 //       with them, ...Hi345hello234test are valid cases while it could be argued that
 //       it should be ...Hi345Hello234Test
-export const camelCaseRegex = /^[a-z0-9]+([A-Z0-9][a-z0-9]*)*$/;
-export const pascalCaseRegex = /^([A-Z0-9][a-z0-9]*)*$/;
+export const camelCaseRegex = /^[a-z0-9]+([A-Z0-9][a-z0-9]*)*$/; // NOSONAR
+export const pascalCaseRegex = /^([A-Z0-9][a-z0-9]*)*$/; // NOSONAR
 
 export class CaseConversionError extends Error {
     constructor(msg: string) {
