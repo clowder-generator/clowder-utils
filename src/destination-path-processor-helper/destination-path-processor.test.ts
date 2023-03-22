@@ -2,10 +2,10 @@
 // base system. There are no plans to support windows
 
 import {
-    DestinationPathProcessingError,
     rename,
     renameAll
 } from './destination-path-processor';
+import { DestinationPathProcessingError } from './exceptions';
 
 type nullishString = string | undefined | null;
 

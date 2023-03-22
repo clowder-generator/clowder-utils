@@ -2,11 +2,11 @@ import { instance, mock, when } from 'ts-mockito';
 import {
     Context, EmptyTemplatePath, mergeDestinationPathProcessor,
     mergeTemplateContext, mergeTemplatePath,
-    silentIfSameValue,
-    TemplateContextMergeConflictError
+    silentIfSameValue
 } from './context';
 import { ITemplateData } from '../yeoman-helper';
 import { DestinationPathProcessor } from '../destination-path-processor-helper';
+import { TemplateContextMergeConflictError } from './exceptions';
 
 describe('mergeTemplateContext', () => {
     let result: ITemplateData | undefined;

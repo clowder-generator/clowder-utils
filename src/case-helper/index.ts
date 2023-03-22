@@ -5,7 +5,6 @@ export {
     screamingKebabCaseRegex,
     camelCaseRegex,
     pascalCaseRegex,
-    CaseConversionError,
     Case,
     fromSnakeCase,
     fromKebabCase,
@@ -16,3 +15,4 @@ export {
     assertDoesNotContainsImproperChar,
     assertNotEmptyString
 } from './case-helper';
+export { CaseConversionError } from './exceptions';

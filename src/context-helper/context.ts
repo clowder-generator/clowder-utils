@@ -1,6 +1,7 @@
 import { ITemplateData } from '../yeoman-helper';
 import { DestinationPathProcessor } from '../destination-path-processor-helper';
 import { isBlank } from '../string-helper';
+import { TemplateContextMergeConflictError } from './exceptions';
 
 export interface Context {
     templateContext: () => ITemplateData;
@@ -96,13 +97,6 @@ export const mergeTemplateContext = (mergeStrategy?: MergeTemplateContextStrateg
 
     return finalTemplateContext;
 };
-
-export class TemplateContextMergeConflictError extends Error {
-    constructor(msg?: string) {
-        super(msg);
-        Object.setPrototypeOf(this, TemplateContextMergeConflictError.prototype);
-    }
-}
 
 const isTemplateContextProvider = (obj: any): obj is Context => {
     return 'templateContext' in obj;

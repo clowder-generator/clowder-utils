@@ -5,6 +5,6 @@ export {
     mergeTemplatePath,
     EmptyTemplatePath,
     mergeTemplateContext,
-    TemplateContextMergeConflictError,
     MergeTemplateContextStrategy
 } from './context';
+export { TemplateContextMergeConflictError } from './exceptions';

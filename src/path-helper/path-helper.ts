@@ -1,11 +1,5 @@
 import * as fs from 'fs';
-
-export class PathAssertionError extends Error {
-    constructor(msg: string) {
-        super(msg);
-        Object.setPrototypeOf(this, PathAssertionError.prototype);
-    }
-}
+import { PathAssertionError } from './exceptions';
 
 /**
  * Assert that the given path does not exist

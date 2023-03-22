@@ -1,4 +1,5 @@
 import { isBlank } from '../string-helper';
+import { CaseConversionError } from './exceptions';
 
 /**
  * Case:
@@ -18,13 +19,6 @@ export const screamingKebabCaseRegex = /^[A-Z0-9]+(-[A-Z0-9]+)*$/;
 //       it should be ...Hi345Hello234Test
 export const camelCaseRegex = /^[a-z0-9]+([A-Z0-9][a-z0-9]*)*$/; // NOSONAR
 export const pascalCaseRegex = /^([A-Z0-9][a-z0-9]*)*$/; // NOSONAR
-
-export class CaseConversionError extends Error {
-    constructor(msg: string) {
-        super(msg);
-        Object.setPrototypeOf(this, CaseConversionError.prototype);
-    }
-}
 
 export class Case {
     private readonly _words: string[];

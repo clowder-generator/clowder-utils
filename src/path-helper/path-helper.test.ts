@@ -3,9 +3,9 @@ import { vol } from 'memfs';
 import {
     assertPathDoesNotExist,
     assertPathDoesNotExistOrIsEmpty,
-    assertPathIsEmpty,
-    PathAssertionError
+    assertPathIsEmpty
 } from './path-helper';
+import { PathAssertionError } from './exceptions';
 jest.mock('fs');
 
 describe('path-helper', () => {

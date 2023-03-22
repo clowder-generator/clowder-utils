@@ -1,6 +1,6 @@
 export {
     DestinationPathProcessor,
-    DestinationPathProcessingError,
     rename,
     renameAll
 } from './destination-path-processor';
+export { DestinationPathProcessingError } from './exceptions';

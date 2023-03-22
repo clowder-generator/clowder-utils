@@ -1,9 +1,4 @@
-export class StringAssertionError extends Error {
-    constructor(msg: string) {
-        super(msg);
-        Object.setPrototypeOf(this, StringAssertionError.prototype);
-    }
-}
+import { StringAssertionError } from './exceptions';
 
 /**
  * Check if the given parameter is a blank string or undefined/null

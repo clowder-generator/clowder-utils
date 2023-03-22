@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { isBlank } from '../string-helper';
+import { DestinationPathProcessingError } from './exceptions';
 
 /**
  * For yeoman copyOptions, the processDestinationPath is an optional function
@@ -10,12 +11,6 @@ import { isBlank } from '../string-helper';
 
 type PathNameManipulationFunction = (pathToProcess: string) => string;
 export type DestinationPathProcessor = PathNameManipulationFunction | undefined;
-export class DestinationPathProcessingError extends Error {
-    constructor(msg: string) {
-        super(msg);
-        Object.setPrototypeOf(this, DestinationPathProcessingError.prototype);
-    }
-}
 
 const splitPath = (pathName: string): string[] => {
     const recursiveSplitPath = (remainingPathName: string, accumulator: string[]): string[] => {

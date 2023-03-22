@@ -1,13 +1,13 @@
 import {
     assertDoesNotContainsImproperChar,
     Case,
-    CaseConversionError,
     fromCamelCase,
     fromKebabCase,
     fromPascalCase, fromScreamingKebabCase,
     fromScreamingSnakeCase,
     fromSnakeCase
 } from './case-helper';
+import { CaseConversionError } from './exceptions';
 
 describe('Case', () => {
     describe('constructor', () => {

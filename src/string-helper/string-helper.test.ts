@@ -1,4 +1,5 @@
-import { assertNotBlank, isBlank, StringAssertionError } from './string-helper';
+import { assertNotBlank, isBlank } from './string-helper';
+import { StringAssertionError } from './exceptions';
 
 describe('isBlank', () => {
     test.each([
