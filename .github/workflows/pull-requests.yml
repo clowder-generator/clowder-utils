@@ -53,6 +53,7 @@ jobs:
         run: |
           echo "sonar.projectKey=clowder-generator_clowder-utils" >> sonar-project.properties
           echo "sonar.organization=clowder-generator" >> sonar-project.properties
+          echo "sonar.javascript.lcov.reportPaths=./coverage/lcov.info" >> sonar-project.properties
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
