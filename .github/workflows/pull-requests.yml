@@ -51,7 +51,7 @@ jobs:
 
       - name: Configure SonarScanner properties
         run: |
-          echo "sonar.projectKey=clowder-utils" >> sonar-project.properties
+          echo "sonar.projectKey=clowder-generator_clowder-utils" >> sonar-project.properties
           echo "sonar.organization=clowder-generator" >> sonar-project.properties
 
       - name: SonarCloud Scan
