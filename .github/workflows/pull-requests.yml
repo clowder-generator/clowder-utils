@@ -49,6 +49,11 @@ jobs:
           node --version
           npm run coverage
 
+      - name: Configure SonarScanner properties
+        run: |
+          echo "sonar.projectKey=clowder-utils" >> sonar-project.properties
+          echo "sonar.organization=clowder-generator" >> sonar-project.properties
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
