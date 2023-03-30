@@ -12,6 +12,7 @@
         "coverage": "npm run test -- --coverage",
         "coverage:istanbul": "nyc npm run test",
         "mutation": "npx stryker run",
+        "mutation:ignoreStatic": "npx stryker run --ignoreStatic",
         "clean": "rm -rf dist .stryker-tmp",
         "prebuild": "npm run clean",
         "build": "tsc",
