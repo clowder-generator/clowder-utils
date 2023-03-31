@@ -58,3 +58,59 @@ jobs:
         run: |
           node --version
           npm run coverage
+
+      - name: Upload mutation reports
+        uses: action/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: |
+            coverage/
+
+  publish-artifact-mutation:
+    runs-on: ubuntu-latest
+    needs: deploy-to-npm
+    if: ${{ success() }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use node 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          node --version
+          npm clean-install
+
+      - name: Run coverage
+        run: |
+          node --version
+          npm run mutation
+
+      - name: Upload mutation reports
+        uses: action/upload-artifact@v3
+        with:
+          name: mutation-report
+          path: |
+            reports/
+
+  publish-artifact-sources:
+    runs-on: ubuntu-latest
+    needs: deploy-to-npm
+    if: ${{ success() }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Zip sources
+        run: |
+          tar czf sources.tar.gz .
+
+      - name: Upload mutation reports
+        uses: action/upload-artifact@v3
+        with:
+          name: mutation-report
+          path: |
+            sources.tar.gz
