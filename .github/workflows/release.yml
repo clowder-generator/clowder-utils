@@ -1,0 +1,116 @@
+name: Master grooming
+
+on:
+  release:
+    types: [created]
+    branches:
+      - master
+
+jobs:
+  deploy-to-npm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use node 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          node --version
+          npm clean-install
+
+      - name: Run test
+        run: |
+          node --version
+          npm run test
+
+      - name: Deploy to npm
+        run: |
+          npm config set _authToken=$AUTH_TOKEN
+          npm run build
+          npm publish --access public
+        env:
+          AUTH_TOKEN: ${{ secrets.AUTH_TOKEN }}
+
+  publish-artifact-coverage:
+    runs-on: ubuntu-latest
+    needs: deploy-to-npm
+    if: ${{ success() }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use node 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          node --version
+          npm clean-install
+
+      - name: Run coverage
+        run: |
+          node --version
+          npm run coverage
+
+      - name: Upload mutation reports
+        uses: action/upload-artifact@v3
+        with:
+          name: coverage-report
+          path: |
+            coverage/
+
+  publish-artifact-mutation:
+    runs-on: ubuntu-latest
+    needs: deploy-to-npm
+    if: ${{ success() }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Use node 18
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.x
+
+      - name: Install dependencies
+        run: |
+          node --version
+          npm clean-install
+
+      - name: Run coverage
+        run: |
+          node --version
+          npm run mutation
+
+      - name: Upload mutation reports
+        uses: action/upload-artifact@v3
+        with:
+          name: mutation-report
+          path: |
+            reports/
+
+  publish-artifact-sources:
+    runs-on: ubuntu-latest
+    needs: deploy-to-npm
+    if: ${{ success() }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Zip sources
+        run: |
+          tar czf sources.tar.gz .
+
+      - name: Upload mutation reports
+        uses: action/upload-artifact@v3
+        with:
+          name: mutation-report
+          path: |
+            sources.tar.gz

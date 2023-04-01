@@ -7,15 +7,21 @@ orbs:
 # Executors
 #==============================================================================
 executors:
+  node_19:
+    docker:
+      - image: node:19.8.1
+        auth:
+          username: $MY_CIRCLECI_DOCKERHUB_USERNAME
+          password: $MY_CIRCLECI_DOCKERHUB_PASSWORD
   node_18:
     docker:
-      - image: node:18.12.1
+      - image: node:18.15.0
         auth:
           username: $MY_CIRCLECI_DOCKERHUB_USERNAME
           password: $MY_CIRCLECI_DOCKERHUB_PASSWORD
   node_16:
     docker:
-      - image: node:16.19.0
+      - image: node:16.20.0
         auth:
           username: $MY_CIRCLECI_DOCKERHUB_USERNAME
           password: $MY_CIRCLECI_DOCKERHUB_PASSWORD
@@ -36,13 +42,6 @@ no_tag_filter: &no_tag_filter
       ignore: master
     tags:
       ignore: /.*/
-
-release_tag_filter: &release_tag_filter
-  filters:
-    branches:
-      ignore: /.*/
-    tags:
-      only: /release-v.*/
 
 #==============================================================================
 # Commands
@@ -68,15 +67,11 @@ jobs:
     steps:
       - checkout
       - test
-  deploy:
-    executor: node_18
+  test-19:
+    executor: node_19
     steps:
       - checkout
-      - run: |
-          npm config set _authToken=$MY_CIRCLECI_NPM_TOKEN
-          npm install
-          npm run build
-          npm publish --access public
+      - test
 
 #==============================================================================
 # Workflows
@@ -101,22 +96,3 @@ workflows:
           post-steps:
             - jira/notify:
                 job_type: build
-
-  #
-  # When a release tag is pushed, this pipeline will retest everything
-  # before deploying the new release in the correct npmjs repo.
-  #
-  "Build and deploy pipeline":
-    jobs:
-      - test-16:
-          <<: *project_context
-          <<: *release_tag_filter
-      - test-18:
-          <<: *project_context
-          <<: *release_tag_filter
-      - deploy:
-          <<: *project_context
-          <<: *release_tag_filter
-          requires:
-            - test-16
-            - test-18
