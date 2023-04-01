@@ -34,16 +34,6 @@ project_context: &project_context
     - generator-utils
 
 #==============================================================================
-# Filters
-#==============================================================================
-no_tag_filter: &no_tag_filter
-  filters:
-    branches:
-      ignore: master
-    tags:
-      ignore: /.*/
-
-#==============================================================================
 # Commands
 #==============================================================================
 commands:
@@ -86,13 +76,16 @@ workflows:
     jobs:
       - test-16:
           <<: *project_context
-          <<: *no_tag_filter
           post-steps:
             - jira/notify:
                 job_type: build
       - test-18:
           <<: *project_context
-          <<: *no_tag_filter
+          post-steps:
+            - jira/notify:
+                job_type: build
+      - test-19:
+          <<: *project_context
           post-steps:
             - jira/notify:
                 job_type: build
