@@ -6,7 +6,7 @@ import {
 } from './context';
 import { ITemplateData } from '../yeoman-helper';
 import { DestinationPathProcessor } from '../destination-path-processor-helper';
-import { TemplateContextMergeConflictError } from './exceptions';
+import { NoContextToMergeError, TemplateContextMergeConflictError } from './exceptions';
 
 describe('mergeTemplateContext', () => {
     let result: ITemplateData | undefined;
@@ -16,7 +16,7 @@ describe('mergeTemplateContext', () => {
         exception = undefined;
     });
 
-    describe('Given two contexts', () => {
+    describe('Given two defined contexts', () => {
         const context1: Context = mock<Context>();
         const context2: Context = mock<Context>();
 
@@ -165,6 +165,65 @@ describe('mergeTemplateContext', () => {
                 });
                 test('Then the message should tell the first field which is in conflict', () => {
                     expect(exception?.message).toEqual('Merge conflict for field "second". cause: value are different "two" vs. "bis"');
+                });
+            });
+        });
+    });
+
+    describe('Given three contexts', () => {
+        let context1: Context | undefined;
+        let context2: Context | undefined;
+        let context3: Context | undefined;
+
+        describe('and only the first one is undefined', () => {
+            beforeEach(() => {
+                context1 = undefined;
+                context2 = mock<Context>();
+                context3 = mock<Context>();
+            });
+            // TODO : continue test implementation
+            describe('and there are no conflicting template context', () => {});
+            describe('and there are conflicting template context but with the same value', () => {});
+            describe('and there are conflicting template context but with different value', () => {});
+        });
+        describe('and only the second one is undefined', () => {
+            beforeEach(() => {
+                context1 = mock<Context>();
+                context2 = undefined;
+                context3 = mock<Context>();
+            });
+            // TODO : continue test implementation
+        });
+        describe('and only the third one is undefined', () => {
+            beforeEach(() => {
+                context1 = mock<Context>();
+                context2 = mock<Context>();
+                context3 = undefined;
+            });
+            // TODO : continue test implementation
+        });
+        describe('and all are undefined', () => {
+            beforeEach(() => {
+                context1 = undefined;
+                context2 = undefined;
+                context3 = undefined;
+            });
+            describe('When I call "mergeTemplateContext" on them', () => {
+                beforeEach(() => {
+                    try {
+                        result = mergeTemplateContext(context1, context2, context3);
+                    } catch (error: unknown) {
+                        exception = error as Error;
+                    }
+                });
+                test('Then I got an error', () => {
+                    expect(exception).not.toBeUndefined();
+                });
+                test('Then the error is of type "NoContextToMergeError"', () => {
+                    expect(exception).toBeInstanceOf(NoContextToMergeError);
+                });
+                test('Then the error message say there are no valid (non undefined) context to merge', () => {
+                    expect(exception?.message).toBe('No valid (non undefined) context to merge.');
                 });
             });
         });
