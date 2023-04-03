@@ -181,10 +181,141 @@ describe('mergeTemplateContext', () => {
                 context2 = mock<Context>();
                 context3 = mock<Context>();
             });
-            // TODO : continue test implementation
-            describe('and there are no conflicting template context', () => {});
-            describe('and there are conflicting template context but with the same value', () => {});
-            describe('and there are conflicting template context but with different value', () => {});
+            describe('and there are no conflicting template context', () => {
+                beforeEach(() => {
+                    when(context2?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context3?.templateContext).thenReturn(() => ({
+                        three: 'third',
+                        four: 'forth'
+                    }));
+                });
+                describe('When I call "mergeTemplateContext" on them', () => {
+                    beforeEach(() => {
+                        try {
+                            result = mergeTemplateContext(context1, instance(context2), instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I got no error', () => {
+                        // TODO
+                    });
+                    test('Then I got a defined object ITemplateData', () => {
+                        // TODO
+                    });
+                    test('Then I got a new ITemplateData with all field from both templateContext', () => {
+                        // TODO
+                    });
+                });
+            });
+            describe('and there are conflicting template context but with the same value', () => {
+                beforeEach(() => {
+                    when(context2?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context3?.templateContext).thenReturn(() => ({
+                        two: 'second',
+                        three: 'third'
+                    }));
+                });
+                describe('and no overlapping strategy', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(context1, instance(context2), instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        // TODO
+                    });
+                    test('Then I got an error', () => {
+                        // TODO
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        // TODO
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        // TODO
+                    });
+                });
+                describe('and an overlapping merge strategy "silentIfSameValue"', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(silentIfSameValue, context1, instance(context2), instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I should not get an exception', () => {
+                        // TODO
+                    });
+                    test('Then I got a result', () => {
+                        // TODO
+                    });
+                    test('Then the result should contains the fields "first, second, third"', () => {
+                        // TODO
+                    });
+                });
+            });
+            describe('and there are conflicting template context but with different value', () => {
+                beforeEach(() => {
+                    when(context2?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context3?.templateContext).thenReturn(() => ({
+                        two: 'both',
+                        three: 'third'
+                    }));
+                });
+                describe('and no overlapping strategy', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(context1, instance(context2), instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        // TODO
+                    });
+                    test('Then I got an error', () => {
+                        // TODO
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        // TODO
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        // TODO
+                    });
+                });
+                describe('and an overlapping merge strategy "silentIfSameValue"', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(silentIfSameValue, context1, instance(context2), instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        // TODO
+                    });
+                    test('Then I got an error', () => {
+                        // TODO
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        // TODO
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        // TODO
+                    });
+                });
+            });
         });
         describe('and only the second one is undefined', () => {
             beforeEach(() => {
