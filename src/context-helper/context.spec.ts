@@ -201,13 +201,18 @@ describe('mergeTemplateContext', () => {
                         }
                     });
                     test('Then I got no error', () => {
-                        // TODO
+                        expect(exception).toBeUndefined();
                     });
                     test('Then I got a defined object ITemplateData', () => {
-                        // TODO
+                        expect(result).not.toBeUndefined();
                     });
                     test('Then I got a new ITemplateData with all field from both templateContext', () => {
-                        // TODO
+                        expect(result).toEqual({
+                            one: 'first',
+                            two: 'second',
+                            three: 'third',
+                            four: 'forth'
+                        });
                     });
                 });
             });
@@ -231,16 +236,16 @@ describe('mergeTemplateContext', () => {
                         }
                     });
                     test('Then I do not get a result', () => {
-                        // TODO
+                        expect(result).toBeUndefined();
                     });
                     test('Then I got an error', () => {
-                        // TODO
+                        expect(exception).not.toBeUndefined();
                     });
                     test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
-                        // TODO
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
                     });
                     test('Then the message should tell the first field which is in conflict', () => {
-                        // TODO
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
                     });
                 });
                 describe('and an overlapping merge strategy "silentIfSameValue"', () => {
