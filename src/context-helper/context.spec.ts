@@ -257,13 +257,17 @@ describe('mergeTemplateContext', () => {
                         }
                     });
                     test('Then I should not get an exception', () => {
-                        // TODO
+                        expect(exception).toBeUndefined();
                     });
                     test('Then I got a result', () => {
-                        // TODO
+                        expect(result).not.toBeUndefined();
                     });
                     test('Then the result should contains the fields "first, second, third"', () => {
-                        // TODO
+                        expect(result).toEqual({
+                            one: 'first',
+                            two: 'second',
+                            three: 'third'
+                        });
                     });
                 });
             });
@@ -287,16 +291,16 @@ describe('mergeTemplateContext', () => {
                         }
                     });
                     test('Then I do not get a result', () => {
-                        // TODO
+                        expect(result).toBeUndefined();
                     });
                     test('Then I got an error', () => {
-                        // TODO
+                        expect(exception).not.toBeUndefined();
                     });
                     test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
-                        // TODO
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
                     });
                     test('Then the message should tell the first field which is in conflict', () => {
-                        // TODO
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
                     });
                 });
                 describe('and an overlapping merge strategy "silentIfSameValue"', () => {
@@ -308,16 +312,16 @@ describe('mergeTemplateContext', () => {
                         }
                     });
                     test('Then I do not get a result', () => {
-                        // TODO
+                        expect(result).toBeUndefined();
                     });
                     test('Then I got an error', () => {
-                        // TODO
+                        expect(exception).not.toBeUndefined();
                     });
                     test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
-                        // TODO
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
                     });
                     test('Then the message should tell the first field which is in conflict', () => {
-                        // TODO
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
                     });
                 });
             });
@@ -328,7 +332,150 @@ describe('mergeTemplateContext', () => {
                 context2 = undefined;
                 context3 = mock<Context>();
             });
-            // TODO : continue test implementation
+            describe('and there are no conflicting template context', () => {
+                beforeEach(() => {
+                    when(context1?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context3?.templateContext).thenReturn(() => ({
+                        three: 'third',
+                        four: 'forth'
+                    }));
+                });
+                describe('When I call "mergeTemplateContext" on them', () => {
+                    beforeEach(() => {
+                        try {
+                            result = mergeTemplateContext(instance(context1), context2, instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I got no error', () => {
+                        expect(exception).toBeUndefined();
+                    });
+                    test('Then I got a defined object ITemplateData', () => {
+                        expect(result).not.toBeUndefined();
+                    });
+                    test('Then I got a new ITemplateData with all field from both templateContext', () => {
+                        expect(result).toEqual({
+                            one: 'first',
+                            two: 'second',
+                            three: 'third',
+                            four: 'forth'
+                        });
+                    });
+                });
+            });
+            describe('and there are conflicting template context but with the same value', () => {
+                beforeEach(() => {
+                    when(context1?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context3?.templateContext).thenReturn(() => ({
+                        two: 'second',
+                        three: 'third'
+                    }));
+                });
+                describe('and no overlapping strategy', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(instance(context1), context2, instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        expect(result).toBeUndefined();
+                    });
+                    test('Then I got an error', () => {
+                        expect(exception).not.toBeUndefined();
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
+                    });
+                });
+                describe('and an overlapping merge strategy "silentIfSameValue"', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(silentIfSameValue, instance(context1), context2, instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I should not get an exception', () => {
+                        expect(exception).toBeUndefined();
+                    });
+                    test('Then I got a result', () => {
+                        expect(result).not.toBeUndefined();
+                    });
+                    test('Then the result should contains the fields "first, second, third"', () => {
+                        expect(result).toEqual({
+                            one: 'first',
+                            two: 'second',
+                            three: 'third'
+                        });
+                    });
+                });
+            });
+            describe('and there are conflicting template context but with different value', () => {
+                beforeEach(() => {
+                    when(context1?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context3?.templateContext).thenReturn(() => ({
+                        two: 'both',
+                        three: 'third'
+                    }));
+                });
+                describe('and no overlapping strategy', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(instance(context1), context2, instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        expect(result).toBeUndefined();
+                    });
+                    test('Then I got an error', () => {
+                        expect(exception).not.toBeUndefined();
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
+                    });
+                });
+                describe('and an overlapping merge strategy "silentIfSameValue"', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(silentIfSameValue, instance(context1), context2, instance(context3));
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        expect(result).toBeUndefined();
+                    });
+                    test('Then I got an error', () => {
+                        expect(exception).not.toBeUndefined();
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
+                    });
+                });
+            });
         });
         describe('and only the third one is undefined', () => {
             beforeEach(() => {
@@ -336,7 +483,150 @@ describe('mergeTemplateContext', () => {
                 context2 = mock<Context>();
                 context3 = undefined;
             });
-            // TODO : continue test implementation
+            describe('and there are no conflicting template context', () => {
+                beforeEach(() => {
+                    when(context1?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context2?.templateContext).thenReturn(() => ({
+                        three: 'third',
+                        four: 'forth'
+                    }));
+                });
+                describe('When I call "mergeTemplateContext" on them', () => {
+                    beforeEach(() => {
+                        try {
+                            result = mergeTemplateContext(instance(context1), instance(context2), context3);
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I got no error', () => {
+                        expect(exception).toBeUndefined();
+                    });
+                    test('Then I got a defined object ITemplateData', () => {
+                        expect(result).not.toBeUndefined();
+                    });
+                    test('Then I got a new ITemplateData with all field from both templateContext', () => {
+                        expect(result).toEqual({
+                            one: 'first',
+                            two: 'second',
+                            three: 'third',
+                            four: 'forth'
+                        });
+                    });
+                });
+            });
+            describe('and there are conflicting template context but with the same value', () => {
+                beforeEach(() => {
+                    when(context1?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context2?.templateContext).thenReturn(() => ({
+                        two: 'second',
+                        three: 'third'
+                    }));
+                });
+                describe('and no overlapping strategy', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(instance(context1), instance(context2), context3);
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        expect(result).toBeUndefined();
+                    });
+                    test('Then I got an error', () => {
+                        expect(exception).not.toBeUndefined();
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
+                    });
+                });
+                describe('and an overlapping merge strategy "silentIfSameValue"', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(silentIfSameValue, instance(context1), instance(context2), context3);
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I should not get an exception', () => {
+                        expect(exception).toBeUndefined();
+                    });
+                    test('Then I got a result', () => {
+                        expect(result).not.toBeUndefined();
+                    });
+                    test('Then the result should contains the fields "first, second, third"', () => {
+                        expect(result).toEqual({
+                            one: 'first',
+                            two: 'second',
+                            three: 'third'
+                        });
+                    });
+                });
+            });
+            describe('and there are conflicting template context but with different value', () => {
+                beforeEach(() => {
+                    when(context1?.templateContext).thenReturn(() => ({
+                        one: 'first',
+                        two: 'second'
+                    }));
+                    when(context2?.templateContext).thenReturn(() => ({
+                        two: 'both',
+                        three: 'third'
+                    }));
+                });
+                describe('and no overlapping strategy', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(instance(context1), instance(context2), context3);
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        expect(result).toBeUndefined();
+                    });
+                    test('Then I got an error', () => {
+                        expect(exception).not.toBeUndefined();
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
+                    });
+                });
+                describe('and an overlapping merge strategy "silentIfSameValue"', () => {
+                    describe('When I call "mergeTemplateContext" on them', () => {
+                        try {
+                            result = mergeTemplateContext(silentIfSameValue, instance(context1), instance(context2), context3);
+                        } catch (error: unknown) {
+                            exception = error as Error;
+                        }
+                    });
+                    test('Then I do not get a result', () => {
+                        expect(result).toBeUndefined();
+                    });
+                    test('Then I got an error', () => {
+                        expect(exception).not.toBeUndefined();
+                    });
+                    test('Then the exception is of type "TemplateContextMergeConflictError"', () => {
+                        expect(exception).toBeInstanceOf(TemplateContextMergeConflictError);
+                    });
+                    test('Then the message should tell the first field which is in conflict', () => {
+                        expect(exception?.message).toBe('Merge conflict for field "second".');
+                    });
+                });
+            });
         });
         describe('and all are undefined', () => {
             beforeEach(() => {
