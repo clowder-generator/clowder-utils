@@ -1,10 +1,8 @@
 export {
     Context,
+    ContextMerger,
     silentIfSameValue,
-    mergeDestinationPathProcessor,
-    mergeTemplatePath,
-    EmptyTemplatePath,
-    mergeTemplateContext,
+    EmptyTemplatePathError,
     MergeTemplateContextStrategy
 } from './context';
 export { TemplateContextMergeConflictError } from './exceptions';

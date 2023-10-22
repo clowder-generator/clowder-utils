@@ -17,112 +17,100 @@ export const silentIfSameValue: MergeTemplateContextStrategy = (firstEntry: any,
     }
 };
 
-export const mergeDestinationPathProcessor = (...contexts: Context[]): DestinationPathProcessor => {
-    const destinationPathProcessors: DestinationPathProcessor[] = contexts
-        .map(context => context.destinationPathProcessor)
-        .filter(context => context !== undefined);
-
-    if (destinationPathProcessors.length === 0) {
-        return undefined;
-    } else {
-        return (pathToProcess: string) => {
-            let processedPath = pathToProcess;
-            for (const processor of destinationPathProcessors) {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                processedPath = processor!(processedPath);
-            }
-            return processedPath;
-        };
-    }
-};
-
-/**
- * Merge together, into a single array of string, the template path of the given contexts.
- *
- * @param contexts
- */
-export const mergeTemplatePath = (...contexts: Context[]): string[] => {
-    contexts.forEach(context => {
-        const path = context.templatePath();
-        if (path instanceof Array<string>) {
-            assertArrayIsValid(path);
-        } else {
-            assertPathStringIsValid(path);
-        }
-    });
-    const templatePaths: string[] = contexts.map(context => context.templatePath()).flat();
-    return [...new Set(templatePaths)];
-};
-
-const assertArrayIsValid = (array: string[]): void => {
-    if ((array.length === 0) || (array.filter(e => isBlank(e)).length !== 0)) {
-        throw new EmptyTemplatePath('invalid empty or blank templatePath');
-    }
-};
-
-const assertPathStringIsValid = (path: string): void => {
-    if (isBlank(path)) {
-        throw new EmptyTemplatePath('invalid empty or blank templatePath');
-    }
-};
-
-export class EmptyTemplatePath extends Error {
+export class EmptyTemplatePathError extends Error {
     constructor(msg: string) {
         super(msg);
-        Object.setPrototypeOf(this, EmptyTemplatePath.prototype);
+        Object.setPrototypeOf(this, EmptyTemplatePathError.prototype);
     }
 }
 
-/**
- * merge templateContext from multiple Context applying the given mergeStrategy in case of conflict keys
- * (keys are similar in multiple templateContext).
- * @param mergeStrategy: either a MergeTemplateContextStrategy or a Context.
- *                       If a context, the merge strategy is considered undefined
- *                       and the context is merged with the varargs context.
- * @param context: the contexts, whose templateContext should be merged
- */
-export const mergeTemplateContext = (mergeStrategy?: MergeTemplateContextStrategy | Context, ...context: Context[]): ITemplateData => {
-    const totalTemplateData: ITemplateData[] = fullTemplateData(mergeStrategy, ...context);
-    const merger: MergeTemplateContextStrategy | undefined = mergerResolver(mergeStrategy);
-    const finalTemplateContext: ITemplateData = {};
-    for (const templateContext of totalTemplateData) {
-        for (const key of Object.keys(templateContext)) {
-            if (key in finalTemplateContext) {
-                finalTemplateContext[key] = applyMergerForKey(merger, key, finalTemplateContext[key], templateContext[key]);
-            } else {
-                finalTemplateContext[key] = templateContext[key];
+export class ContextMerger {
+    private mergeTemplateContextStrategy: MergeTemplateContextStrategy | undefined = undefined;
+    private readonly contexts: Context[];
+
+    private constructor(...contexts: Context[]) {
+        this.contexts = contexts;
+    }
+
+    public static of = (...contexts: Context[]): ContextMerger => {
+        return new ContextMerger(...contexts);
+    };
+
+    public readonly withTemplateMergeStrategy = (mergeTemplateContextStrategy: MergeTemplateContextStrategy): this => {
+        this.mergeTemplateContextStrategy = mergeTemplateContextStrategy;
+        return this;
+    };
+
+    public readonly mergeTemplate = (): ITemplateData => {
+        const totalTemplateData: ITemplateData[] = this.contexts.map(ctx => ctx.templateContext());
+        const finalTemplateContext: ITemplateData = {};
+        for (const templateContext of totalTemplateData) {
+            for (const key of Object.keys(templateContext)) {
+                if (key in finalTemplateContext) {
+                    finalTemplateContext[key] = this._applyMergeTemplateContextStrategyForKey(key, finalTemplateContext[key], templateContext[key]);
+                } else {
+                    finalTemplateContext[key] = templateContext[key];
+                }
             }
         }
-    }
+        return finalTemplateContext;
+    };
 
-    return finalTemplateContext;
-};
+    public readonly mergeTemplatePath = (): string[] => {
+        this.contexts.forEach(context => {
+            const path = context.templatePath();
+            if (path instanceof Array<string>) {
+                this._assertArrayIsValid(path);
+            } else {
+                this._assertPathStringIsValid(path);
+            }
+        });
+        const templatePaths: string[] = this.contexts.map(context => context.templatePath()).flat();
+        return [...new Set(templatePaths)];
+    };
 
-const isTemplateContextProvider = (obj: any): obj is Context => {
-    return 'templateContext' in obj;
-};
+    public readonly mergeDestinationPathProcessor = (): DestinationPathProcessor => {
+        const destinationPathProcessors: DestinationPathProcessor[] = this.contexts
+            .map(context => context.destinationPathProcessor)
+            .filter(processor => processor !== undefined);
 
-const fullTemplateData = (mergeStrategy?: MergeTemplateContextStrategy | Context, ...context: Context[]): ITemplateData[] => {
-    if (isTemplateContextProvider(mergeStrategy)) {
-        return [mergeStrategy.templateContext(), ...context.map(ctx => ctx.templateContext())];
-    } else {
-        return context.map(ctx => ctx.templateContext());
-    }
-};
-
-const mergerResolver = (mergeStrategy?: MergeTemplateContextStrategy | Context): MergeTemplateContextStrategy | undefined => {
-    return isTemplateContextProvider(mergeStrategy) ? undefined : mergeStrategy;
-};
-
-const applyMergerForKey = (mergerStrategy: MergeTemplateContextStrategy | undefined, key: string, first: any, second: any): any => {
-    if (mergerStrategy) {
-        try {
-            return mergerStrategy(first, second);
-        } catch (error: unknown) {
-            throw new TemplateContextMergeConflictError(`Merge conflict for field "${key}". cause: ${(error as Error).message}`);
+        if (destinationPathProcessors.length === 0) {
+            return undefined;
+        } else {
+            return (pathToProcess: string) => {
+                let processedPath = pathToProcess;
+                for (const processor of destinationPathProcessors) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    processedPath = processor!(processedPath);
+                }
+                return processedPath;
+            };
         }
-    } else {
-        throw new TemplateContextMergeConflictError(`Merge conflict for field "${key}".`);
-    }
-};
+    };
+
+    private readonly _applyMergeTemplateContextStrategyForKey = (key: string, first: any, second: any): any => {
+        if (this.mergeTemplateContextStrategy) {
+            try {
+                return this.mergeTemplateContextStrategy(first, second);
+            } catch (error: unknown) {
+                throw new TemplateContextMergeConflictError(`Merge conflict for field "${key}". cause: ${(error as Error).message}`);
+            }
+        } else {
+            throw new TemplateContextMergeConflictError(`Merge conflict for field "${key}".`);
+        }
+    };
+
+    private readonly _assertArrayIsValid = (array: string[]): void => {
+        if ((array.length === 0) || (array.filter(e => isBlank(e)).length !== 0)) {
+            throw new EmptyTemplatePathError('invalid empty or blank templatePath');
+        }
+    };
+
+    private readonly _assertPathStringIsValid = (path: string): void => {
+        if (isBlank(path)) {
+            throw new EmptyTemplatePathError('invalid empty or blank templatePath');
+        }
+    };
+}
+
 export type MergeTemplateContextStrategy = (firstEntry: any, secondEntry: any) => any;
