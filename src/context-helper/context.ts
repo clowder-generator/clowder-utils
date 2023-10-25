@@ -28,11 +28,11 @@ export class ContextMerger {
     private mergeTemplateContextStrategy: MergeTemplateContextStrategy | undefined = undefined;
     private readonly contexts: Context[];
 
-    private constructor(...contexts: Context[]) {
-        this.contexts = contexts;
+    private constructor(...contexts: Array<Context | undefined>) {
+        this.contexts = contexts.filter(this._isContextNotUndefined);
     }
 
-    public static of = (...contexts: Context[]): ContextMerger => {
+    public static of = (...contexts: Array<Context | undefined>): ContextMerger => {
         return new ContextMerger(...contexts);
     };
 
@@ -110,6 +110,10 @@ export class ContextMerger {
         if (isBlank(path)) {
             throw new EmptyTemplatePathError('invalid empty or blank templatePath');
         }
+    };
+
+    private readonly _isContextNotUndefined = (ctx: Context | undefined): ctx is Context => {
+        return ctx !== undefined;
     };
 }
 

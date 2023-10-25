@@ -19,8 +19,8 @@ describe('ContextMerger', () => {
         });
 
         describe('Given two defined contexts', () => {
-            const context1: Context = mock<Context>();
-            const context2: Context = mock<Context>();
+            let context1: Context;
+            let context2: Context;
 
             const templateContext1: ITemplateData = {
                 first: 'one',
@@ -28,6 +28,8 @@ describe('ContextMerger', () => {
             };
 
             beforeEach(() => {
+                context1 = mock<Context>();
+                context2 = mock<Context>();
                 when(context1.templateContext).thenReturn(() => templateContext1);
             });
 
@@ -52,7 +54,7 @@ describe('ContextMerger', () => {
                         expect(exception).toBeUndefined();
                     });
                     test('Then I got a defined object ITemplateData', () => {
-                        expect(result).not.toBeUndefined();
+                        expect(result).toBeDefined();
                     });
                     test('Then I got a new ITemplateData with all field from both templateContext', () => {
                         expect(result).toEqual({
@@ -175,6 +177,72 @@ describe('ContextMerger', () => {
                     test('Then the message should tell the first field which is in conflict', () => {
                         expect(exception?.message).toEqual('Merge conflict for field "second". cause: value are different "two" vs. "bis"');
                     });
+                });
+            });
+        });
+        describe('Given a defined and un undefined context', () => {
+            let context1: Context;
+            let context2: undefined;
+
+            beforeEach(() => {
+                context1 = mock<Context>();
+                context2 = undefined;
+                when(context1.templateContext).thenReturn(() => ({
+                    first: 'one',
+                    second: 'two'
+                }));
+            });
+
+            describe('When I call merge template on them', () => {
+                beforeEach(() => {
+                    contextMerger = ContextMerger.of(instance(context1), context2);
+                    try {
+                        result = contextMerger.mergeTemplate();
+                    } catch (error: unknown) {
+                        exception = error as Error;
+                    }
+                });
+                test('Then I got no error', () => {
+                    expect(exception).toBeUndefined();
+                });
+                test('Then I should get a defined object ITemplateData', () => {
+                    expect(result).toBeDefined();
+                });
+                test('Then I got a new ITemplateData with all field from the defined context', () => {
+                    expect(result).toEqual({
+                        first: 'one',
+                        second: 'two'
+                    });
+                });
+            });
+        });
+        describe('Given two contexts, both undefined', () => {
+            let context1: undefined;
+            let context2: undefined;
+
+            beforeEach(() => {
+                context1 = undefined;
+                context2 = undefined;
+            });
+
+            describe('When I call merge template on them', () => {
+                beforeEach(() => {
+                    contextMerger = ContextMerger.of(context1, context2);
+                    try {
+                        result = contextMerger.mergeTemplate();
+                    } catch (error: unknown) {
+                        exception = error as Error;
+                    }
+                });
+
+                test('Then I should not get an error', () => {
+                    expect(exception).toBeUndefined();
+                });
+                test('Then I should get a defined object ITemplateData', () => {
+                    expect(result).toBeDefined();
+                });
+                test('Then I should get a new empty ITemplateData', () => {
+                    expect(result).toEqual({});
                 });
             });
         });
