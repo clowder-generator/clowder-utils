@@ -1,0 +1,36 @@
+name: Task
+description: Suggest an improvement that does not add new feature to the project
+title: "[Task]: "
+labels: ['task']
+assignees:
+  - leddzip
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please describe what you'd like to be done. This should be en improvement that does not correspond to a feature or a bug.
+  - type: textarea
+    id: what
+    attributes:
+      label: What should be done ?
+      description: Briefly describe what should be done.
+      placeholder: A short description of what should be done
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide a full context to understand the reasons why this should be done.
+      placeholder: Context...
+    validations:
+      required: true
+  - type: textarea
+    id: expectations
+    attributes:
+      label: Expectations
+      description: Provide a list of what should be done
+      placeholder: |
+        - [] subtask one...
+      value: |
+        - [] subtask one...
